@@ -30,13 +30,14 @@ const AdminDashboard = () => {
 
     // --- FETCH ---
     const fetchBurgers = useCallback(async () => {
-        setIsLoading(true);
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
             setBurgers(res.data);
         } catch (error) {
-            console.error(error
+            console.error(error);
+        }
     }, []);
+    
 
     const fetchOrders = useCallback(async () => {
         try {
@@ -51,8 +52,18 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            fetchBurgers();
-            fetchOrders();
+            const loadData = async () => {
+                setLoading(true);
+                try {
+                    await fetchBurgers();
+                    await fetchOrders();
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            loadData();
         }
     }, [isAuthenticated, fetchBurgers, fetchOrders]);
 
