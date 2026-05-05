@@ -3,17 +3,41 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+
+    // --- AUTH ---
     const [password, setPassword] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // --- DATA ---
     const [burgers, setBurgers] = useState([]);
     const [orders, setOrders] = useState([]);
 
+    // --- EDIT ---
+    const [isEditing, setIsEditing] = useState(false);
+    const [editId, setEditId] = useState(null);
+
+    const [newBurger, setNewBurger] = useState({
+        name: '',
+        price: '',
+        image: '',
+        category: 'Beef',
+        description: ''
+    });
+
+    // --- FETCH ---
     const fetchBurgers = useCallback(async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
             setBurgers(res.data);
-        } catch (error) { console.error("Error fetching burgers:", error); }
+        } catch (error) {
+            console.error(error);
+        }
     }, []);
+    
 
     const fetchOrders = useCallback(async () => {
         try {
@@ -21,126 +45,190 @@ const AdminDashboard = () => {
                 headers: { 'admin-secret': 'admin123' }
             });
             setOrders(res.data);
-        } catch (error) { console.error("Error fetching orders:", error); }
+        } catch (error) {
+            console.error(error);
+        }
     }, []);
 
     useEffect(() => {
         if (isAuthenticated) {
-            fetchBurgers();
-            fetchOrders();
+            const loadData = async () => {
+                setLoading(true);
+                try {
+                    await fetchBurgers();
+                    await fetchOrders();
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            loadData();
         }
     }, [isAuthenticated, fetchBurgers, fetchOrders]);
 
-    // ✅ NEW: Function to toggle Payment Verification
-    const togglePaymentVerify = async (id, currentStatus) => {
-        try {
-            await axios.put(`https://beebboo-backend.onrender.com/api/orders/${id}`,
-                { isPaymentVerified: !currentStatus },
-                { headers: { 'admin-secret': 'admin123' } }
-            );
-            fetchOrders(); // Refresh data after update
-        } catch {
-            alert("Kafaltii mirkaneessuu irratti rakkoon uumame!");
+    // --- LOGIN ---
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        setTimeout(() => {
+            if (password === "admin123") {
+                setIsAuthenticated(true);
+            } else {
+                setError("Password dogoggora!");
+            }
+            setLoading(false);
+        }, 800);
+    };
+
+    const handleLogout = () => {
+        setIsAuthenticated(false);
+        setPassword("");
+    };
+
+    // --- CRUD ---
+    const deleteBurger = async (id) => {
+        if (window.confirm("Delete this burger?")) {
+            await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+            fetchBurgers();
         }
     };
 
-    const updateOrderStatus = async (id, newStatus) => {
-        try {
-            await axios.put(`https://beebboo-backend.onrender.com/api/orders/${id}`,
-                { status: newStatus },
-                { headers: { 'admin-secret': 'admin123' } }
-            );
-            fetchOrders();
-        } catch (error) { console.error("Update error:", error); }
+    const startEdit = (burger) => {
+        setIsEditing(true);
+        setEditId(burger._id);
+        setNewBurger(burger);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleLogin = (e) => {
+    const cancelEdit = () => {
+        setIsEditing(false);
+        setEditId(null);
+        setNewBurger({ name: '', price: '', image: '', category: 'Beef', description: '' });
+    };
+
+    const handleAddBurger = async (e) => {
         e.preventDefault();
-        if (password === "admin123") setIsAuthenticated(true);
-        else alert("Password dogoggora!");
+
+        if (isEditing) {
+            await axios.put(`https://beebboo-backend.onrender.com/api/menu/${editId}`, newBurger, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+        } else {
+            await axios.post(`https://beebboo-backend.onrender.com/api/menu`, {
+                ...newBurger,
+                countInStock: 20
+            }, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+        }
+
+        cancelEdit();
+        fetchBurgers();
     };
 
+    const updateOrderStatus = async (id, status) => {
+        await axios.put(`https://beebboo-backend.onrender.com/api/orders/${id}`,
+            { status },
+            { headers: { 'admin-secret': 'admin123' } });
+        fetchOrders();
+    };
+
+    const deleteOrder = async (id) => {
+        if (window.confirm("Delete order?")) {
+            await axios.delete(`https://beebboo-backend.onrender.com/api/orders/${id}`, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+            fetchOrders();
+        }
+    };
+
+    // --- LOGIN SCREEN ---
     if (!isAuthenticated) {
         return (
-            <div className="login-page">
-                <div className="login-card-3d">
-                    <h1 className="brand-logo">BEEBBOO</h1>
-                    <p className="admin-subtitle">Management Portal</p>
-                    <form onSubmit={handleLogin}>
+            <div className="login-overlay">
+                <form className="login-card" onSubmit={handleLogin}>
+                    <h2>Beebboo Admin Login</h2>
+
+                    <div className="password-wrapper">
                         <input
-                            type="password"
-                            placeholder="Secret Key"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password..."
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <button type="submit" className="btn-3d-gold">Enter Dashboard</button>
-                    </form>
-                </div>
+                        <span onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? "🙈" : "👁"}
+                        </span>
+                    </div>
+
+                    {error && <p className="error-text">{error}</p>}
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? <span className="loader"></span> : "Login"}
+                    </button>
+                </form>
             </div>
         );
     }
 
+    // --- MAIN UI ---
     return (
-        <div className="admin-layout">
-            <nav className="glass-nav">
-                <h2 className="brand-logo">BEEBBOO ADMIN</h2>
-                <button className="logout-glass" onClick={() => setIsAuthenticated(false)}>Logout</button>
-            </nav>
+        <div className="admin-container">
 
-            <div className="dashboard-grid">
-                <main className="main-content">
-                    <section className="glass-card">
-                        <h3>Burger Menu ({burgers.length})</h3>
-                        <div className="burger-list">
-                            {burgers.map(b => (
-                                <div key={b._id} className="data-row-3d">
-                                    <span>{b.name} - <strong>{b.price} ETB</strong></span>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                </main>
-
-                <aside className="orders-sidebar">
-                    <h3>Ajajoota (Orders)</h3>
-                    <div className="orders-container">
-                        {orders.map(o => (
-                            <div key={o._id} className="order-card-3d">
-                                <div className="order-header">
-                                    <strong>{o.fullName}</strong>
-                                    <span className={`status-pill ${o.status}`}>{o.status}</span>
-                                </div>
-                                <div className="order-body">
-                                    <p>📞 {o.phone}</p>
-                                    <p>📍 {o.address}</p>
-                                    <p className="price-tag">{o.totalPrice} ETB</p>
-
-                                    {/* ✅ NEW: Payment Verified Checkbox */}
-                                    <div className="payment-verify-area">
-                                        <label className="checkbox-container">
-                                            <input
-                                                type="checkbox"
-                                                checked={o.isPaymentVerified}
-                                                onChange={() => togglePaymentVerify(o._id, o.isPaymentVerified)}
-                                            />
-                                            <span className="checkmark"></span>
-                                            Kafaltiin Mirkanaa'eera
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="order-footer">
-                                    <select value={o.status} onChange={(e) => updateOrderStatus(o._id, e.target.value)}>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Delivered">Delivered</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                    </select>
-                                    <button className="btn-haqi">Haqi</button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </aside>
+            <div className="admin-header-flex">
+                <h2>Beebboo Admin Panel</h2>
+                <button onClick={handleLogout}>Logout</button>
             </div>
+
+            <form className="add-burger-form" onSubmit={handleAddBurger}>
+                <h3>{isEditing ? "Edit Burger" : "Add Burger"}</h3>
+
+                <input placeholder="Name"
+                    value={newBurger.name}
+                    onChange={(e) => setNewBurger({ ...newBurger, name: e.target.value })}
+                />
+
+                <input placeholder="Price"
+                    value={newBurger.price}
+                    onChange={(e) => setNewBurger({ ...newBurger, price: e.target.value })}
+                />
+
+                <input placeholder="Image URL"
+                    value={newBurger.image}
+                    onChange={(e) => setNewBurger({ ...newBurger, image: e.target.value })}
+                />
+
+                <button>{isEditing ? "Update" : "Add +"}</button>
+            </form>
+
+            <h3>Burgers</h3>
+            <div className="burger-list">
+                {burgers.map(b => (
+                    <div key={b._id} className="burger-item">
+                        {b.name} - {b.price}
+                        <button onClick={() => startEdit(b)}>Edit</button>
+                        <button onClick={() => deleteBurger(b._id)}>Delete</button>
+                    </div>
+                ))}
+            </div>
+
+            <h3>Orders</h3>
+            {orders.map(o => (
+                <div key={o._id} className="order-item">
+                    {o.fullName} - {o.status}
+                    <select onChange={(e) => updateOrderStatus(o._id, e.target.value)}>
+                        <option>Pending</option>
+                        <option>Delivered</option>
+                    </select>
+                    <button onClick={() => deleteOrder(o._id)}>Delete</button>
+                </div>
+            ))}
+
         </div>
     );
 };
