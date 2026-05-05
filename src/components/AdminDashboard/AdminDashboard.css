@@ -1,4 +1,6 @@
-/* --- GLOBAL RESET --- */
+/* =========================
+   🔄 RESET
+========================= */
 * {
     margin: 0;
     padding: 0;
@@ -7,26 +9,24 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fb;
+    background: #f4f6fb;
 }
 
 /* =========================
-   🔐 LOGIN SCREEN (ATTRACTIVE)
+   🔐 LOGIN PAGE
 ========================= */
-
 .login-overlay {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    /* 🔥 gradient background */
     background: linear-gradient(135deg, #667eea, #764ba2);
     position: relative;
     overflow: hidden;
 }
 
-/* animated circles background */
+/* decorative background shapes */
 .login-overlay::before,
 .login-overlay::after {
     content: "";
@@ -38,8 +38,8 @@ body {
 .login-overlay::before {
     width: 300px;
     height: 300px;
-    top: -50px;
-    left: -50px;
+    top: -60px;
+    left: -60px;
 }
 
 .login-overlay::after {
@@ -52,22 +52,21 @@ body {
 /* login card */
 .login-card {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(12px);
     padding: 35px;
     border-radius: 16px;
     width: 340px;
     text-align: center;
     color: white;
 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .login-card h2 {
     margin-bottom: 20px;
-    font-weight: 600;
 }
 
-/* input wrapper */
+/* password input */
 .password-wrapper {
     display: flex;
     align-items: center;
@@ -83,7 +82,6 @@ body {
     flex: 1;
     background: transparent;
     color: white;
-    font-size: 14px;
 }
 
 .password-wrapper input::placeholder {
@@ -92,7 +90,6 @@ body {
 
 .password-wrapper span {
     cursor: pointer;
-    font-size: 18px;
 }
 
 /* error */
@@ -107,16 +104,16 @@ body {
     width: 100%;
     padding: 10px;
     border: none;
-    background: #ffffff;
-    color: #333;
     border-radius: 10px;
-    font-weight: 600;
+    background: white;
+    color: #333;
+    font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .login-card button:hover {
-    background: #f1f1f1;
+    background: #eee;
 }
 
 /* loader */
@@ -137,28 +134,27 @@ body {
 }
 
 /* =========================
-   🧑‍💼 ADMIN DASHBOARD
+   🧑‍💼 DASHBOARD
 ========================= */
-
 .admin-container {
     padding: 25px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
 }
 
-/* header */
-.admin-header-flex {
+/* HEADER */
+.admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.admin-header-flex h2 {
+.admin-header h2 {
     font-size: 24px;
 }
 
-.admin-header-flex button {
+.admin-header button {
     padding: 8px 14px;
     border: none;
     background: #2f3542;
@@ -167,20 +163,21 @@ body {
     cursor: pointer;
 }
 
-/* form */
-.add-burger-form {
-    max-width: 400px;
+/* FORM */
+.form-card {
     background: white;
     padding: 20px;
     border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    max-width: 420px;
 }
 
-.add-burger-form h3 {
+.form-card h3 {
     margin-bottom: 15px;
 }
 
-.add-burger-form input {
+.form-card input,
+.form-card textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -188,7 +185,8 @@ body {
     border: 1px solid #ddd;
 }
 
-.add-burger-form button {
+/* button */
+.form-card button {
     background: #2ed573;
     color: white;
     border: none;
@@ -197,36 +195,40 @@ body {
     cursor: pointer;
 }
 
-.add-burger-form button:hover {
+.form-card button:hover {
     background: #26c06f;
 }
 
-/* burger grid */
+/* =========================
+   🍔 BURGER SECTION
+========================= */
 .burger-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 20px;
 }
 
-/* burger card */
-.burger-item {
+.burger-card {
     background: white;
     padding: 15px;
     border-radius: 14px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-weight: 500;
-    transition: 0.2s;
+    gap: 6px;
 }
 
-.burger-item:hover {
-    transform: translateY(-3px);
+.burger-card h4 {
+    margin-bottom: 5px;
 }
 
-/* description */
-.burger-desc {
+.price {
+    color: green;
+    font-weight: bold;
+}
+
+.desc {
     font-size: 13px;
     color: #666;
     line-height: 1.4;
@@ -237,48 +239,53 @@ body {
     overflow: hidden;
 }
 
-/* buttons */
-.burger-item button {
+/* delete button */
+.burger-card button {
+    margin-top: 8px;
     padding: 6px;
     border: none;
     border-radius: 6px;
+    background: #ff4757;
+    color: white;
     cursor: pointer;
 }
 
-.burger-item button:first-of-type {
-    background: #1e90ff;
-    color: white;
+/* =========================
+   📦 ORDERS SECTION
+========================= */
+.orders {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.burger-item button:last-of-type {
-    background: #ff4757;
-    color: white;
-}
-
-/* orders */
-.order-item {
+.order-card {
     background: white;
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.order-item select {
+.order-card select {
     padding: 6px;
     border-radius: 6px;
 }
 
-/* responsive */
+/* =========================
+   📱 RESPONSIVE
+========================= */
 @media (max-width: 768px) {
     .burger-list {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 
-    .order-item {
+    .order-card {
         flex-direction: column;
         align-items: flex-start;
     }
