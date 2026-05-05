@@ -1,285 +1,117 @@
-/* --- GLOBAL RESET --- */
+/* RESET */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fb;
-}
-
-/* =========================
-   🔐 LOGIN SCREEN (ATTRACTIVE)
-========================= */
-
+/* LOGIN */
 .login-overlay {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* 🔥 gradient background */
     background: linear-gradient(135deg, #667eea, #764ba2);
-    position: relative;
-    overflow: hidden;
 }
 
-/* animated circles background */
-.login-overlay::before,
-.login-overlay::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.login-overlay::before {
-    width: 300px;
-    height: 300px;
-    top: -50px;
-    left: -50px;
-}
-
-.login-overlay::after {
-    width: 400px;
-    height: 400px;
-    bottom: -80px;
-    right: -80px;
-}
-
-/* login card */
 .login-card {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    padding: 35px;
-    border-radius: 16px;
-    width: 340px;
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 15px;
+    width: 320px;
     text-align: center;
     color: white;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.login-card h2 {
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-/* input wrapper */
 .password-wrapper {
     display: flex;
-    align-items: center;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
     padding: 10px;
-    margin-bottom: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
 .password-wrapper input {
     border: none;
-    outline: none;
-    flex: 1;
     background: transparent;
     color: white;
-    font-size: 14px;
+    flex: 1;
 }
 
-.password-wrapper input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.password-wrapper span {
-    cursor: pointer;
-    font-size: 18px;
-}
-
-/* error */
 .error-text {
     color: #ffb3b3;
-    font-size: 13px;
-    margin-bottom: 10px;
 }
 
-/* login button */
 .login-card button {
     width: 100%;
     padding: 10px;
+    margin-top: 10px;
     border: none;
-    background: #ffffff;
-    color: #333;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
+    background: white;
+    border-radius: 8px;
 }
 
-.login-card button:hover {
-    background: #f1f1f1;
-}
-
-/* loader */
-.loader {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #333;
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    display: inline-block;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* =========================
-   🧑‍💼 ADMIN DASHBOARD
-========================= */
-
+/* DASHBOARD */
 .admin-container {
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+    padding: 20px;
 }
 
-/* header */
-.admin-header-flex {
+/* HEADER */
+.admin-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    margin-bottom: 20px;
 }
 
-.admin-header-flex h2 {
-    font-size: 24px;
-}
-
-.admin-header-flex button {
-    padding: 8px 14px;
-    border: none;
-    background: #2f3542;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* form */
-.add-burger-form {
-    max-width: 400px;
+/* FORM */
+.form-card {
     background: white;
     padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
-.add-burger-form h3 {
-    margin-bottom: 15px;
-}
-
-.add-burger-form input {
+.form-card input,
+.form-card textarea {
     width: 100%;
-    padding: 10px;
     margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.add-burger-form button {
-    background: #2ed573;
-    color: white;
-    border: none;
     padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
 }
 
-.add-burger-form button:hover {
-    background: #26c06f;
-}
-
-/* burger grid */
+/* BURGERS */
 .burger-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
 }
 
-/* burger card */
-.burger-item {
-    background: white;
-    padding: 15px;
-    border-radius: 14px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-weight: 500;
-    transition: 0.2s;
-}
-
-.burger-item:hover {
-    transform: translateY(-3px);
-}
-
-/* description */
-.burger-desc {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.4;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* buttons */
-.burger-item button {
-    padding: 6px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.burger-item button:first-of-type {
-    background: #1e90ff;
-    color: white;
-}
-
-.burger-item button:last-of-type {
-    background: #ff4757;
-    color: white;
-}
-
-/* orders */
-.order-item {
+.burger-card {
     background: white;
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+.price {
+    color: green;
+}
+
+.desc {
+    font-size: 13px;
+    color: gray;
+}
+
+/* ORDERS */
+.orders {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
 }
 
-.order-item select {
-    padding: 6px;
-    border-radius: 6px;
-}
-
-/* responsive */
-@media (max-width: 768px) {
-    .burger-list {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .order-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.order-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
 }
