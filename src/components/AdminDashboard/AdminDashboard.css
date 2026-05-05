@@ -1,76 +1,205 @@
-body {
-    margin: 0;
-    background: #020617;
-    color: white;
-    font-family: sans-serif;
+/* AdminDashboard.css */
+
+:root {
+    --primary: #d4af37;
+    /* Gold for Beebboo Brand */
+    --dark: #121212;
+    --glass: rgba(255, 255, 255, 0.1);
+    --success: #00c853;
+    --danger: #ff3d00;
+    --text-light: #f4f4f4;
 }
 
-/* LOGIN */
-.login-overlay {
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f0f0f;
+    color: var(--text-light);
+}
+
+/* --- LOGIN SECTION --- */
+.login-page {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
 }
 
-.login-card {
-    background: #111;
-    padding: 30px;
-    border-radius: 10px;
-    width: 300px;
+.login-card-3d {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    width: 350px;
 }
 
-.password-wrapper {
-    position: relative;
+.brand-logo {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 5px;
+    letter-spacing: 2px;
 }
 
-.password-wrapper span {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+.admin-subtitle {
+    color: #888;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.login-card-3d input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.btn-3d-gold {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-3d-gold:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* --- DASHBOARD LAYOUT --- */
+.admin-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.glass-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 20px;
+    padding: 20px 5%;
+}
+
+/* --- ORDERS SIDEBAR & CARDS --- */
+.orders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-card-3d {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 5px solid var(--primary);
+    transition: 0.3s;
+}
+
+.order-card-3d:hover {
+    transform: scale(1.02);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.status-pill {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.status-pill.Pending {
+    background: #ff9800;
+    color: black;
+}
+
+.status-pill.Delivered {
+    background: var(--success);
+    color: white;
+}
+
+/* --- PAYMENT VERIFY AREA --- */
+.payment-verify-area {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(0, 200, 83, 0.1);
+    border-radius: 8px;
+    border: 1px dashed var(--success);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--success);
+    font-weight: bold;
+}
+
+.checkbox-container input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--success);
+}
+
+/* --- FOOTER & BUTTONS --- */
+.order-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.order-footer select {
+    flex: 1;
+    background: #333;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.btn-haqi {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.error-text {
-    color: red;
-}
-
-.loader {
-    width: 20px;
-    height: 20px;
-    border: 3px solid white;
-    border-top: transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+/* Responsive */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
-}
-
-/* MAIN */
-.admin-container {
-    padding: 20px;
-}
-
-.admin-header-flex {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.add-burger-form input {
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    width: 100%;
-}
-
-.burger-item,
-.order-item {
-    background: #111;
-    padding: 10px;
-    margin: 10px 0;
 }
