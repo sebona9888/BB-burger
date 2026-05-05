@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/useCart';
 import './Checkout.css';
-import { useCreateOrder } from '../../hooks/useOrders'
+import { useCreateOrder } from '../../hooks/useOrders';
 import { toast } from 'react-hot-toast';
 
 const Checkout = () => {
     const { cartItems, totalPrice, clearCart } = useCart();
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const { mutate: createOrder , isPending} = useCreateOrder();
+    const { mutate: createOrder, isPending } = useCreateOrder();
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -17,15 +16,13 @@ const Checkout = () => {
     });
 
     const [screenshot, setScreenshot] = useState(null);
-    const [preview, setPreview] = useState(null); // Suuraa fe'ame sana arguuf
-    const [loading, setLoading] = useState(false);
+    const [preview, setPreview] = useState(null);
 
-    // ✅ Suuraa yeroo filattu preview isaa agarsiisuuf
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setScreenshot(file);
-            setPreview(URL.createObjectURL(file)); // Linkii yeroo gabaabaa uuma
+            setPreview(URL.createObjectURL(file));
         }
     };
 
@@ -37,35 +34,45 @@ const Checkout = () => {
             return;
         }
 
-        // Kaffaltii Screenshot dirqama gochuuf (Yoo Cash hin taane)
+        // ✅ Screenshot dirqama gochuu (Cash yoo hin taane)
         if (formData.paymentMethod !== 'Cash' && !screenshot) {
-            toast.success("Maaloo, screenshot kaffaltii fe'aa!");
+            toast.error("Maaloo, screenshot kaffaltii fe'aa!");
             return;
         }
 
-        setLoading(true);
-
         try {
+            // ✅ FormData uumuu (File-idhaaf murteessaa dha)
             const data = new FormData();
-            createOrder({
-                ...formData,
-                totalPrice,
-                items: cartItems
-            });
 
+            data.append('fullName', formData.fullName);
+            data.append('phone', formData.phone);
+            data.append('address', formData.address);
+            data.append('paymentMethod', formData.paymentMethod);
+            data.append('totalPrice', totalPrice);
+
+            // ✅ Items array gara String-itti jijjiiri (Backend kee JSON.parse waan godhuuf)
+            data.append('items', JSON.stringify(cartItems));
+
+            // ✅ Screenshot yoo jiraate qofa dabaladhu
             if (screenshot) {
-                data.append('screenshot', screenshot); // ✅ Multer backend irratti kana barbaada
+                data.append('screenshot', screenshot);
             }
 
-            setPreview(null);
-            setScreenshot(null);
-            clearCart();
-
+            // ✅ createOrder-tti FormData ('data') sana ergi
+            createOrder(data, {
+                onSuccess: () => {
+                    setPreview(null);
+                    setScreenshot(null);
+                    clearCart();
+                    toast.success("Order milkiidhaan ergameera!");
+                },
+                onError: (err) => {
+                    toast.error("Error: " + (err.response?.data?.message || err.message));
+                }
+            });
         } catch (err) {
-            console.error("Error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.message || "Dogoggorri uumameera!");
-        } finally {
-            setLoading(false);
+            console.error("Submission Error:", err);
+            toast.error("Wanti hin eegamne uumameera!");
         }
     };
 
@@ -73,35 +80,64 @@ const Checkout = () => {
         <div className="checkout-container">
             <h1>Checkout</h1>
             <form onSubmit={handleSubmit}>
-                <input name="fullName" placeholder="Maqaa Guutuu" onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} required />
-                <input name="phone" placeholder="Bilbila" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
-                <textarea name="address" placeholder="Teessoo" onChange={(e) => setFormData({ ...formData, address: e.target.value })} required />
+                <input
+                    name="fullName"
+                    placeholder="Maqaa Guutuu"
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    required
+                />
+                <input
+                    name="phone"
+                    placeholder="Bilbila"
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    required
+                />
+                <textarea
+                    name="address"
+                    placeholder="Teessoo"
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    required
+                />
 
                 <div className="payment-section">
                     <label>Method Kaffaltii:</label>
-                    <select name="paymentMethod" onChange={(e) => {
-                        setFormData({ ...formData, paymentMethod: e.target.value });
-                        if (e.target.value === 'Cash') { setPreview(null); setScreenshot(null); }
-                    }}>
+                    <select
+                        name="paymentMethod"
+                        value={formData.paymentMethod}
+                        onChange={(e) => {
+                            setFormData({ ...formData, paymentMethod: e.target.value });
+                            if (e.target.value === 'Cash') {
+                                setScreenshot(null);
+                                setPreview(null);
+                            }
+                        }}
+                    >
                         <option value="Cash">Cash (Kaffaltii harkaatti)</option>
                         <option value="Telebirr">Telebirr</option>
-                        <option value="CBE">CBE (Bankii Daldala Itiyoophiyaa)</option>
+                        <option value="CBE">CBE</option>
+                        
+                        <option value="AbyssinaBE">Abyssina</option>
                     </select>
                 </div>
 
                 {formData.paymentMethod !== 'Cash' && (
                     <div className="file-upload">
                         <label>Screenshot Kaffaltii Fe'i:</label>
-                        <input type="file" accept="image/*" onChange={handleFileChange} required />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            required
+                        />
                         {preview && (
                             <div className="image-preview">
-                                <img src={preview} alt="Screenshot Preview" />
+                                <img src={preview} alt="Preview" style={{ width: '100px', marginTop: '10px', borderRadius: '8px' }} />
                             </div>
                         )}
                     </div>
                 )}
 
-                <button type="submit" disabled={loading}>
+                <button type="submit" disabled={isPending}>
                     {isPending ? "Ergamaa jira..." : `Order Now (${totalPrice} ETB)`}
                 </button>
             </form>
