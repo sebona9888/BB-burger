@@ -4,7 +4,6 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
 
-    // --- AUTH ---
     const [password, setPassword] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -12,11 +11,9 @@ const AdminDashboard = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // --- DATA ---
     const [burgers, setBurgers] = useState([]);
     const [orders, setOrders] = useState([]);
 
-    // --- EDIT ---
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState(null);
 
@@ -28,7 +25,6 @@ const AdminDashboard = () => {
         description: ''
     });
 
-    // --- FETCH ---
     const fetchBurgers = useCallback(async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
@@ -37,7 +33,6 @@ const AdminDashboard = () => {
             console.error(error);
         }
     }, []);
-    
 
     const fetchOrders = useCallback(async () => {
         try {
@@ -67,7 +62,6 @@ const AdminDashboard = () => {
         }
     }, [isAuthenticated, fetchBurgers, fetchOrders]);
 
-    // --- LOGIN ---
     const handleLogin = (e) => {
         e.preventDefault();
         setError("");
@@ -88,7 +82,6 @@ const AdminDashboard = () => {
         setPassword("");
     };
 
-    // --- CRUD ---
     const deleteBurger = async (id) => {
         if (window.confirm("Delete this burger?")) {
             await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
@@ -147,7 +140,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // --- LOGIN SCREEN ---
     if (!isAuthenticated) {
         return (
             <div className="login-overlay">
@@ -176,7 +168,6 @@ const AdminDashboard = () => {
         );
     }
 
-    // --- MAIN UI ---
     return (
         <div className="admin-container">
 
@@ -211,6 +202,10 @@ const AdminDashboard = () => {
                 {burgers.map(b => (
                     <div key={b._id} className="burger-item">
                         {b.name} - {b.price}
+
+                        {/* ✅ ADDED LINE ONLY */}
+                        <p className="burger-desc">{b.description}</p>
+
                         <button onClick={() => startEdit(b)}>Edit</button>
                         <button onClick={() => deleteBurger(b._id)}>Delete</button>
                     </div>
