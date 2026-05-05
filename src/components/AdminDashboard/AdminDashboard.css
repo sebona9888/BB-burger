@@ -202,4 +202,124 @@ body {
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
+}/* --- UPDATED LOGIN SECTION --- */
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Background animation bifa socho'u qaba */
+    background: linear-gradient(-45deg, #000000, #1a1a1a, #0f0f0f, #121212);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.login-card-3d {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(212, 175, 55, 0.1);
+    /* Gold glow gabaabaa */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    width: 380px;
+    transition: transform 0.4s ease;
+}
+
+.login-card-3d:hover {
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.3);
+    /* Hover yeroo gootu gold ta'a */
+}
+
+.brand-logo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 5px;
+    letter-spacing: 4px;
+    text-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+.admin-subtitle {
+    color: #aaaaaa;
+    margin-bottom: 35px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+}
+
+/* Input boxes caalaatti smooth akka ta'an */
+.login-card-3d input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.login-card-3d input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* Button irratti 'shimmer' effect dabalameera */
+.btn-3d-gold {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(45deg, #d4af37, #f1c40f);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: 0.4s;
+}
+
+.btn-3d-gold:hover {
+    transform: scale(1.03);
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+}
+
+/* Loading ykn animation barruu irratti yoo barbaadde */
+.btn-3d-gold::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(45deg);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.btn-3d-gold:active {
+    transform: scale(0.98);
 }
