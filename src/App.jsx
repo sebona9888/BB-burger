@@ -4,17 +4,16 @@ import AdminDashboard from './components/AdminDashboard';
 import Home from './pages/Home';
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
-// ✅ Kutaalee dabalataa (Optional: Akka component keetti check godhi)
-// import Menu from './pages/Menu'; 
-// import About from './pages/About';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-// 1. Kutaa nageenyaa (ProtectedRoute) kanatti dabalame
+// ✅ 1. ProtectedRoute Sirreeffame (Token fi Admin check godha)
 const ProtectedRoute = ({ children }) => {
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  if (!isAdmin) {
-    // Yoo Admin miti ta'e gara Home tti deebisa
-    return <Navigate to="/" replace />;
+  // Yoo maamilli login hin goone ykn Admin miti ta'e gara Login-itti deebisa
+  if (!userInfo || !userInfo.isAdmin) {
+    return <Navigate to="/login" replace />;
   }
   return children;
 };
@@ -25,15 +24,14 @@ function App() {
       <CartProvider>
         <ScrollToTop />
         <Routes>
+          {/* ✅ Routes Maamiltootaa (Public) */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
-
-            {/* ✅ Route-wwan dabalataa asitti dabalameera */}
-            {/* <Route path="menu" element={<Menu />} /> */}
-            {/* <Route path="about" element={<About />} /> */}
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>
 
-          {/* 2. AdminDashboard ProtectedRoute keessa galeera */}
+          {/* ✅ Route Admin (Private/Protected) */}
           <Route
             path="/admin"
             element={
