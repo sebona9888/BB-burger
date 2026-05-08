@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { CartProvider } from './context/CartContext';
+import { CartProvider } from '../context/CartContext';
 import AdminDashboard from './components/AdminDashboard';
 import Home from './pages/Home';
-import ScrollToTop from './components/ScrollToTop';
-import MainLayout from './Layouts/MainLayout';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import ScrollToTop from '../components/ScrollToTop';
+import MainLayout from '../Layouts/MainLayout';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 
 // ✅ 1. ProtectedRoute Sirreeffame (Token fi Admin check godha)
 const ProtectedRoute = ({ children }) => {
