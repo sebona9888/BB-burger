@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import AdminDashboard from './components/AdminDashboard';
-import Home from './pages/Home';
+import Home from './Pages/Home'; // ✅ 'pages' gara 'Pages' tti jijjiirame
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './Pages/Login'; // ✅ 'pages' gara 'Pages' tti jijjiirame
+import Register from './Pages/Register'; // ✅ 'pages' gara 'Pages' tti jijjiirame
 
 // ✅ ProtectedRoute: Admin qofatu Dashboard seenuu danda'a
 const ProtectedRoute = ({ children }) => {
