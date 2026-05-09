@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/useCart';
 import './Navbar.css';
 
 const Navbar = () => {
     const { cartCount } = useCart();
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+
+    // ✅ User login gochuu isaa check gochuuf
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const isAdmin = userInfo && userInfo.isAdmin;
+
+    // Logout gochuuf
+    const handleLogout = () => {
+        localStorage.removeItem("userInfo");
+        setIsOpen(false);
+        navigate('/login');
+    };
 
     return (
         <>
@@ -39,8 +50,18 @@ const Navbar = () => {
                     <li><Link to="/menu">Menu</Link></li>
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
-                    {/* Qindaa'ina Admin itti dabalame */}
+
+                    {/* ✅ Qindaa'ina Login/Register/Admin itti dabalame */}
                     {isAdmin && <li><Link to="/admin">Admin</Link></li>}
+
+                    {!userInfo ? (
+                        <>
+                            <li><Link to="/login">Login</Link></li>
+                            <li><Link to="/register" className="nav-btn">Register</Link></li>
+                        </>
+                    ) : (
+                        <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
+                    )}
                 </ul>
 
                 {/* Cart */}
@@ -54,8 +75,18 @@ const Navbar = () => {
                     <li><Link to="/menu" onClick={() => setIsOpen(false)}>Menu</Link></li>
                     <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
-                    {/* Qindaa'ina Admin itti dabalame */}
+
                     {isAdmin && <li><Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link></li>}
+
+                    {/* ✅ Mobile Login/Register */}
+                    {!userInfo ? (
+                        <>
+                            <li><Link to="/login" onClick={() => setIsOpen(false)}>Login</Link></li>
+                            <li><Link to="/register" onClick={() => setIsOpen(false)}>Register</Link></li>
+                        </>
+                    ) : (
+                        <li><button onClick={handleLogout}>Logout</button></li>
+                    )}
                 </ul>
 
             </nav>
