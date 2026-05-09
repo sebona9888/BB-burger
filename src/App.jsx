@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // Components & Pages
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
