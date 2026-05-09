@@ -38,9 +38,9 @@ function App() {
                     <Route path="register" element={<Register />} />
 
                     {/* ✅ KANNEEN QOFA ITTI DABALAME: Navbar irratti waan jiraniif */}
-                    <Route path="menu" element={<Home />} />
-                    <Route path="about" element={<Home />} />
-                    <Route path="contact" element={<Home />} />
+                    <Route path="menu" element={<Menu />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="contact" element={<Contact />} />
                 </Route>
 
                 {/* --- Admin Route --- */}
