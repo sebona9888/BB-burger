@@ -6,13 +6,13 @@ import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home/Home';
+// Hubachiisa: Folder kee "Pages" (P-guddaa) ta'uu fi file-ni kee "Login.jsx" ta'uu mirkaneessi
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 
 /**
  * ProtectedRoute:
  * User-n login gochuu isaa fi Admin ta'uu isaa check godha.
- * Yoo mirga hin qabne gara login-itti deebisa.
  */
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
