@@ -27,45 +27,44 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-                <h2 className="text-3xl font-extrabold mb-2 text-center text-orange-600">Beebboo Burger</h2>
-                <p className="text-center text-gray-500 mb-8">Login to your account</p>
+        <div className="min-h-screen flex items-center justify-center bg-[#00897b] px-4">
+            <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
 
-                <div className="mb-5">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div className="mb-4">
                     <input
                         type="email"
-                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all"
-                        placeholder="example@mail.com"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
+                        placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="mb-8">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <div className="mb-2">
                     <input
                         type="password"
-                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all"
-                        placeholder="••••••••"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
+                        placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
 
+                <p className="text-xs text-[#00897b] cursor-pointer mb-6 hover:underline">Forgot password?</p>
+
                 <button
                     type="submit"
-                    className="w-full bg-orange-600 text-white font-bold p-3 rounded-xl hover:bg-orange-700 transform active:scale-95 transition-all shadow-lg shadow-orange-200"
+                    className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
                     disabled={loading}
                 >
                     {loading ? "Seenaa jira..." : "Login"}
                 </button>
 
-                <p className="mt-6 text-center text-gray-600">
-                    Account hin qabduu? <span className="text-orange-600 font-bold cursor-pointer hover:underline" onClick={() => navigate('/register')}>Galmaa'i</span>
+                <p className="mt-6 text-center text-sm text-gray-600">
+                    Don't have an account? <span className="text-[#00897b] font-bold cursor-pointer hover:underline" onClick={() => navigate('/register')}>Signup</span>
                 </p>
             </form>
         </div>
