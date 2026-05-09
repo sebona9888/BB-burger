@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);  // ✅ ADD THIS
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -41,15 +42,23 @@ const Register = () => {
                     />
                 </div>
 
-                <div className="mb-6">
+                {/* ✅ PASSWORD FIELD WITH SHOW/HIDE TOGGLE */}
+                <div className="mb-6 relative">
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}  // ✅ Toggles between text/password
                         placeholder="Create a password"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50 pr-12"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#00897b]"
+                    >
+                        {showPassword ? "🙈" : "👁️"}  {/* Eye icons */}
+                    </button>
                 </div>
 
                 <button
