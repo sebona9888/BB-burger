@@ -8,6 +8,9 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import Menu from './Pages/Menu';        // ✅ ADD THIS
+import About from './Pages/About';      // ✅ ADD THIS
+import Contact from './Pages/Contact';  // ✅ ADD THIS
 
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
@@ -37,10 +40,10 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 
-                    {/* ✅ KANNEEN QOFA ITTI DABALAME: Navbar irratti waan jiraniif */}
-                    <Route path="menu" element={<Menu />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="contact" element={<Contact />} />
+                    {/* ✅ FIXED - Now each has its own page */}
+                    <Route path="menu" element={<Menu />} />        // ✅ Fixed
+                    <Route path="about" element={<About />} />      // ✅ Fixed
+                    <Route path="contact" element={<Contact />} />  // ✅ Fixed
                 </Route>
 
                 {/* --- Admin Route --- */}
