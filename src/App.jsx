@@ -6,17 +6,11 @@ import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home/Home';
-// Hubachiisa: Folder kee "Pages" (P-guddaa) ta'uu fi file-ni kee "Login.jsx" ta'uu mirkaneessi
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 
-/**
- * ProtectedRoute:
- * User-n login gochuu isaa fi Admin ta'uu isaa check godha.
- */
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
-
     try {
         const stored = localStorage.getItem("userInfo");
         if (stored) {
@@ -29,7 +23,6 @@ const ProtectedRoute = ({ children }) => {
     if (!userInfo || !userInfo.isAdmin) {
         return <Navigate to="/login" replace />;
     }
-
     return children;
 };
 
@@ -37,22 +30,20 @@ function App() {
     return (
         <Router>
             <ScrollToTop />
-
             <Routes>
-
                 {/* --- Public Routes --- */}
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 
-                    {/* ✅ KANNEEN QOFA ITTI SIYF DABALERA (Navbar irra waan jiraniif) */}
+                    {/* ✅ KANNEEN QOFA ITTI DABALAME: Navbar irratti waan jiraniif */}
                     <Route path="menu" element={<Home />} />
                     <Route path="about" element={<Home />} />
                     <Route path="contact" element={<Home />} />
                 </Route>
 
-                {/* --- Admin Route (Protected) --- */}
+                {/* --- Admin Route --- */}
                 <Route
                     path="/admin"
                     element={
@@ -62,9 +53,8 @@ function App() {
                     }
                 />
 
-                {/* --- 404 --- */}
+                {/* --- 404 Redirect --- */}
                 <Route path="*" element={<Navigate to="/" replace />} />
-
             </Routes>
         </Router>
     );
