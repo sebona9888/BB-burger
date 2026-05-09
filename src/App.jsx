@@ -8,9 +8,9 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import Menu from './Pages/Menu';        // ✅ ADD THIS
-import About from './Pages/About';      // ✅ ADD THIS
-import Contact from './Pages/Contact';  // ✅ ADD THIS
+import Menu from './Pages/Menu/Menu';        // ✅ ADD THIS
+import About from './Pages/About/About';      // ✅ ADD THIS
+import Contact from './Pages/Contact/Contact';  // ✅ ADD THIS
 
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
