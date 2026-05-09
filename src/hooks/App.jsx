@@ -1,17 +1,17 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { CartProvider } from '../context/CartContext';
+import { CartProvider } from './context/CartContext';
 import AdminDashboard from './components/AdminDashboard';
-import Home from './pages/Home';
-import ScrollToTop from '../components/ScrollToTop';
-import MainLayout from '../Layouts/MainLayout';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
+import Home from './Pages/Home';
+import ScrollToTop from './components/ScrollToTop';
+import MainLayout from './Layouts/MainLayout';
+import Login from './Pages/Login';
+import Register from './Pages/Register';
 
-// ✅ 1. ProtectedRoute Sirreeffame (Token fi Admin check godha)
+// ✅ ProtectedRoute: Admin qofatu Dashboard seenuu danda'a
 const ProtectedRoute = ({ children }) => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  // Yoo maamilli login hin goone ykn Admin miti ta'e gara Login-itti deebisa
   if (!userInfo || !userInfo.isAdmin) {
     return <Navigate to="/login" replace />;
   }
@@ -31,7 +31,7 @@ function App() {
             <Route path="register" element={<Register />} />
           </Route>
 
-          {/* ✅ Route Admin (Private/Protected) */}
+          {/* ✅ Route Admin (Private) */}
           <Route
             path="/admin"
             element={
@@ -41,7 +41,7 @@ function App() {
             }
           />
 
-          {/* ✅ Yoo URL dogoggoraa barreesse gara Home-tti deebisa */}
+          {/* ✅ 404 Redirect: Yoo URL dogoggoraa barreesse gara Home deebisa */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </CartProvider>
