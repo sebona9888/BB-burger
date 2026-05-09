@@ -12,16 +12,13 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await axios.post('https://beebboo-backend.onrender.com/api/users/login', {
+            const res = await axios.post('https://beebboo-burger-backend.onrender.com/api/v1/auth/login', {
                 email,
                 password
             });
-
-            // 🔑 Token fi ragaa User-ichaa kuffisuu
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-
             alert("Baga nagaaan dhufte!");
-            navigate('/admin'); // Erga seenee booda gara Admin Dashboard ergi
+            navigate('/admin');
         } catch (err) {
             alert(err.response?.data?.message || "Email ykn Password dogoggora!");
         } finally {
@@ -30,26 +27,29 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center text-orange-600">Login - Beebboo</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+                <h2 className="text-3xl font-extrabold mb-2 text-center text-orange-600">Beebboo Burger</h2>
+                <p className="text-center text-gray-500 mb-8">Login to your account</p>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Email Address</label>
+                <div className="mb-5">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                     <input
                         type="email"
-                        className="w-full p-2 border rounded mt-1 focus:outline-orange-500"
+                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all"
+                        placeholder="example@mail.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="mb-6">
-                    <label className="block text-gray-700">Password</label>
+                <div className="mb-8">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <input
                         type="password"
-                        className="w-full p-2 border rounded mt-1 focus:outline-orange-500"
+                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all"
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -58,14 +58,14 @@ const Login = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-orange-600 text-white p-2 rounded hover:bg-orange-700 transition"
+                    className="w-full bg-orange-600 text-white font-bold p-3 rounded-xl hover:bg-orange-700 transform active:scale-95 transition-all shadow-lg shadow-orange-200"
                     disabled={loading}
                 >
                     {loading ? "Seenaa jira..." : "Login"}
                 </button>
 
-                <p className="mt-4 text-center text-sm">
-                    Account hin qabduu? <span className="text-orange-600 cursor-pointer" onClick={() => navigate('/register')}>Galmaa'i</span>
+                <p className="mt-6 text-center text-gray-600">
+                    Account hin qabduu? <span className="text-orange-600 font-bold cursor-pointer hover:underline" onClick={() => navigate('/register')}>Galmaa'i</span>
                 </p>
             </form>
         </div>
