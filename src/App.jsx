@@ -10,40 +10,44 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 
 /**
- * ProtectedRoute: 
+ * ProtectedRoute:
  * User-n login gochuu isaa fi Admin ta'uu isaa check godha.
  * Yoo mirga hin qabne gara login-itti deebisa.
  */
 const ProtectedRoute = ({ children }) => {
-    try {
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let userInfo = null;
 
-        if (!userInfo || !userInfo.isAdmin) {
-            return <Navigate to="/login" replace />;
+    try {
+        const stored = localStorage.getItem("userInfo");
+        if (stored) {
+            userInfo = JSON.parse(stored);
         }
-        return children;
     } catch (error) {
-        // Yoo localStorage keessa data dogoggoraatu jiraate
+        console.error("Invalid userInfo in localStorage");
+    }
+
+    if (!userInfo || !userInfo.isAdmin) {
         return <Navigate to="/login" replace />;
     }
+
+    return children;
 };
 
 function App() {
     return (
         <Router>
-            {/* Fuula jijjiirru hunda bifa haaraan gara gubbaatti nuuf fida */}
             <ScrollToTop />
 
             <Routes>
-                {/* --- Routes Maamiltootaa (Public) --- */}
-                {/* MainLayout keessatti Navbar fi Footer ni dabalatu */}
+
+                {/* --- Public Routes --- */}
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                 </Route>
 
-                {/* --- Route Admin (Private/Protected) --- */}
+                {/* --- Admin Route (Protected) --- */}
                 <Route
                     path="/admin"
                     element={
@@ -53,9 +57,9 @@ function App() {
                     }
                 />
 
-                {/* --- 404 Redirect --- */}
-                {/* URL hin jirre yoo barreesse gara Home-tti deebisa */}
+                {/* --- 404 --- */}
                 <Route path="*" element={<Navigate to="/" replace />} />
+
             </Routes>
         </Router>
     );
