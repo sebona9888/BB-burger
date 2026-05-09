@@ -6,6 +6,7 @@ import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Home from './Pages/Home/Home';
+// Hubachiisa: Folder kee "Pages" (P-guddaa) ta'uu fi file-ni kee "Login.jsx" ta'uu mirkaneessi
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 
@@ -45,7 +46,7 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 
-                    {/* ✅ KANNEEN QOFA ITTI SIYF DABALERA (Asumaan Home-tti akka si hin deebisneef) */}
+                    {/* ✅ KANNEEN QOFA ITTI SIYF DABALERA (Navbar irra waan jiraniif) */}
                     <Route path="menu" element={<Home />} />
                     <Route path="about" element={<Home />} />
                     <Route path="contact" element={<Home />} />
