@@ -2,12 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Components & Pages
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './comp_temp/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
-import AdminDashboard from './components/AdminDashboard';
-import Home from './Pages/Home';
-import Login from './Pages/Login';
-import Register from './Pages/Register';
+import AdminDashboard from './comp_temp/AdminDashboard';
+import Home from './page_temp/Home';
+import Login from './page_temp/Login';
+import Register from './page_temp/Register';
 
 /**
  * ProtectedRoute: 
