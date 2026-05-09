@@ -17,10 +17,10 @@ const Login = () => {
                 password
             });
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-            alert("Baga nagaaan dhufte!");
+            alert("Welcome back!");
             navigate('/admin');
         } catch (err) {
-            alert(err.response?.data?.message || "Email ykn Password dogoggora!");
+            alert(err.response?.data?.message || "Invalid email or password!");
         } finally {
             setLoading(false);
         }
@@ -34,8 +34,8 @@ const Login = () => {
                 <div className="mb-4">
                     <input
                         type="email"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
                         placeholder="Enter your email"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -45,22 +45,24 @@ const Login = () => {
                 <div className="mb-2">
                     <input
                         type="password"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
                         placeholder="Enter your password"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
 
-                <p className="text-xs text-[#00897b] cursor-pointer mb-6 hover:underline">Forgot password?</p>
+                <p className="text-xs text-[#00897b] cursor-pointer mb-6 hover:underline text-right">
+                    Forgot password?
+                </p>
 
                 <button
                     type="submit"
                     className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
                     disabled={loading}
                 >
-                    {loading ? "Seenaa jira..." : "Login"}
+                    {loading ? "Logging in..." : "Login"}
                 </button>
 
                 <p className="mt-6 text-center text-sm text-gray-600">

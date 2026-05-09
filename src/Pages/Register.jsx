@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,14 +13,13 @@ const Register = () => {
         setLoading(true);
         try {
             await axios.post('https://beebboo-burger-backend.onrender.com/api/v1/auth/register', {
-                name,
                 email,
                 password
             });
-            alert("Galmee milkiidhaan xumurtaniittu! Amma Login godhaa.");
+            alert("Account created successfully! Please login.");
             navigate('/login');
         } catch (err) {
-            alert(err.response?.data?.message || "Dogoggorri uumameera!");
+            alert(err.response?.data?.message || "Registration failed!");
         } finally {
             setLoading(false);
         }
@@ -31,17 +29,6 @@ const Register = () => {
         <div className="min-h-screen flex items-center justify-center bg-[#00897b] px-4">
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Enter your name"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
 
                 <div className="mb-4">
                     <input
@@ -70,7 +57,7 @@ const Register = () => {
                     className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
                     disabled={loading}
                 >
-                    {loading ? "Galmaa'a jira..." : "Signup"}
+                    {loading ? "Signing up..." : "Signup"}
                 </button>
 
                 <p className="mt-6 text-center text-sm text-gray-600">
