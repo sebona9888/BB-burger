@@ -1,5 +1,4 @@
 import React from 'react';
-// Path kana '../../context/useCart' tti jijjiiri
 import { useCart } from '../../context/useCart';
 import CartItem from '../../components/CartItem/CartItem';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,7 @@ const Cart = () => {
                     <div className="cart-list">
                         {cartItems.map(item => (
                             <CartItem
-                                key={item._id} // 'id' irra '_id' fayyadamuun filatamaa dha
+                                key={item._id}
                                 item={item}
                                 updateQty={updateQty}
                                 removeItem={removeItem}
@@ -37,7 +36,7 @@ const Cart = () => {
                         <h3>Waliigala: {totalPrice.toLocaleString()} ETB</h3>
                         <button
                             className="checkout-btn"
-                            onClick={() => navigate('/checkout')}
+                            onClick={() => navigate('/payment')}  // ✅ Changed to /payment
                         >
                             Kaffaltii Raawwadhu
                         </button>
