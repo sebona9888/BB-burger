@@ -18,17 +18,19 @@ const Payment = () => {
     };
 
     const handleFileChange = (e) => {
-        setScreenshot(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large! Please upload image less than 5MB.');
+                return;
+            }
+            setScreenshot(file);
+        }
     };
 
     const handlePaymentConfirm = async () => {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-
-        // Extract user data from different possible structures
-        const userName = userInfo.user?.name || userInfo.name || 'Guest';
-        const userPhone = userInfo.user?.phone || userInfo.phone || 'Not provided';
-        const userAddress = userInfo.user?.address || userInfo.address || 'Not provided';
-
+        // Validation
         if (!screenshot) {
             alert('Please upload payment screenshot!');
             return;
@@ -41,34 +43,63 @@ const Payment = () => {
         }
 
         setProcessing(true);
+
         try {
+            // Create form data for backend
             const formData = new FormData();
-            formData.append('fullName', userName);
-            formData.append('phone', userPhone);
-            formData.append('address', userAddress);
+
+            // Required fields by backend
+            formData.append('fullName', 'Beebboo Customer');
+            formData.append('phone', '0902989488');
+            formData.append('address', 'Addis Ababa, Ethiopia');
             formData.append('paymentMethod', 'Bank Transfer');
             formData.append('totalPrice', totalPrice.toString());
             formData.append('items', JSON.stringify(cartItems.map(item => ({
+                _id: item._id,
                 name: item.name,
                 price: item.price,
                 quantity: item.quantity,
-                _id: item._id
+                image: item.image
             }))));
             formData.append('screenshot', screenshot);
 
-            const response = await axios.post('https://beebboo-backend.onrender.com/api/orders', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            console.log('📤 Sending order to backend...');
+            console.log('Order details:', {
+                totalPrice,
+                itemCount: cartItems.length,
+                items: cartItems.map(i => ({ name: i.name, quantity: i.quantity }))
             });
+
+            const response = await axios.post(
+                'https://beebboo-backend.onrender.com/api/orders',
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    timeout: 30000
+                }
+            );
+
+            console.log('✅ Order response:', response.data);
 
             if (response.data) {
                 clearCart();
-                alert('Order placed successfully! 🍔');
+                alert('Order placed successfully! 🍔\nWe will contact you soon.');
                 navigate('/');
             }
         } catch (error) {
-            console.error('Payment error:', error.response?.data);
-            const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Payment failed. Please try again.';
-            alert(errorMsg);
+            console.error('❌ Payment error:', error);
+
+            if (error.code === 'ECONNABORTED') {
+                alert('Request timeout. Please check your connection and try again.');
+            } else if (error.response) {
+                console.error('Server response:', error.response.data);
+                const errorMsg = error.response.data?.message || error.response.data?.error || 'Server error. Please try again.';
+                alert(`Order failed: ${errorMsg}`);
+            } else if (error.request) {
+                alert('No response from server. Please check your internet connection.');
+            } else {
+                alert(`Payment failed: ${error.message}`);
+            }
         } finally {
             setProcessing(false);
         }
@@ -83,6 +114,7 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
+            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -117,24 +149,25 @@ const Payment = () => {
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/jpg"
                     onChange={handleFileChange}
                     className="screenshot-input"
-                    required
                 />
                 {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
+            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
                     <div className="onyx-social-row">
-                        <a href="https://wa.me/251902989488" target="_blank" className="onyx-btn wa">WHATSAPP</a>
-                        <a href="https://t.me/sebona_haile" target="_blank" className="onyx-btn tg">TELEGRAM</a>
+                        <a href="https://wa.me/251902989488" target="_blank" rel="noopener noreferrer" className="onyx-btn wa">WHATSAPP</a>
+                        <a href="https://t.me/sebona_haile" target="_blank" rel="noopener noreferrer" className="onyx-btn tg">TELEGRAM</a>
                     </div>
                 </div>
             </div>
 
+            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
