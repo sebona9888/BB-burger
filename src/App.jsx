@@ -12,7 +12,7 @@ import Menu from './Pages/Menu/Menu';
 import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
-import Payment from './Pages/Payment/Payment';  // ✅ ONLY CHANGE THIS LINE
+import Payment from './Pages/Payment/Payment';  // ✅ UPPERCASE P
 
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
@@ -36,7 +36,6 @@ function App() {
         <Router>
             <ScrollToTop />
             <Routes>
-                {/* --- Public Routes --- */}
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path="login" element={<Login />} />
@@ -44,11 +43,10 @@ function App() {
                     <Route path="menu" element={<Menu />} />
                     <Route path="about" element={<About />} />
                     <Route path="cart" element={<Cart />} />
-                    <Route path="payment" element={<Payment />} />
+                    <Route path="payment" element={<Payment />} />  {/* ✅ UPPERCASE P */}
                     <Route path="contact" element={<Contact />} />
                 </Route>
 
-                {/* --- Admin Route --- */}
                 <Route
                     path="/admin"
                     element={
@@ -58,7 +56,6 @@ function App() {
                     }
                 />
 
-                {/* --- 404 Redirect --- */}
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
