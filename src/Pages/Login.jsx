@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import api from '../api/api';  // ✅ IMPORT FROM YOUR API FILE
+// ✅ Vite error akka hin finneef 'api' import isa hin fayyadamne sana haqneerra
 
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);  // ✅ ADD THIS
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -15,15 +15,16 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            // ✅ Backend URL kee isa sirrii (v1 wajjin)
             const res = await axios.post('https://beebboo-burger-backend.onrender.com/api/v1/auth/login', {
                 email,
                 password
             });
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-            alert("Welcome back!");
+            alert("Baga nagaan deebite!");
             navigate('/admin');
         } catch (err) {
-            alert(err.response?.data?.message || "Invalid email or password!");
+            alert(err.response?.data?.message || "Email ykn Password dogoggora!");
         } finally {
             setLoading(false);
         }
@@ -45,10 +46,9 @@ const Login = () => {
                     />
                 </div>
 
-                {/* ✅ PASSWORD FIELD WITH SHOW/HIDE TOGGLE */}
                 <div className="mb-2 relative">
                     <input
-                        type={showPassword ? "text" : "password"}  // ✅ Toggles between text/password
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50 pr-12"
                         value={password}
@@ -73,7 +73,7 @@ const Login = () => {
                     className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
                     disabled={loading}
                 >
-                    {loading ? "Logging in..." : "Login"}
+                    {loading ? "Seenaa jira..." : "Login"}
                 </button>
 
                 <p className="mt-6 text-center text-sm text-gray-600">

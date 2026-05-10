@@ -3,6 +3,8 @@ import api from '../api/api';  // ✅ IMPORT FROM YOUR API FILE
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    // ✅ 'name' asitti dabalameera, sababni isaas backend-ni kee waan barbaaduuf
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +16,9 @@ const Register = () => {
         setLoading(true);
 
         try {
-            // ✅ USING YOUR API INSTANCE (not axios directly)
+            // ✅ Name, Email, fi Password hunda Backend-itti ergina
             const response = await api.post('/auth/register', {
+                name,
                 email,
                 password
             });
@@ -36,6 +39,18 @@ const Register = () => {
         <div className="min-h-screen flex items-center justify-center bg-[#00897b] px-4">
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
+
+                {/* ✅ Input Maqaa (Name) asitti dabalameera */}
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Enter your full name"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </div>
 
                 <div className="mb-4">
                     <input
