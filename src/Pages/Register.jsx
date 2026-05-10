@@ -3,7 +3,8 @@ import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [name, setName] = useState('');  // ✅ BACK TO 'name'
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');  // ✅ ADD THIS
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +17,8 @@ const Register = () => {
 
         try {
             const response = await api.post('/auth/register', {
-                name,  // ✅ SEND 'name' NOT 'username'
+                name,
+                username,  // ✅ SEND USERNAME
                 email,
                 password
             });
@@ -38,6 +40,7 @@ const Register = () => {
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
 
+                {/* Full Name */}
                 <div className="mb-4">
                     <input
                         type="text"
@@ -49,6 +52,19 @@ const Register = () => {
                     />
                 </div>
 
+                {/* ✅ ADD USERNAME FIELD */}
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Choose a username"
+                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {/* Email */}
                 <div className="mb-4">
                     <input
                         type="email"
@@ -60,6 +76,7 @@ const Register = () => {
                     />
                 </div>
 
+                {/* Password */}
                 <div className="mb-6 relative">
                     <input
                         type={showPassword ? "text" : "password"}
