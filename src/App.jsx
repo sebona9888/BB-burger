@@ -11,7 +11,7 @@ import Register from './Pages/Register';
 import Menu from './Pages/Menu/Menu';        // ✅ ADD THIS
 import About from './Pages/About/About';      // ✅ ADD THIS
 import Contact from './Pages/Contact/Contact';  // ✅ ADD THIS
-
+import cart from './Pages/Cart/Cart';  // ✅ ADD THIS
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
     try {
