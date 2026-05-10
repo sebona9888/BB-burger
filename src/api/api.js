@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_BACKEND_URL || "https://beebboo-burger-backend.onrender.com";
+
 const api = axios.create({
-  baseURL: 'https://beebboo-burger-backend.onrender.com/api/v1',
+  baseURL: `${API_URL}/api/v1`,
 });
 
 export default api;
