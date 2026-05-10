@@ -49,7 +49,9 @@ const Payment = () => {
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-orders');
 
-            // Using your cloud name: dc1cr58z9
+            console.log('📤 Uploading to Cloudinary...');
+            console.log('File:', screenshot.name, 'Size:', screenshot.size);
+
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
                 {
@@ -60,8 +62,15 @@ const Payment = () => {
 
             const cloudinaryData = await cloudinaryResponse.json();
 
+            console.log('Cloudinary response:', cloudinaryData);
+
+            if (!cloudinaryResponse.ok || cloudinaryData.error) {
+                console.error('Cloudinary upload failed:', cloudinaryData.error);
+                throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
+            }
+
             if (!cloudinaryData.secure_url) {
-                throw new Error('Upload failed: ' + (cloudinaryData.error?.message || 'Unknown error'));
+                throw new Error('No secure_url returned from Cloudinary');
             }
 
             const screenshotUrl = cloudinaryData.secure_url;
@@ -83,6 +92,8 @@ const Payment = () => {
                 screenshot: screenshotUrl
             };
 
+            console.log('📤 Saving order to backend...');
+
             const response = await axios.post(
                 'https://beebboo-backend.onrender.com/api/orders',
                 orderData,
@@ -92,6 +103,8 @@ const Payment = () => {
                 }
             );
 
+            console.log('✅ Order response:', response.data);
+
             if (response.data) {
                 clearCart();
                 alert('Order placed successfully! 🍔');
@@ -99,8 +112,17 @@ const Payment = () => {
             }
         } catch (error) {
             console.error('Payment error:', error);
-            const errorMsg = error.response?.data?.message || error.message || 'Payment failed. Please try again.';
-            alert(`Order failed: ${errorMsg}`);
+
+            let errorMessage = 'Payment failed. ';
+            if (error.message.includes('Cloudinary')) {
+                errorMessage = 'Screenshot upload failed. Please check your Cloudinary preset configuration.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else {
+                errorMessage = error.message || 'Please try again.';
+            }
+
+            alert(`Order failed: ${errorMessage}`);
         } finally {
             setProcessing(false);
         }
