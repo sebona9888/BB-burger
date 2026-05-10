@@ -16,7 +16,8 @@ const Login = () => {
         setLoading(true);
         try {
             // ✅ Backend URL kee isa sirrii (v1 wajjin)
-            const res = await axios.post('https://beebboo-burger-backend.onrender.com/api/v1/auth/login', {
+            // ✅ CORRECT - without "-burger"
+            const res = await axios.post('https://beebboo-backend.onrender.com/api/v1/auth/login', {
                 email,
                 password
             });
