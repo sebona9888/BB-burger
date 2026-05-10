@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const [name, setName] = useState('');
-    const [username, setUsername] = useState('');  // ✅ ADD THIS
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -16,9 +16,10 @@ const Register = () => {
         setLoading(true);
 
         try {
+            // ✅ MAKE SURE username IS INCLUDED HERE
             const response = await api.post('/auth/register', {
                 name,
-                username,  // ✅ SEND USERNAME
+                username,   // ← THIS LINE IS CRITICAL
                 email,
                 password
             });
@@ -40,7 +41,6 @@ const Register = () => {
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
 
-                {/* Full Name */}
                 <div className="mb-4">
                     <input
                         type="text"
@@ -52,7 +52,6 @@ const Register = () => {
                     />
                 </div>
 
-                {/* ✅ ADD USERNAME FIELD */}
                 <div className="mb-4">
                     <input
                         type="text"
@@ -64,7 +63,6 @@ const Register = () => {
                     />
                 </div>
 
-                {/* Email */}
                 <div className="mb-4">
                     <input
                         type="email"
@@ -76,7 +74,6 @@ const Register = () => {
                     />
                 </div>
 
-                {/* Password */}
                 <div className="mb-6 relative">
                     <input
                         type={showPassword ? "text" : "password"}
