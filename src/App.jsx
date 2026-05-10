@@ -11,8 +11,8 @@ import Register from './Pages/Register';
 import Menu from './Pages/Menu/Menu';
 import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
-import Cart from './Pages/Cart/Cart';
-import Payment from './Pages/Payment/Payment';  // ✅ Changed: payment → Payment (UPPERCASE)
+import Cart from './Pages/Cart/Cart';  // ✅ UPPERCASE C
+import payment from './Pages/Payment/Payment';  // ✅ UPPERCASE P
 
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
@@ -43,8 +43,8 @@ function App() {
                     <Route path="register" element={<Register />} />
                     <Route path="menu" element={<Menu />} />
                     <Route path="about" element={<About />} />
-                    <Route path="cart" element={<Cart />} />
-                    <Route path="payment" element={<Payment />} />  {/* Changed: payment → Payment */}
+                    <Route path="cart" element={<Cart />} />  {/* ✅ UPPERCASE C */}
+                    <Route path="payment" element={<Payment />} />  {/* ✅ UPPERCASE P */}
                     <Route path="contact" element={<Contact />} />
                 </Route>
 
