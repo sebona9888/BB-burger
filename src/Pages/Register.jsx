@@ -13,24 +13,47 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
+        // ✅ DEBUGGING: Log what we're about to send
+        console.log("🔍 DEBUG - Form Data:");
+        console.log("  name:", name);
+        console.log("  username:", username);
+        console.log("  email:", email);
+        console.log("  password:", password);
+
         setLoading(true);
 
         try {
-            // ✅ MAKE SURE username IS INCLUDED HERE
+            // ✅ DEBUGGING: Log the API call
+            console.log("📡 Calling API endpoint: /auth/register");
+            console.log("📡 Full URL:", api.defaults.baseURL + '/auth/register');
+
             const response = await api.post('/auth/register', {
-                name,
-                username,   // ← THIS LINE IS CRITICAL
-                email,
-                password
+                name: name,
+                username: username,
+                email: email,
+                password: password
             });
 
-            console.log("Registration success:", response.data);
+            console.log("✅ SUCCESS:", response.data);
             alert("Account created successfully! Please login.");
             navigate('/login');
 
         } catch (err) {
-            console.error("Registration error:", err.response?.data);
-            alert(err.response?.data?.message || "Registration failed!");
+            console.error("❌ ERROR - Full error object:", err);
+            console.error("❌ ERROR - Response data:", err.response?.data);
+            console.error("❌ ERROR - Status code:", err.response?.status);
+
+            // Show specific error message
+            if (err.response?.data?.message) {
+                alert(`Registration failed: ${err.response.data.message}`);
+            } else if (err.response?.data?.errors) {
+                // Handle validation errors
+                const errorMessages = Object.values(err.response.data.errors).join('\n');
+                alert(`Validation failed:\n${errorMessages}`);
+            } else {
+                alert("Registration failed! Check console for details.");
+            }
         } finally {
             setLoading(false);
         }
