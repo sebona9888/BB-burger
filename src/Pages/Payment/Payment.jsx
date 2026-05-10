@@ -24,26 +24,36 @@ const Payment = () => {
     const handlePaymentConfirm = async () => {
         const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-        if (!userInfo.user?.name) {
-            alert('Please login to place order!');
-            navigate('/login');
-            return;
-        }
+        // Extract user data from different possible structures
+        const userName = userInfo.user?.name || userInfo.name || 'Guest';
+        const userPhone = userInfo.user?.phone || userInfo.phone || 'Not provided';
+        const userAddress = userInfo.user?.address || userInfo.address || 'Not provided';
 
         if (!screenshot) {
             alert('Please upload payment screenshot!');
             return;
         }
 
+        if (cartItems.length === 0) {
+            alert('Your cart is empty!');
+            navigate('/menu');
+            return;
+        }
+
         setProcessing(true);
         try {
             const formData = new FormData();
-            formData.append('fullName', userInfo.user.name);
-            formData.append('phone', userInfo.user.phone || 'Not provided');
-            formData.append('address', userInfo.user.address || 'Not provided');
+            formData.append('fullName', userName);
+            formData.append('phone', userPhone);
+            formData.append('address', userAddress);
             formData.append('paymentMethod', 'Bank Transfer');
             formData.append('totalPrice', totalPrice.toString());
-            formData.append('items', JSON.stringify(cartItems));
+            formData.append('items', JSON.stringify(cartItems.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                _id: item._id
+            }))));
             formData.append('screenshot', screenshot);
 
             const response = await axios.post('https://beebboo-backend.onrender.com/api/orders', formData, {
@@ -56,8 +66,9 @@ const Payment = () => {
                 navigate('/');
             }
         } catch (error) {
-            console.error('Payment error:', error.response?.data || error);
-            alert(error.response?.data?.message || 'Payment failed. Please try again.');
+            console.error('Payment error:', error.response?.data);
+            const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Payment failed. Please try again.';
+            alert(errorMsg);
         } finally {
             setProcessing(false);
         }
@@ -109,8 +120,9 @@ const Payment = () => {
                     accept="image/*"
                     onChange={handleFileChange}
                     className="screenshot-input"
+                    required
                 />
-                {screenshot && <p className="file-name">Selected: {screenshot.name}</p>}
+                {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
             <div className="onyx-verification">
