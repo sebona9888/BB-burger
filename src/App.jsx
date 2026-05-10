@@ -43,6 +43,7 @@ function App() {
                     {/* ✅ FIXED - Now each has its own page */}
                     <Route path="menu" element={<Menu />} />        // ✅ Fixed
                     <Route path="about" element={<About />} />      // ✅ Fixed
+                    <Route path="cart" element={<cart />} />        // ✅ Fixed
                     <Route path="contact" element={<Contact />} />  // ✅ Fixed
                 </Route>
 
