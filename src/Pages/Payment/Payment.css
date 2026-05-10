@@ -217,4 +217,29 @@
   .onyx-holder {
     font-size: 0.9rem;
   }
+}.onyx-confirm {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.confirm-payment-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
+  color: #0a0f1e;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.confirm-payment-btn:hover {
+  transform: scale(1.02);
+}
+
+.confirm-payment-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

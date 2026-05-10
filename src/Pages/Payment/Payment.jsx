@@ -1,13 +1,43 @@
 import React, { useState } from 'react';
-import './Payment.css'; // Make sure the 'P' is capitalized!
+import { useCart } from '../../context/useCart';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Payment.css';
 
 const Payment = () => {
+    const { cartItems, totalPrice, clearCart } = useCart();
     const [copied, setCopied] = useState("");
+    const [processing, setProcessing] = useState(false);
+    const navigate = useNavigate();
 
     const handleCopy = (text, bank) => {
         navigator.clipboard.writeText(text);
         setCopied(bank);
         setTimeout(() => setCopied(""), 2000);
+    };
+
+    const handlePaymentConfirm = async () => {
+        setProcessing(true);
+        try {
+            // Send order to backend
+            const response = await axios.post('https://beebboo-backend.onrender.com/api/orders', {
+                items: cartItems,
+                totalPrice: totalPrice,
+                paymentMethod: 'Bank Transfer',
+                status: 'pending'
+            });
+
+            if (response.data) {
+                clearCart(); // Clear cart after successful order
+                alert('Order placed successfully! 🍔');
+                navigate('/'); // Redirect to home
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment failed. Please try again.');
+        } finally {
+            setProcessing(false);
+        }
     };
 
     return (
@@ -56,6 +86,17 @@ const Payment = () => {
                         <a href="https://t.me/sebona_haile" target="_blank" className="onyx-btn tg">TELEGRAM</a>
                     </div>
                 </div>
+            </div>
+
+            {/* ✅ Add Confirm Payment Button */}
+            <div className="onyx-confirm">
+                <button
+                    className="confirm-payment-btn"
+                    onClick={handlePaymentConfirm}
+                    disabled={processing}
+                >
+                    {processing ? 'Processing...' : 'Confirm Payment & Place Order'}
+                </button>
             </div>
         </div>
     );
