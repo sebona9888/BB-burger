@@ -242,4 +242,31 @@
 .confirm-payment-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}.onyx-upload {
+  text-align: center;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  max-width: 500px;
+}
+
+.onyx-upload h3 {
+  color: #d4af37;
+  margin-bottom: 1rem;
+}
+
+.screenshot-input {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.file-name {
+  margin-top: 0.5rem;
+  color: #d4af37;
+  font-size: 0.8rem;
 }

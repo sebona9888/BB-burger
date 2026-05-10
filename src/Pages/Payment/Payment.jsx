@@ -8,6 +8,7 @@ const Payment = () => {
     const { cartItems, totalPrice, clearCart } = useCart();
     const [copied, setCopied] = useState("");
     const [processing, setProcessing] = useState(false);
+    const [screenshot, setScreenshot] = useState(null);
     const navigate = useNavigate();
 
     const handleCopy = (text, bank) => {
@@ -16,25 +17,47 @@ const Payment = () => {
         setTimeout(() => setCopied(""), 2000);
     };
 
+    const handleFileChange = (e) => {
+        setScreenshot(e.target.files[0]);
+    };
+
     const handlePaymentConfirm = async () => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+        if (!userInfo.user?.name) {
+            alert('Please login to place order!');
+            navigate('/login');
+            return;
+        }
+
+        if (!screenshot) {
+            alert('Please upload payment screenshot!');
+            return;
+        }
+
         setProcessing(true);
         try {
-            // Send order to backend
-            const response = await axios.post('https://beebboo-backend.onrender.com/api/orders', {
-                items: cartItems,
-                totalPrice: totalPrice,
-                paymentMethod: 'Bank Transfer',
-                status: 'pending'
+            const formData = new FormData();
+            formData.append('fullName', userInfo.user.name);
+            formData.append('phone', userInfo.user.phone || 'Not provided');
+            formData.append('address', userInfo.user.address || 'Not provided');
+            formData.append('paymentMethod', 'Bank Transfer');
+            formData.append('totalPrice', totalPrice.toString());
+            formData.append('items', JSON.stringify(cartItems));
+            formData.append('screenshot', screenshot);
+
+            const response = await axios.post('https://beebboo-backend.onrender.com/api/orders', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             if (response.data) {
-                clearCart(); // Clear cart after successful order
+                clearCart();
                 alert('Order placed successfully! 🍔');
-                navigate('/'); // Redirect to home
+                navigate('/');
             }
         } catch (error) {
-            console.error('Payment error:', error);
-            alert('Payment failed. Please try again.');
+            console.error('Payment error:', error.response?.data || error);
+            alert(error.response?.data?.message || 'Payment failed. Please try again.');
         } finally {
             setProcessing(false);
         }
@@ -78,6 +101,18 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Screenshot Upload */}
+            <div className="onyx-upload">
+                <h3>UPLOAD PAYMENT SCREENSHOT</h3>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="screenshot-input"
+                />
+                {screenshot && <p className="file-name">Selected: {screenshot.name}</p>}
+            </div>
+
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -88,7 +123,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* ✅ Add Confirm Payment Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
