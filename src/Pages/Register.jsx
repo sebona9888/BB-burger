@@ -3,7 +3,7 @@ import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [username, setUsername] = useState('');  // ✅ Changed from 'name'
+    const [name, setName] = useState('');  // ✅ BACK TO 'name'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +16,7 @@ const Register = () => {
 
         try {
             const response = await api.post('/auth/register', {
-                username,  // ✅ Changed from 'name'
+                name,  // ✅ SEND 'name' NOT 'username'
                 email,
                 password
             });
@@ -38,14 +38,13 @@ const Register = () => {
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
 
-                {/* ✅ Changed to 'username' */}
                 <div className="mb-4">
                     <input
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder="Enter your full name"
                         className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         required
                     />
                 </div>
