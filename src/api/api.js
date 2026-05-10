@@ -1,10 +1,7 @@
-import axios from "axios";
-
-// ✅ Fix: Add /v1 to the URL
-const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,  // ✅ Added /v1 here
+  baseURL: 'https://beebboo-burger-backend.onrender.com/api/v1',
 });
 
 export default api;
