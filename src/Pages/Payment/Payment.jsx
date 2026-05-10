@@ -20,7 +20,6 @@ const Payment = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Check file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 alert('File too large! Please upload image less than 5MB.');
                 return;
@@ -30,7 +29,6 @@ const Payment = () => {
     };
 
     const handlePaymentConfirm = async () => {
-        // Validation
         if (!screenshot) {
             alert('Please upload payment screenshot!');
             return;
@@ -45,61 +43,64 @@ const Payment = () => {
         setProcessing(true);
 
         try {
-            // Create form data for backend
-            const formData = new FormData();
+            // Step 1: Upload screenshot to Cloudinary using unsigned preset
+            const cloudinaryFormData = new FormData();
+            cloudinaryFormData.append('file', screenshot);
+            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
+            cloudinaryFormData.append('folder', 'beebboo-orders');
 
-            // Required fields by backend
-            formData.append('fullName', 'Beebboo Customer');
-            formData.append('phone', '0902989488');
-            formData.append('address', 'Addis Ababa, Ethiopia');
-            formData.append('paymentMethod', 'Bank Transfer');
-            formData.append('totalPrice', totalPrice.toString());
-            formData.append('items', JSON.stringify(cartItems.map(item => ({
-                _id: item._id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                image: item.image
-            }))));
-            formData.append('screenshot', screenshot);
+            // Using your cloud name: dc1cr58z9
+            const cloudinaryResponse = await fetch(
+                'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
+                {
+                    method: 'POST',
+                    body: cloudinaryFormData
+                }
+            );
 
-            console.log('📤 Sending order to backend...');
-            console.log('Order details:', {
-                totalPrice,
-                itemCount: cartItems.length,
-                items: cartItems.map(i => ({ name: i.name, quantity: i.quantity }))
-            });
+            const cloudinaryData = await cloudinaryResponse.json();
+
+            if (!cloudinaryData.secure_url) {
+                throw new Error('Upload failed: ' + (cloudinaryData.error?.message || 'Unknown error'));
+            }
+
+            const screenshotUrl = cloudinaryData.secure_url;
+            console.log('✅ Uploaded to Cloudinary:', screenshotUrl);
+
+            // Step 2: Save order to backend
+            const orderData = {
+                fullName: 'Beebboo Customer',
+                phone: '0902989488',
+                address: 'Addis Ababa, Ethiopia',
+                paymentMethod: 'Bank Transfer',
+                totalPrice: totalPrice,
+                items: cartItems.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    _id: item._id
+                })),
+                screenshot: screenshotUrl
+            };
 
             const response = await axios.post(
                 'https://beebboo-backend.onrender.com/api/orders',
-                formData,
+                orderData,
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+                    headers: { 'Content-Type': 'application/json' },
                     timeout: 30000
                 }
             );
 
-            console.log('✅ Order response:', response.data);
-
             if (response.data) {
                 clearCart();
-                alert('Order placed successfully! 🍔\nWe will contact you soon.');
+                alert('Order placed successfully! 🍔');
                 navigate('/');
             }
         } catch (error) {
-            console.error('❌ Payment error:', error);
-
-            if (error.code === 'ECONNABORTED') {
-                alert('Request timeout. Please check your connection and try again.');
-            } else if (error.response) {
-                console.error('Server response:', error.response.data);
-                const errorMsg = error.response.data?.message || error.response.data?.error || 'Server error. Please try again.';
-                alert(`Order failed: ${errorMsg}`);
-            } else if (error.request) {
-                alert('No response from server. Please check your internet connection.');
-            } else {
-                alert(`Payment failed: ${error.message}`);
-            }
+            console.error('Payment error:', error);
+            const errorMsg = error.response?.data?.message || error.message || 'Payment failed. Please try again.';
+            alert(`Order failed: ${errorMsg}`);
         } finally {
             setProcessing(false);
         }
@@ -114,7 +115,6 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
-            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -144,7 +144,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Screenshot Upload */}
             <div className="onyx-upload">
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
@@ -156,7 +155,6 @@ const Payment = () => {
                 {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
-            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -167,7 +165,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
