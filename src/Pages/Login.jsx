@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// ✅ Vite error akka hin finneef 'api' import isa hin fayyadamne sana haqneerra
-
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -15,72 +13,94 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            // ✅ Backend URL kee isa sirrii (v1 wajjin)
-            // ✅ CORRECT - without "-burger"
             const res = await axios.post('https://beebboo-backend.onrender.com/api/v1/auth/login', {
                 email,
                 password
             });
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-            alert("Baga nagaan deebite!");
+            alert("Welcome back!");
             navigate('/admin');
         } catch (err) {
-            alert(err.response?.data?.message || "Email ykn Password dogoggora!");
+            alert(err.response?.data?.message || "Invalid email or password!");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#00897b] px-4">
-            <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-
-                <div className="mb-4">
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="mb-2 relative">
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50 pr-12"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#00897b]"
-                    >
-                        {showPassword ? "🙈" : "👁️"}
-                    </button>
-                </div>
-
-                <p className="text-xs text-[#00897b] cursor-pointer mb-6 hover:underline text-right">
-                    Forgot password?
-                </p>
-
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+            {/* Header */}
+            <div className="w-full max-w-md">
                 <button
-                    type="submit"
-                    className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
-                    disabled={loading}
+                    onClick={() => navigate('/')}
+                    className="text-gray-500 text-sm mb-8 flex items-center gap-1"
                 >
-                    {loading ? "Seenaa jira..." : "Login"}
+                    ← Back to Home
                 </button>
+            </div>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    Don't have an account? <span className="text-[#00897b] font-bold cursor-pointer hover:underline" onClick={() => navigate('/register')}>Signup</span>
+            {/* Title */}
+            <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-800">Welcome Back!</h1>
+                <p className="text-gray-500 mt-2">Please login to your account</p>
+            </div>
+
+            {/* Login Form */}
+            <div className="w-full max-w-md">
+                <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+
+                <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="text-right">
+                        <p className="text-[#00897b] text-sm cursor-pointer">Forgot Password?</p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-[#00897b] text-white py-3 rounded-lg font-semibold hover:bg-[#00695c] transition"
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+                </form>
+
+                {/* Or login with */}
+                <div className="text-center mt-6">
+                    <p className="text-gray-500 text-sm">Or login with</p>
+                </div>
+
+                {/* Sign Up Link */}
+                <p className="text-center text-gray-600 mt-6">
+                    Don't have account?{' '}
+                    <span
+                        className="text-[#00897b] font-semibold cursor-pointer"
+                        onClick={() => navigate('/register')}
+                    >
+                        Sign Up
+                    </span>
                 </p>
-            </form>
+            </div>
         </div>
     );
 };

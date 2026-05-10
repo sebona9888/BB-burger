@@ -6,7 +6,9 @@ const Register = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -14,122 +16,128 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        // ✅ DEBUGGING: Log what we're about to send
-        console.log("🔍 DEBUG - Form Data:");
-        console.log("  name:", name);
-        console.log("  username:", username);
-        console.log("  email:", email);
-        console.log("  password:", password);
+        if (password !== confirmPassword) {
+            alert("Passwords don't match!");
+            return;
+        }
 
         setLoading(true);
 
         try {
-            // ✅ DEBUGGING: Log the API call
-            console.log("📡 Calling API endpoint: /auth/register");
-            console.log("📡 Full URL:", api.defaults.baseURL + '/auth/register');
-
             const response = await api.post('/auth/register', {
-                name: name,
-                username: username,
-                email: email,
-                password: password
+                name,
+                username,
+                email,
+                phone,
+                password
             });
 
-            console.log("✅ SUCCESS:", response.data);
             alert("Account created successfully! Please login.");
             navigate('/login');
-
         } catch (err) {
-            console.error("❌ ERROR - Full error object:", err);
-            console.error("❌ ERROR - Response data:", err.response?.data);
-            console.error("❌ ERROR - Status code:", err.response?.status);
-
-            // Show specific error message
-            if (err.response?.data?.message) {
-                alert(`Registration failed: ${err.response.data.message}`);
-            } else if (err.response?.data?.errors) {
-                // Handle validation errors
-                const errorMessages = Object.values(err.response.data.errors).join('\n');
-                alert(`Validation failed:\n${errorMessages}`);
-            } else {
-                alert("Registration failed! Check console for details.");
-            }
+            alert(err.response?.data?.message || "Registration failed!");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#00897b] px-4">
-            <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Enter your full name"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Choose a username"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="mb-6 relative">
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
-                        className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50 pr-12"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#00897b]"
-                    >
-                        {showPassword ? "🙈" : "👁️"}
-                    </button>
-                </div>
-
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+            {/* Header */}
+            <div className="w-full max-w-md">
                 <button
-                    type="submit"
-                    className="w-full bg-[#00897b] text-white font-medium p-3 rounded hover:bg-[#00695c] transition-all"
-                    disabled={loading}
+                    onClick={() => navigate('/login')}
+                    className="text-gray-500 text-sm mb-8 flex items-center gap-1"
                 >
-                    {loading ? "Signing up..." : "Signup"}
+                    ← Back to login
                 </button>
+            </div>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    Already have an account?{' '}
-                    <span className="text-[#00897b] font-bold cursor-pointer hover:underline" onClick={() => navigate('/login')}>
-                        Login
+            {/* Title */}
+            <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-800">Hello!</h1>
+                <p className="text-gray-500 mt-2">Welcome to plantland</p>
+            </div>
+
+            {/* Sign Up Form */}
+            <div className="w-full max-w-md">
+                <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Login"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="tel"
+                            placeholder="Phone"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#00897b]"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-[#00897b] text-white py-3 rounded-lg font-semibold hover:bg-[#00695c] transition"
+                        disabled={loading}
+                    >
+                        {loading ? "Signing up..." : "Sign Up"}
+                    </button>
+                </form>
+
+                {/* Login Link */}
+                <p className="text-center text-gray-600 mt-6">
+                    Don't have account?{' '}
+                    <span
+                        className="text-[#00897b] font-semibold cursor-pointer"
+                        onClick={() => navigate('/login')}
+                    >
+                        Sign Up
                     </span>
                 </p>
-            </form>
+            </div>
         </div>
     );
 };
