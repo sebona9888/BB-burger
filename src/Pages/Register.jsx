@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import api from '../api/api';  // ✅ IMPORT FROM YOUR API FILE
+import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    // ✅ 'name' asitti dabalameera, sababni isaas backend-ni kee waan barbaaduuf
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');  // ✅ Changed from 'name'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -16,9 +15,8 @@ const Register = () => {
         setLoading(true);
 
         try {
-            // ✅ Name, Email, fi Password hunda Backend-itti ergina
             const response = await api.post('/auth/register', {
-                name,
+                username,  // ✅ Changed from 'name'
                 email,
                 password
             });
@@ -40,14 +38,14 @@ const Register = () => {
             <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Signup</h2>
 
-                {/* ✅ Input Maqaa (Name) asitti dabalameera */}
+                {/* ✅ Changed to 'username' */}
                 <div className="mb-4">
                     <input
                         type="text"
-                        placeholder="Enter your full name"
+                        placeholder="Enter your username"
                         className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:border-[#00897b] transition-all bg-gray-50"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>
