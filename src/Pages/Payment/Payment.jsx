@@ -105,7 +105,6 @@ const Payment = () => {
                 email: userEmail,
                 paymentMethod: 'Bank Transfer',
                 totalPrice: totalPrice,
-                // ✅ FIRST CHANGE: Fixed quantity to Number
                 items: cartItems.map(item => ({
                     name: item.name,
                     price: Number(item.price) || 0,
@@ -122,9 +121,6 @@ const Payment = () => {
             );
 
             console.log('✅ Order saved:', response.data);
-
-            // ✅ SECOND CHANGE: Added setProcessing(false) before success
-            setProcessing(false);
 
             // ✅ SUCCESS - Clear cart, show alert, redirect to my orders
             clearCart();
