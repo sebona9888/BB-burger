@@ -9,7 +9,7 @@
     min-height: 100vh;
 }
 
-/* Header Styles */
+/* Header */
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -43,7 +43,7 @@
     transform: scale(1.02);
 }
 
-/* Form Card Styles */
+/* Form */
 .form-card {
     background: white;
     padding: 2rem;
@@ -96,13 +96,22 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s;
+    margin-right: 1rem;
 }
 
 .form-card button:hover {
     background: #00695c;
 }
 
-/* Burger List Styles */
+.form-card button[type="button"] {
+    background: #757575;
+}
+
+.form-card button[type="button"]:hover {
+    background: #616161;
+}
+
+/* Burger List */
 .burger-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -130,142 +139,53 @@
     background: #f5f5f5;
 }
 
-.burger-card h4 {
+.burger-card h3 {
     margin: 1rem 1rem 0.5rem;
     font-size: 1.2rem;
     color: #333;
 }
 
-.burger-card .price {
-    margin: 0 1rem;
+.burger-card p {
+    margin: 0.5rem 1rem;
+    color: #666;
+}
+
+.burger-card p:first-of-type {
     font-size: 1.3rem;
     font-weight: bold;
     color: #00897b;
 }
 
-.burger-card .desc {
-    margin: 0.5rem 1rem;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    height: 3.5rem;
-    overflow: hidden;
-}
-
 .burger-card button {
-    width: calc(100% - 2rem);
-    margin: 1rem;
-    background: #f44336;
-    color: white;
-    border: none;
+    width: calc(50% - 1rem);
+    margin: 0.5rem;
     padding: 0.5rem;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 0.9rem;
     transition: background 0.3s;
 }
 
-.burger-card button:hover {
-    background: #d32f2f;
-}
-
-/* Orders Styles */
-.orders {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.order-card {
-    background: white;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.order-card div:first-child {
-    flex: 2;
-}
-
-.order-card strong {
-    font-size: 1.1rem;
-    color: #333;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.order-card p {
-    margin: 0.25rem 0;
-    color: #666;
-}
-
-.order-card a {
-    color: #00897b;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid #00897b;
-    border-radius: 6px;
-    transition: all 0.3s;
-}
-
-.order-card a:hover {
-    background: #00897b;
+.burger-card button:first-of-type {
+    background: #ff9800;
     color: white;
 }
 
-.order-card select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
+.burger-card button:first-of-type:hover {
+    background: #f57c00;
 }
 
-.order-card select:focus {
-    outline: none;
-    border-color: #00897b;
+.burger-card button:last-of-type {
+    background: #f44336;
+    color: white;
 }
 
-/* Section Headers */
-.admin-container>div>h3 {
-    font-size: 1.3rem;
-    margin: 1.5rem 0 1rem;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.burger-card button:last-of-type:hover {
+    background: #d32f2f;
 }
 
-.admin-container>div>h3:first-of-type {
-    margin-top: 0;
-}
-
-/* Loading State */
-.admin-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-size: 1.2rem;
-    color: #00897b;
-}
-
-/* Empty State Messages */
-.burger-list p,
-.orders p {
-    text-align: center;
-    color: #999;
-    padding: 2rem;
-    background: white;
-    border-radius: 12px;
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
     .admin-container {
         padding: 1rem;
@@ -277,11 +197,6 @@
         text-align: center;
     }
 
-    .order-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
     .burger-list {
         grid-template-columns: 1fr;
     }
@@ -289,83 +204,4 @@
     .form-card {
         padding: 1rem;
     }
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #00897b;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #00695c;
-}/* Form Buttons */
-.form-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.cancel-btn {
-    background: #757575;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.cancel-btn:hover {
-    background: #616161;
-}
-
-/* Burger Card Actions */
-.burger-card-actions {
-    display: flex;
-    gap: 0.5rem;
-    padding: 1rem;
-    border-top: 1px solid #eee;
-}
-
-.edit-btn {
-    flex: 1;
-    background: #ff9800;
-    color: white;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.3s;
-}
-
-.edit-btn:hover {
-    background: #f57c00;
-}
-
-.delete-btn {
-    flex: 1;
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.3s;
-}
-
-.delete-btn:hover {
-    background: #d32f2f;
 }
