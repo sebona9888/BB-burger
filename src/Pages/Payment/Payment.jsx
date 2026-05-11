@@ -26,9 +26,8 @@ const Payment = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Limit to 2MB for faster upload
             if (file.size > 2 * 1024 * 1024) {
-                alert('Please upload image smaller than 2MB for faster processing');
+                alert('Please upload image smaller than 2MB');
                 return;
             }
             setScreenshot(file);
@@ -71,36 +70,26 @@ const Payment = () => {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
 
-            // Step 1: Compress image before upload for faster processing
-            let compressedFile = screenshot;
-            if (screenshot.size > 500 * 1024) { // If larger than 500KB
-                compressedFile = await compressImage(screenshot);
-            }
-
-            // Upload to Cloudinary with shorter timeout
+            // Upload to Cloudinary
             const cloudinaryFormData = new FormData();
-            cloudinaryFormData.append('file', compressedFile);
+            cloudinaryFormData.append('file', screenshot);
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-orders');
 
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
-                {
-                    method: 'POST',
-                    body: cloudinaryFormData,
-                    signal: AbortSignal.timeout(30000) // 30 second timeout for upload
-                }
+                { method: 'POST', body: cloudinaryFormData }
             );
 
             const cloudinaryData = await cloudinaryResponse.json();
 
-            if (!cloudinaryResponse.ok || cloudinaryData.error) {
-                throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
+            if (!cloudinaryData.secure_url) {
+                throw new Error('Cloudinary upload failed');
             }
 
             const screenshotUrl = cloudinaryData.secure_url;
 
-            // Step 2: Save order - send minimal data
+            // Save order
             const orderData = {
                 fullName: customerInfo.fullName,
                 phone: customerInfo.phone,
@@ -120,54 +109,31 @@ const Payment = () => {
             const response = await axios.post(
                 'https://beebboo-backend.onrender.com/api/orders',
                 orderData,
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    timeout: 20000 // 20 second timeout for order
-                }
+                { headers: { 'Content-Type': 'application/json' } }
             );
 
-            if (response.data) {
+            // ✅ IMPORTANT: Check response and redirect immediately
+            if (response.status === 200 || response.status === 201) {
                 clearCart();
                 alert('Order placed successfully! 🍔');
-                navigate('/');
+                navigate('/my-orders'); // Redirect to order history
+                return; // Stop execution
             }
         } catch (error) {
             console.error('Payment error:', error);
 
-            if (error.name === 'AbortError' || error.message?.includes('timeout')) {
-                alert('Network slow. Please try again with smaller image.');
-            } else {
-                alert('Payment failed. Please try again.');
+            // Check if order was actually saved despite error
+            if (error.response?.status === 201 || error.response?.status === 200) {
+                clearCart();
+                alert('Order placed successfully! 🍔');
+                navigate('/my-orders');
+                return;
             }
+
+            alert('Payment failed. Please try again.');
         } finally {
             setProcessing(false);
         }
-    };
-
-    // Image compression helper function
-    const compressImage = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const maxWidth = 800;
-                    const scale = maxWidth / img.width;
-                    canvas.width = maxWidth;
-                    canvas.height = img.height * scale;
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob((blob) => {
-                        resolve(new File([blob], file.name, { type: 'image/jpeg' }));
-                    }, 'image/jpeg', 0.7);
-                };
-                img.onerror = reject;
-            };
-            reader.onerror = reject;
-        });
     };
 
     return (
@@ -249,7 +215,7 @@ const Payment = () => {
                     onChange={handleFileChange}
                     className="screenshot-input"
                 />
-                {screenshot && <p className="file-name">✓ Selected: {screenshot.name} ({Math.round(screenshot.size / 1024)} KB)</p>}
+                {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
             <div className="onyx-verification">
