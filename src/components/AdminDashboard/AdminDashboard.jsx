@@ -18,9 +18,6 @@ const AdminDashboard = () => {
         description: ''
     });
 
-    // Admin headers (works without token)
-    const adminHeaders = { 'admin-secret': 'admin123' };
-
     // FETCH BURGERS
     const fetchBurgers = useCallback(async () => {
         try {
@@ -35,7 +32,7 @@ const AdminDashboard = () => {
     const fetchOrders = useCallback(async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
-                headers: adminHeaders
+                headers: { 'admin-secret': 'admin123' }
             });
             setOrders(res.data);
         } catch (error) {
@@ -56,7 +53,7 @@ const AdminDashboard = () => {
         window.location.href = '/login';
     };
 
-    // ADD BURGER
+    // ✅ ADD BURGER - CORRECT VERSION (FormData with image upload)
     const handleAddBurger = async (e) => {
         e.preventDefault();
 
@@ -70,11 +67,16 @@ const AdminDashboard = () => {
         formData.append('price', newBurger.price);
         formData.append('category', newBurger.category);
         formData.append('description', newBurger.description);
-        if (newBurger.image) formData.append('image', newBurger.image);
+
+        // Only append image if one is selected
+        if (newBurger.image) {
+            formData.append('image', newBurger.image);
+        }
 
         try {
+            // ✅ DO NOT set Content-Type header - browser will set it automatically
             await axios.post('https://beebboo-backend.onrender.com/api/menu', formData, {
-                headers: adminHeaders
+                headers: { 'admin-secret': 'admin123' }
             });
 
             setNewBurger({
@@ -88,8 +90,8 @@ const AdminDashboard = () => {
             fetchBurgers();
             alert('Burger added successfully! 🍔');
         } catch (error) {
-            console.error('Error adding burger:', error);
-            alert('Failed to add burger. Make sure you are connected to the internet.');
+            console.error('Error adding burger:', error.response?.data || error.message);
+            alert('Failed to add burger. Please try again.');
         }
     };
 
@@ -99,7 +101,7 @@ const AdminDashboard = () => {
 
         try {
             await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
-                headers: adminHeaders
+                headers: { 'admin-secret': 'admin123' }
             });
             fetchBurgers();
             alert('Burger deleted! 🗑️');
@@ -115,7 +117,7 @@ const AdminDashboard = () => {
             await axios.put(
                 `https://beebboo-backend.onrender.com/api/orders/${id}`,
                 { status },
-                { headers: adminHeaders }
+                { headers: { 'admin-secret': 'admin123' } }
             );
             fetchOrders();
             alert('Order status updated!');
