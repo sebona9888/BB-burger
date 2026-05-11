@@ -1,292 +1,311 @@
-/* =========================
-   🔄 RESET
-========================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* AdminDashboard.css */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f6fb;
-}
-
-/* =========================
-   🔐 LOGIN PAGE
-========================= */
-.login-overlay {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    position: relative;
-    overflow: hidden;
-}
-
-/* decorative background shapes */
-.login-overlay::before,
-.login-overlay::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.login-overlay::before {
-    width: 300px;
-    height: 300px;
-    top: -60px;
-    left: -60px;
-}
-
-.login-overlay::after {
-    width: 400px;
-    height: 400px;
-    bottom: -80px;
-    right: -80px;
-}
-
-/* login card */
-.login-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    padding: 35px;
-    border-radius: 16px;
-    width: 340px;
-    text-align: center;
-    color: white;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.login-card h2 {
-    margin-bottom: 20px;
-}
-
-/* password input */
-.password-wrapper {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 15px;
-}
-
-.password-wrapper input {
-    border: none;
-    outline: none;
-    flex: 1;
-    background: transparent;
-    color: white;
-}
-
-.password-wrapper input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.password-wrapper span {
-    cursor: pointer;
-}
-
-/* error */
-.error-text {
-    color: #ffb3b3;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
-
-/* login button */
-.login-card button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    background: white;
-    color: #333;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.login-card button:hover {
-    background: #eee;
-}
-
-/* loader */
-.loader {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #333;
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    display: inline-block;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* =========================
-   🧑‍💼 DASHBOARD
-========================= */
 .admin-container {
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
 }
 
-/* HEADER */
+/* Header Styles */
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, #00897b 0%, #00695c 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .admin-header h2 {
-    font-size: 24px;
+    margin: 0;
+    font-size: 1.8rem;
 }
 
 .admin-header button {
-    padding: 8px 14px;
-    border: none;
-    background: #2f3542;
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    border-radius: 6px;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
 }
 
-/* FORM */
+.admin-header button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
+/* Form Card Styles */
 .form-card {
     background: white;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    max-width: 420px;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .form-card h3 {
-    margin-bottom: 15px;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #00897b;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
 }
 
 .form-card input,
+.form-card select,
 .form-card textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
     border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
 }
 
-/* button */
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    outline: none;
+    border-color: #00897b;
+    box-shadow: 0 0 0 2px rgba(0, 137, 123, 0.1);
+}
+
+.form-card textarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
 .form-card button {
-    background: #2ed573;
+    background: #00897b;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 0.75rem 2rem;
     border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 .form-card button:hover {
-    background: #26c06f;
+    background: #00695c;
 }
 
-/* =========================
-   🍔 BURGER SECTION
-========================= */
+/* Burger List Styles */
 .burger-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
 
 .burger-card {
     background: white;
-    padding: 15px;
-    border-radius: 14px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
 
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.burger-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.burger-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #f5f5f5;
 }
 
 .burger-card h4 {
-    margin-bottom: 5px;
+    margin: 1rem 1rem 0.5rem;
+    font-size: 1.2rem;
+    color: #333;
 }
 
-.price {
-    color: green;
+.burger-card .price {
+    margin: 0 1rem;
+    font-size: 1.3rem;
     font-weight: bold;
+    color: #00897b;
 }
 
-.desc {
-    font-size: 13px;
+.burger-card .desc {
+    margin: 0.5rem 1rem;
     color: #666;
+    font-size: 0.9rem;
     line-height: 1.4;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    height: 3.5rem;
     overflow: hidden;
 }
 
-/* delete button */
 .burger-card button {
-    margin-top: 8px;
-    padding: 6px;
-    border: none;
-    border-radius: 6px;
-    background: #ff4757;
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    background: #f44336;
     color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
-/* =========================
-   📦 ORDERS SECTION
-========================= */
+.burger-card button:hover {
+    background: #d32f2f;
+}
+
+/* Orders Styles */
 .orders {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 .order-card {
     background: white;
-    padding: 15px;
+    padding: 1rem;
     border-radius: 12px;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
-
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 1rem;
+}
+
+.order-card div:first-child {
+    flex: 2;
+}
+
+.order-card strong {
+    font-size: 1.1rem;
+    color: #333;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.order-card p {
+    margin: 0.25rem 0;
+    color: #666;
+}
+
+.order-card a {
+    color: #00897b;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid #00897b;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.order-card a:hover {
+    background: #00897b;
+    color: white;
 }
 
 .order-card select {
-    padding: 6px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
     border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
-/* =========================
-   📱 RESPONSIVE
-========================= */
+.order-card select:focus {
+    outline: none;
+    border-color: #00897b;
+}
+
+/* Section Headers */
+.admin-container>div>h3 {
+    font-size: 1.3rem;
+    margin: 1.5rem 0 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-container>div>h3:first-of-type {
+    margin-top: 0;
+}
+
+/* Loading State */
+.admin-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1.2rem;
+    color: #00897b;
+}
+
+/* Empty State Messages */
+.burger-list p,
+.orders p {
+    text-align: center;
+    color: #999;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .burger-list {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    .admin-container {
+        padding: 1rem;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
     }
 
     .order-card {
         flex-direction: column;
-        align-items: flex-start;
+        text-align: center;
     }
+
+    .burger-list {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 1rem;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00897b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00695c;
 }

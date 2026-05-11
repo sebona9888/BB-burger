@@ -18,11 +18,8 @@ const AdminDashboard = () => {
         description: ''
     });
 
-    // Get token from localStorage
-    const getToken = () => {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        return userInfo?.token;
-    };
+    // Admin headers (works without token)
+    const adminHeaders = { 'admin-secret': 'admin123' };
 
     // FETCH BURGERS
     const fetchBurgers = useCallback(async () => {
@@ -36,15 +33,14 @@ const AdminDashboard = () => {
 
     // FETCH ORDERS
     const fetchOrders = useCallback(async () => {
-        const token = getToken();
-        if (!token) return;
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: adminHeaders
             });
             setOrders(res.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
+            setOrders([]);
         }
     }, []);
 
@@ -63,10 +59,9 @@ const AdminDashboard = () => {
     // ADD BURGER
     const handleAddBurger = async (e) => {
         e.preventDefault();
-        const token = getToken();
 
-        if (!token) {
-            alert('Please login again');
+        if (!newBurger.name || !newBurger.price) {
+            alert('Please fill in burger name and price');
             return;
         }
 
@@ -79,7 +74,7 @@ const AdminDashboard = () => {
 
         try {
             await axios.post('https://beebboo-backend.onrender.com/api/menu', formData, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: adminHeaders
             });
 
             setNewBurger({
@@ -93,8 +88,8 @@ const AdminDashboard = () => {
             fetchBurgers();
             alert('Burger added successfully! 🍔');
         } catch (error) {
-            console.error('Error adding burger:', error);
-            alert('Failed to add burger');
+            console.error('Error adding burger:', error.response?.data || error.message);
+            alert(`Failed to add burger: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -102,10 +97,9 @@ const AdminDashboard = () => {
     const deleteBurger = async (id) => {
         if (!window.confirm('Delete this burger?')) return;
 
-        const token = getToken();
         try {
             await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: adminHeaders
             });
             fetchBurgers();
             alert('Burger deleted! 🗑️');
@@ -117,17 +111,17 @@ const AdminDashboard = () => {
 
     // UPDATE ORDER STATUS
     const updateOrderStatus = async (id, status) => {
-        const token = getToken();
         try {
             await axios.put(
                 `https://beebboo-backend.onrender.com/api/orders/${id}`,
                 { status },
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                { headers: adminHeaders }
             );
             fetchOrders();
             alert('Order status updated!');
         } catch (error) {
             console.error('Error updating order:', error);
+            alert('Failed to update order');
         }
     };
 
@@ -193,15 +187,19 @@ const AdminDashboard = () => {
             <div>
                 <h3>Burgers ({burgers.length})</h3>
                 <div className="burger-list">
-                    {burgers.map((b) => (
-                        <div key={b._id} className="burger-card">
-                            {b.image && <img src={b.image} alt={b.name} />}
-                            <h4>{b.name}</h4>
-                            <p className="price">{b.price} ETB</p>
-                            <p className="desc">{b.description}</p>
-                            <button onClick={() => deleteBurger(b._id)}>Delete</button>
-                        </div>
-                    ))}
+                    {burgers.length === 0 ? (
+                        <p>No burgers yet. Add your first burger above!</p>
+                    ) : (
+                        burgers.map((b) => (
+                            <div key={b._id} className="burger-card">
+                                {b.image && <img src={b.image} alt={b.name} />}
+                                <h4>{b.name}</h4>
+                                <p className="price">{b.price} ETB</p>
+                                <p className="desc">{b.description}</p>
+                                <button onClick={() => deleteBurger(b._id)}>Delete</button>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
@@ -209,29 +207,35 @@ const AdminDashboard = () => {
             <div>
                 <h3>Orders ({orders.length})</h3>
                 <div className="orders">
-                    {orders.map((o) => (
-                        <div key={o._id} className="order-card">
-                            <div>
-                                <strong>{o.fullName}</strong>
-                                <p>Status: {o.status}</p>
-                                <p>Total: {o.totalPrice} ETB</p>
+                    {orders.length === 0 ? (
+                        <p>No orders yet.</p>
+                    ) : (
+                        orders.map((o) => (
+                            <div key={o._id} className="order-card">
+                                <div>
+                                    <strong>{o.fullName}</strong>
+                                    <p>Status: {o.status}</p>
+                                    <p>Total: {o.totalPrice} ETB</p>
+                                    <p>Phone: {o.phone}</p>
+                                    <p>Address: {o.address}</p>
+                                </div>
+                                {o.screenshot && (
+                                    <a href={o.screenshot} target="_blank" rel="noopener noreferrer">
+                                        View Screenshot
+                                    </a>
+                                )}
+                                <select
+                                    value={o.status}
+                                    onChange={(e) => updateOrderStatus(o._id, e.target.value)}
+                                >
+                                    <option>Pending</option>
+                                    <option>Processing</option>
+                                    <option>Delivered</option>
+                                    <option>Cancelled</option>
+                                </select>
                             </div>
-                            {o.screenshot && (
-                                <a href={o.screenshot} target="_blank" rel="noopener noreferrer">
-                                    View Screenshot
-                                </a>
-                            )}
-                            <select
-                                value={o.status}
-                                onChange={(e) => updateOrderStatus(o._id, e.target.value)}
-                            >
-                                <option>Pending</option>
-                                <option>Processing</option>
-                                <option>Delivered</option>
-                                <option>Cancelled</option>
-                            </select>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </div>
