@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import './Login.css';  
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -20,7 +19,14 @@ const Login = () => {
             });
             localStorage.setItem('userInfo', JSON.stringify(res.data));
             alert("Welcome back to Beebboo Burger! 🍔");
-            navigate('/admin');
+
+            // ✅ Redirect based on user role
+            const isAdmin = res.data.user?.isAdmin || res.data.isAdmin;
+            if (isAdmin) {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             alert(err.response?.data?.message || "Invalid email or password!");
         } finally {
@@ -31,13 +37,11 @@ const Login = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-white px-4">
             <div className="w-full max-w-md">
-                {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800">Welcome Back!</h1>
                     <p className="text-gray-500 mt-2">Please login to your account</p>
                 </div>
 
-                {/* Login Form */}
                 <div>
                     <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
