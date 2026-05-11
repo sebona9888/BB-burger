@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import OrderHistory from './Pages/OrderHistory/OrderHistory';
+import Checkout from './Pages/Checkout/Checkout';  // ✅ ADD THIS
 // Components & Pages
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
@@ -13,7 +14,6 @@ import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
-import Checkout from './Pages/Checkout/Checkout';
 
 // ✅ For Admin only - checks isAdmin
 const AdminRoute = ({ children }) => {
@@ -70,6 +70,14 @@ function App() {
                             <Cart />
                         </UserRoute>
                     } />
+
+                    {/* ✅ Checkout - requires login */}
+                    <Route path="checkout" element={
+                        <UserRoute>
+                            <Checkout />
+                        </UserRoute>
+                    } />
+
                     <Route path="payment" element={
                         <UserRoute>
                             <Payment />
@@ -83,11 +91,7 @@ function App() {
                         </UserRoute>
                     } />
                 </Route>
-                <Route path="checkout" element={
-                    <UserRoute>
-                        <Checkout />
-                    </UserRoute>
-                } />
+
                 {/* ✅ Admin only route */}
                 <Route path="/admin" element={
                     <AdminRoute>
