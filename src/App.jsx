@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children }) => {
         console.error("Invalid userInfo in localStorage");
     }
 
-    if (!userInfo || !userInfo.isAdmin) {
+    if (!userInfo || !userInfo.user?.isAdmin) {
         return <Navigate to="/login" replace />;
     }
     return children;
