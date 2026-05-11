@@ -5,12 +5,12 @@ import './Menu.css';
 
 const Menu = () => {
     const [burgers, setBurgers] = useState([]);
-    const [filteredBurgers, setFilteredBurgers] = useState([]); // Filtered list
+    const [filteredBurgers, setFilteredBurgers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedBurger, setSelectedBurger] = useState(null);
 
-    // --- FOOYYA'IINSA: Search & Filter States ---
+    // Search & Filter States
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
 
@@ -24,7 +24,7 @@ const Menu = () => {
                 const response = await axios.get('https://beebboo-backend.onrender.com/api/menu');
                 if (response.data) {
                     setBurgers(response.data);
-                    setFilteredBurgers(response.data); // Init list
+                    setFilteredBurgers(response.data);
                     setError(null);
                 }
             } catch (err) {
@@ -37,7 +37,7 @@ const Menu = () => {
         fetchBurgers();
     }, []);
 
-    // --- FOOYYA'IINSA: Search & Category Logic ---
+    // Search & Category Logic
     useEffect(() => {
         let result = burgers;
 
@@ -54,6 +54,15 @@ const Menu = () => {
         setFilteredBurgers(result);
     }, [searchTerm, activeCategory, burgers]);
 
+    // Add to cart function
+    const handleAddToCart = (burger) => {
+        if (addToCart) {
+            addToCart(burger);
+            alert(`${burger.name} added to cart! 🍔`);
+        }
+        setSelectedBurger(null);
+    };
+
     if (loading) return <div className="loader">Fe'amaa jira...</div>;
     if (error) return <div className="error-msg">{error}</div>;
 
@@ -62,13 +71,14 @@ const Menu = () => {
             <div className="menu-container">
                 <h1 className="menu-title">Menu <span>Beebboo</span></h1>
 
-                {/* --- FOOYYA'IINSA: Search & Filter UI --- */}
+                {/* Search & Filter UI */}
                 <div className="filter-controls">
                     <input
                         type="text"
                         placeholder="Burger barbaadi..."
                         className="search-input"
-                        onChange={(e) => setSearchTerm(e.target.filter)}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}  // ✅ FIXED: e.target.value
                     />
                     <div className="category-tabs">
                         {["All", "Beef", "Chicken", "Veggie"].map(cat => (
@@ -89,7 +99,8 @@ const Menu = () => {
                             <div key={item._id} className="menu-card" onClick={() => setSelectedBurger(item)}>
                                 <div className="badge-fresh">Dhandhama Haaraa</div>
                                 <div className="menu-img-box">
-                                    <img src={item.img || item.image} alt={item.name} />
+                                    {/* ✅ Use image field from backend */}
+                                    <img src={item.image} alt={item.name} />
                                 </div>
                                 <div className="menu-info">
                                     <h3>{item.name}</h3>
@@ -107,14 +118,14 @@ const Menu = () => {
                 </div>
             </div>
 
-            {/* --- BURGER MODAL (Already Good) --- */}
+            {/* Burger Modal */}
             {selectedBurger && (
                 <div className="modal-overlay" onClick={() => setSelectedBurger(null)}>
                     <div className="modal-content animate-pop" onClick={(e) => e.stopPropagation()}>
                         <button className="close-modal" onClick={() => setSelectedBurger(null)}>&times;</button>
                         <div className="modal-body">
                             <div className="modal-img-container">
-                                <img src={selectedBurger.img || selectedBurger.image} alt={selectedBurger.name} />
+                                <img src={selectedBurger.image} alt={selectedBurger.name} />
                             </div>
                             <div className="modal-details">
                                 <h2>{selectedBurger.name}</h2>
@@ -131,10 +142,7 @@ const Menu = () => {
                                     <span className="modal-price">{selectedBurger.price} ETB</span>
                                     <button
                                         className="add-btn-large"
-                                        onClick={() => {
-                                            addToCart && addToCart(selectedBurger);
-                                            setSelectedBurger(null);
-                                        }}
+                                        onClick={() => handleAddToCart(selectedBurger)}
                                     >
                                         Amma Ajajadhu
                                     </button>
