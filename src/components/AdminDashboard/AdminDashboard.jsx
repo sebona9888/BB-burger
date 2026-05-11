@@ -4,13 +4,10 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
 
-    // AUTH
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(false);
-
     // DATA
     const [burgers, setBurgers] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // FORM
     const [newBurger, setNewBurger] = useState({
@@ -27,45 +24,43 @@ const AdminDashboard = () => {
         return userInfo?.token;
     };
 
-    // Check if user is admin on page load
-    useEffect(() => {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if (userInfo?.user?.isAdmin || userInfo?.isAdmin) {
-            setIsAuthenticated(true);
+    // FETCH BURGERS
+    const fetchBurgers = useCallback(async () => {
+        try {
+            const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
+            setBurgers(res.data);
+        } catch (error) {
+            console.error('Error fetching burgers:', error);
         }
     }, []);
 
-    // FETCH
-    const fetchBurgers = useCallback(async () => {
-        const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
-        setBurgers(res.data);
-    }, []);
-
+    // FETCH ORDERS
     const fetchOrders = useCallback(async () => {
         const token = getToken();
         if (!token) return;
-        const res = await axios.get(
-            'https://beebboo-backend.onrender.com/api/orders',
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        setOrders(res.data);
+        try {
+            const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setOrders(res.data);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
     }, []);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchBurgers();
-            fetchOrders();
-        }
-    }, [isAuthenticated, fetchBurgers, fetchOrders]);
+        fetchBurgers();
+        fetchOrders();
+        setLoading(false);
+    }, [fetchBurgers, fetchOrders]);
 
     // LOGOUT
     const handleLogout = () => {
         localStorage.removeItem('userInfo');
-        setIsAuthenticated(false);
         window.location.href = '/login';
     };
 
-    // CRUD
+    // ADD BURGER
     const handleAddBurger = async (e) => {
         e.preventDefault();
         const token = getToken();
@@ -103,6 +98,7 @@ const AdminDashboard = () => {
         }
     };
 
+    // DELETE BURGER
     const deleteBurger = async (id) => {
         if (!window.confirm('Delete this burger?')) return;
 
@@ -119,21 +115,23 @@ const AdminDashboard = () => {
         }
     };
 
+    // UPDATE ORDER STATUS
     const updateOrderStatus = async (id, status) => {
         const token = getToken();
-        await axios.put(
-            `https://beebboo-backend.onrender.com/api/orders/${id}`,
-            { status },
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        fetchOrders();
+        try {
+            await axios.put(
+                `https://beebboo-backend.onrender.com/api/orders/${id}`,
+                { status },
+                { headers: { 'Authorization': `Bearer ${token}` } }
+            );
+            fetchOrders();
+            alert('Order status updated!');
+        } catch (error) {
+            console.error('Error updating order:', error);
+        }
     };
 
-    // NOT AUTHENTICATED - Redirect to login
-    if (!isAuthenticated) {
-        window.location.href = '/login';
-        return null;
-    }
+    if (loading) return <div className="admin-loading">Loading...</div>;
 
     // DASHBOARD
     return (
@@ -150,6 +148,7 @@ const AdminDashboard = () => {
                 <h3>Add New Burger</h3>
 
                 <input
+                    type="text"
                     placeholder="Burger Name"
                     value={newBurger.name}
                     onChange={(e) => setNewBurger({ ...newBurger, name: e.target.value })}
