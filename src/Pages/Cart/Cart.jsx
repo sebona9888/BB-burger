@@ -36,7 +36,7 @@ const Cart = () => {
                         <h3>Waliigala: {totalPrice.toLocaleString()} ETB</h3>
                         <button
                             className="checkout-btn"
-                            onClick={() => navigate('/payment')}  // ✅ Changed to /payment
+                            onClick={() => navigate('/checkout')}  // ✅ FIXED: Go to checkout
                         >
                             Kaffaltii Raawwadhu
                         </button>
