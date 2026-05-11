@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import OrderHistory from './Pages/OrderHistory/OrderHistory';
 // Components & Pages
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
@@ -72,6 +72,13 @@ function App() {
                     <Route path="payment" element={
                         <UserRoute>
                             <Payment />
+                        </UserRoute>
+                    } />
+
+                    {/* ✅ Order History - requires login */}
+                    <Route path="my-orders" element={
+                        <UserRoute>
+                            <OrderHistory />
                         </UserRoute>
                     } />
                 </Route>

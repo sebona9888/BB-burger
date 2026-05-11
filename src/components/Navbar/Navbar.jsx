@@ -10,7 +10,7 @@ const Navbar = () => {
 
     // ✅ User login gochuu isaa check gochuuf
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    const isAdmin = userInfo && userInfo.isAdmin;
+    const isAdmin = userInfo && (userInfo.isAdmin || userInfo.user?.isAdmin);
 
     // Logout gochuuf
     const handleLogout = () => {
@@ -51,7 +51,12 @@ const Navbar = () => {
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
 
-                    {/* ✅ Qindaa'ina Login/Register/Admin itti dabalame */}
+                    {/* ✅ My Orders - visible to logged-in users */}
+                    {userInfo && (
+                        <li><Link to="/my-orders">📋 My Orders</Link></li>
+                    )}
+
+                    {/* ✅ Admin Dashboard - visible only to admin */}
                     {isAdmin && <li><Link to="/admin">Admin</Link></li>}
 
                     {!userInfo ? (
@@ -75,6 +80,11 @@ const Navbar = () => {
                     <li><Link to="/menu" onClick={() => setIsOpen(false)}>Menu</Link></li>
                     <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
+
+                    {/* ✅ My Orders - mobile */}
+                    {userInfo && (
+                        <li><Link to="/my-orders" onClick={() => setIsOpen(false)}>📋 My Orders</Link></li>
+                    )}
 
                     {isAdmin && <li><Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link></li>}
 
