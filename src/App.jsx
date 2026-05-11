@@ -13,6 +13,7 @@ import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
+import Checkout from './Pages/Checkout/Checkout';
 
 // ✅ For Admin only - checks isAdmin
 const AdminRoute = ({ children }) => {
@@ -82,7 +83,11 @@ function App() {
                         </UserRoute>
                     } />
                 </Route>
-
+                <Route path="checkout" element={
+                    <UserRoute>
+                        <Checkout />
+                    </UserRoute>
+                } />
                 {/* ✅ Admin only route */}
                 <Route path="/admin" element={
                     <AdminRoute>
