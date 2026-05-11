@@ -31,7 +31,7 @@ const Payment = () => {
                 return;
             }
             setScreenshot(file);
-            console.log('📎 File selected:', file.name, file.size, 'bytes');
+            console.log('📎 File selected:', file.name, (file.size / 1024).toFixed(0), 'KB');
         }
     };
 
@@ -87,13 +87,9 @@ const Payment = () => {
 
             const cloudinaryData = await cloudinaryResponse.json();
 
-            if (!cloudinaryResponse.ok) {
+            if (!cloudinaryResponse.ok || !cloudinaryData.secure_url) {
                 console.error('Cloudinary error:', cloudinaryData);
                 throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
-            }
-
-            if (!cloudinaryData.secure_url) {
-                throw new Error('No URL returned from Cloudinary');
             }
 
             const screenshotUrl = cloudinaryData.secure_url;
@@ -126,27 +122,24 @@ const Payment = () => {
 
             console.log('✅ Order saved:', response.data);
 
-            if (response.data) {
-                clearCart();
-                alert('Order placed successfully! 🍔');
-                navigate('/my-orders');
-            }
+            // ✅ SUCCESS - Clear cart, show alert, redirect to my orders
+            clearCart();
+            alert('Order placed successfully! 🍔');
+            navigate('/my-orders');
+
         } catch (error) {
-            console.error('❌ Error:', error);
+            console.error('❌ Payment error:', error);
 
-            // Show specific error message
-            let errorMsg = 'Payment failed. ';
+            let errorMessage = 'Payment failed. ';
             if (error.message.includes('Cloudinary')) {
-                errorMsg = 'Image upload failed. Please check your Cloudinary preset.';
+                errorMessage = 'Image upload failed. Please try again with a different image.';
             } else if (error.response?.data?.message) {
-                errorMsg = error.response.data.message;
+                errorMessage = error.response.data.message;
             } else {
-                errorMsg = error.message || 'Please try again.';
+                errorMessage = error.message || 'Please try again.';
             }
 
-            alert(`Order failed: ${errorMsg}`);
-            setProcessing(false);
-        } finally {
+            alert(`Order failed: ${errorMessage}`);
             setProcessing(false);
         }
     };
@@ -160,6 +153,7 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
+            {/* Customer Information Form */}
             <div className="customer-info-section">
                 <h3>📋 Delivery Information</h3>
                 <div className="customer-form">
@@ -193,6 +187,7 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -222,6 +217,7 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Screenshot Upload */}
             <div className="onyx-upload">
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
@@ -230,9 +226,14 @@ const Payment = () => {
                     onChange={handleFileChange}
                     className="screenshot-input"
                 />
-                {screenshot && <p className="file-name">✓ Selected: {screenshot.name} ({(screenshot.size / 1024).toFixed(0)} KB)</p>}
+                {screenshot && (
+                    <p className="file-name">
+                        ✓ Selected: {screenshot.name} ({(screenshot.size / 1024).toFixed(0)} KB)
+                    </p>
+                )}
             </div>
 
+            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -243,6 +244,7 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
