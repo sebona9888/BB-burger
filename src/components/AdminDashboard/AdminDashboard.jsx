@@ -53,7 +53,7 @@ const AdminDashboard = () => {
         window.location.href = '/login';
     };
 
-    // ADD BURGER - CORRECT VERSION (FormData with image upload)
+    // ✅ FIXED: ADD BURGER - Direct Cloudinary Upload (No Backend Image Processing)
     const handleAddBurger = async (e) => {
         e.preventDefault();
 
@@ -62,21 +62,46 @@ const AdminDashboard = () => {
             return;
         }
 
-        const formData = new FormData();
-        formData.append('name', newBurger.name);
-        formData.append('price', newBurger.price);
-        formData.append('category', newBurger.category);
-        formData.append('description', newBurger.description);
+        let imageUrl = null;
 
-        // Only append image if one is selected
+        // Step 1: Upload image directly to Cloudinary (unsigned)
         if (newBurger.image) {
-            formData.append('image', newBurger.image);
+            const cloudinaryFormData = new FormData();
+            cloudinaryFormData.append('file', newBurger.image);
+            cloudinaryFormData.append('upload_preset', 'beebboo_unsigned');
+            cloudinaryFormData.append('folder', 'beebboo-burgers');
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
+                    method: 'POST',
+                    body: cloudinaryFormData
+                });
+                const data = await response.json();
+                imageUrl = data.secure_url;
+                console.log('✅ Image uploaded to Cloudinary:', imageUrl);
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+                alert('Failed to upload image. Please try again.');
+                return;
+            }
         }
 
+        // Step 2: Send burger data as JSON to backend
+        const burgerData = {
+            name: newBurger.name,
+            price: parseFloat(newBurger.price),
+            category: newBurger.category,
+            description: newBurger.description,
+            image: imageUrl,
+            countInStock: 20
+        };
+
         try {
-            // DO NOT set Content-Type header - browser will set it automatically
-            await axios.post('https://beebboo-backend.onrender.com/api/menu', formData, {
-                headers: { 'admin-secret': 'admin123' }
+            await axios.post('https://beebboo-backend.onrender.com/api/menu', burgerData, {
+                headers: {
+                    'admin-secret': 'admin123',
+                    'Content-Type': 'application/json'
+                }
             });
 
             setNewBurger({
