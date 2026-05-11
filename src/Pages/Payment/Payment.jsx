@@ -11,6 +11,13 @@ const Payment = () => {
     const [screenshot, setScreenshot] = useState(null);
     const navigate = useNavigate();
 
+    // ✅ Customer Information State
+    const [customerInfo, setCustomerInfo] = useState({
+        fullName: '',
+        phone: '',
+        address: ''
+    });
+
     const handleCopy = (text, bank) => {
         navigator.clipboard.writeText(text);
         setCopied(bank);
@@ -28,7 +35,26 @@ const Payment = () => {
         }
     };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setCustomerInfo(prev => ({ ...prev, [name]: value }));
+    };
+
     const handlePaymentConfirm = async () => {
+        // ✅ Validate customer information
+        if (!customerInfo.fullName) {
+            alert('Please enter your full name!');
+            return;
+        }
+        if (!customerInfo.phone) {
+            alert('Please enter your phone number!');
+            return;
+        }
+        if (!customerInfo.address) {
+            alert('Please enter your delivery address!');
+            return;
+        }
+
         if (!screenshot) {
             alert('Please upload payment screenshot!');
             return;
@@ -47,14 +73,13 @@ const Payment = () => {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
 
-            // Step 1: Upload screenshot to Cloudinary using unsigned preset
+            // Step 1: Upload screenshot to Cloudinary
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-orders');
 
             console.log('📤 Uploading to Cloudinary...');
-            console.log('File:', screenshot.name, 'Size:', screenshot.size);
 
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
@@ -66,10 +91,7 @@ const Payment = () => {
 
             const cloudinaryData = await cloudinaryResponse.json();
 
-            console.log('Cloudinary response:', cloudinaryData);
-
             if (!cloudinaryResponse.ok || cloudinaryData.error) {
-                console.error('Cloudinary upload failed:', cloudinaryData.error);
                 throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
             }
 
@@ -80,12 +102,12 @@ const Payment = () => {
             const screenshotUrl = cloudinaryData.secure_url;
             console.log('✅ Uploaded to Cloudinary:', screenshotUrl);
 
-            // Step 2: Save order to backend with user email
+            // Step 2: Save order to backend with customer info
             const orderData = {
-                fullName: 'Beebboo Customer',
-                phone: '0902989488',
-                address: 'Addis Ababa, Ethiopia',
-                email: userEmail,  // ✅ Added for order history
+                fullName: customerInfo.fullName,  // ✅ From customer form
+                phone: customerInfo.phone,        // ✅ From customer form
+                address: customerInfo.address,    // ✅ From customer form
+                email: userEmail,
                 paymentMethod: 'Bank Transfer',
                 totalPrice: totalPrice,
                 items: cartItems.map(item => ({
@@ -97,7 +119,7 @@ const Payment = () => {
                 screenshot: screenshotUrl
             };
 
-            console.log('📤 Saving order to backend...');
+            console.log('📤 Saving order to backend...', orderData);
 
             const response = await axios.post(
                 'https://beebboo-backend.onrender.com/api/orders',
@@ -142,6 +164,41 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
+            {/* ✅ CUSTOMER INFORMATION FORM */}
+            <div className="customer-info-section">
+                <h3>📋 Delivery Information</h3>
+                <div className="customer-form">
+                    <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Full Name"
+                        value={customerInfo.fullName}
+                        onChange={handleInputChange}
+                        required
+                        className="customer-input"
+                    />
+                    <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Phone Number"
+                        value={customerInfo.phone}
+                        onChange={handleInputChange}
+                        required
+                        className="customer-input"
+                    />
+                    <textarea
+                        name="address"
+                        placeholder="Delivery Address"
+                        value={customerInfo.address}
+                        onChange={handleInputChange}
+                        required
+                        rows="3"
+                        className="customer-textarea"
+                    />
+                </div>
+            </div>
+
+            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -171,6 +228,7 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Screenshot Upload */}
             <div className="onyx-upload">
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
@@ -182,6 +240,7 @@ const Payment = () => {
                 {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
+            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -192,6 +251,7 @@ const Payment = () => {
                 </div>
             </div>
 
+            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
