@@ -81,13 +81,20 @@ const Payment = () => {
 
             console.log('📤 Uploading to Cloudinary...');
 
+            // ✅ Create AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000);
+
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
                 {
                     method: 'POST',
-                    body: cloudinaryFormData
+                    body: cloudinaryFormData,
+                    signal: controller.signal
                 }
             );
+
+            clearTimeout(timeoutId);
 
             const cloudinaryData = await cloudinaryResponse.json();
 
@@ -104,9 +111,9 @@ const Payment = () => {
 
             // Step 2: Save order to backend with customer info
             const orderData = {
-                fullName: customerInfo.fullName,  // ✅ From customer form
-                phone: customerInfo.phone,        // ✅ From customer form
-                address: customerInfo.address,    // ✅ From customer form
+                fullName: customerInfo.fullName,
+                phone: customerInfo.phone,
+                address: customerInfo.address,
                 email: userEmail,
                 paymentMethod: 'Bank Transfer',
                 totalPrice: totalPrice,
@@ -126,7 +133,7 @@ const Payment = () => {
                 orderData,
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    timeout: 30000
+                    timeout: 60000
                 }
             );
 
@@ -141,7 +148,9 @@ const Payment = () => {
             console.error('Payment error:', error);
 
             let errorMessage = 'Payment failed. ';
-            if (error.message.includes('Cloudinary')) {
+            if (error.name === 'AbortError') {
+                errorMessage = 'Upload took too long. Please try again with a smaller image.';
+            } else if (error.message.includes('Cloudinary')) {
                 errorMessage = 'Screenshot upload failed. Please check your Cloudinary preset configuration.';
             } else if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
