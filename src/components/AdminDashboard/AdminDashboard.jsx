@@ -53,7 +53,7 @@ const AdminDashboard = () => {
         window.location.href = '/login';
     };
 
-    // ✅ ADD BURGER - CORRECT VERSION (FormData with image upload)
+    // ADD BURGER - CORRECT VERSION (FormData with image upload)
     const handleAddBurger = async (e) => {
         e.preventDefault();
 
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            // ✅ DO NOT set Content-Type header - browser will set it automatically
+            // DO NOT set Content-Type header - browser will set it automatically
             await axios.post('https://beebboo-backend.onrender.com/api/menu', formData, {
                 headers: { 'admin-secret': 'admin123' }
             });
