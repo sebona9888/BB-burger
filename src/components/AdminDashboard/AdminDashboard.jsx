@@ -4,12 +4,10 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
 
-    // DATA
     const [burgers, setBurgers] = useState([]);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // FORM
     const [newBurger, setNewBurger] = useState({
         name: '',
         price: '',
@@ -18,8 +16,8 @@ const AdminDashboard = () => {
         description: ''
     });
 
-    // EDIT STATE
     const [editingBurger, setEditingBurger] = useState(null);
+
     const [editForm, setEditForm] = useState({
         name: '',
         price: '',
@@ -28,22 +26,24 @@ const AdminDashboard = () => {
         image: null
     });
 
-    // FETCH BURGERS
     const fetchBurgers = useCallback(async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
+
+            console.log("🍔 BURGERS:", res.data);
+
             setBurgers(res.data);
         } catch (error) {
             console.error('Error fetching burgers:', error);
         }
     }, []);
 
-    // FETCH ORDERS
     const fetchOrders = useCallback(async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
                 headers: { 'admin-secret': 'admin123' }
             });
+
             setOrders(res.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -57,40 +57,62 @@ const AdminDashboard = () => {
         setLoading(false);
     }, [fetchBurgers, fetchOrders]);
 
-    // LOGOUT
     const handleLogout = () => {
         localStorage.removeItem('userInfo');
         window.location.href = '/login';
     };
 
-    // ADD BURGER - Direct Cloudinary Upload
+    // ADD BURGER
     const handleAddBurger = async (e) => {
         e.preventDefault();
 
         if (!newBurger.name || !newBurger.price) {
-            alert('Please fill in burger name and price');
+            alert('Please fill all fields');
             return;
         }
 
-        let imageUrl = null;
+        let imageUrl = '';
 
         if (newBurger.image) {
+
             const cloudinaryFormData = new FormData();
+
             cloudinaryFormData.append('file', newBurger.image);
-            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
-            cloudinaryFormData.append('folder', 'beebboo-burgers');
+
+            cloudinaryFormData.append(
+                'upload_preset',
+                'beebboo_uploads'
+            );
+
+            cloudinaryFormData.append(
+                'folder',
+                'beebboo-burgers'
+            );
 
             try {
-                const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
-                    method: 'POST',
-                    body: cloudinaryFormData
-                });
+
+                const response = await fetch(
+                    'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
+                    {
+                        method: 'POST',
+                        body: cloudinaryFormData
+                    }
+                );
+
                 const data = await response.json();
+
+                console.log("☁️ CLOUDINARY RESPONSE:", data);
+
                 imageUrl = data.secure_url;
-                console.log('✅ Image uploaded to Cloudinary:', imageUrl);
+
+                if (!imageUrl) {
+                    alert('Cloudinary image upload failed');
+                    return;
+                }
+
             } catch (error) {
-                console.error('Cloudinary upload error:', error);
-                alert('Failed to upload image. Please try again.');
+                console.error(error);
+                alert('Cloudinary upload error');
                 return;
             }
         }
@@ -104,13 +126,22 @@ const AdminDashboard = () => {
             countInStock: 20
         };
 
+        console.log("📦 BURGER DATA:", burgerData);
+
         try {
-            await axios.post('https://beebboo-backend.onrender.com/api/menu', burgerData, {
-                headers: {
-                    'admin-secret': 'admin123',
-                    'Content-Type': 'application/json'
+
+            await axios.post(
+                'https://beebboo-backend.onrender.com/api/menu',
+                burgerData,
+                {
+                    headers: {
+                        'admin-secret': 'admin123',
+                        'Content-Type': 'application/json'
+                    }
                 }
-            });
+            );
+
+            alert('Burger added successfully 🍔');
 
             setNewBurger({
                 name: '',
@@ -121,16 +152,18 @@ const AdminDashboard = () => {
             });
 
             fetchBurgers();
-            alert('Burger added successfully! 🍔');
+
         } catch (error) {
-            console.error('Error adding burger:', error.response?.data || error.message);
-            alert('Failed to add burger. Please try again.');
+            console.error(error);
+            alert('Failed to add burger');
         }
     };
 
-    // EDIT BURGER - Open edit form
+    // EDIT
     const handleEditBurger = (burger) => {
+
         setEditingBurger(burger);
+
         setEditForm({
             name: burger.name,
             price: burger.price,
@@ -138,29 +171,50 @@ const AdminDashboard = () => {
             description: burger.description || '',
             image: null
         });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     };
 
-    // UPDATE BURGER - Save edited burger
+    // UPDATE
     const handleUpdateBurger = async (e) => {
+
         e.preventDefault();
 
         let imageUrl = editingBurger?.image;
 
         if (editForm.image) {
+
             const cloudinaryFormData = new FormData();
+
             cloudinaryFormData.append('file', editForm.image);
-            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
-            cloudinaryFormData.append('folder', 'beebboo-burgers');
+
+            cloudinaryFormData.append(
+                'upload_preset',
+                'beebboo_uploads'
+            );
+
+            cloudinaryFormData.append(
+                'folder',
+                'beebboo-burgers'
+            );
 
             try {
-                const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
-                    method: 'POST',
-                    body: cloudinaryFormData
-                });
+
+                const response = await fetch(
+                    'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
+                    {
+                        method: 'POST',
+                        body: cloudinaryFormData
+                    }
+                );
+
                 const data = await response.json();
+
                 imageUrl = data.secure_url;
-                console.log('✅ Updated image uploaded to Cloudinary:', imageUrl);
+
             } catch (error) {
                 alert('Image upload failed');
                 return;
@@ -172,201 +226,199 @@ const AdminDashboard = () => {
             price: parseFloat(editForm.price),
             category: editForm.category,
             description: editForm.description,
-            image: imageUrl,
-            countInStock: 20
+            image: imageUrl
         };
 
         try {
-            await axios.put(`https://beebboo-backend.onrender.com/api/menu/${editingBurger._id}`, burgerData, {
-                headers: {
-                    'admin-secret': 'admin123',
-                    'Content-Type': 'application/json'
+
+            await axios.put(
+                `https://beebboo-backend.onrender.com/api/menu/${editingBurger._id}`,
+                burgerData,
+                {
+                    headers: {
+                        'admin-secret': 'admin123',
+                        'Content-Type': 'application/json'
+                    }
                 }
-            });
+            );
+
+            alert('Burger updated successfully');
 
             setEditingBurger(null);
-            setEditForm({ name: '', price: '', category: 'Beef', description: '', image: null });
+
             fetchBurgers();
-            alert('Burger updated successfully! 🍔');
+
         } catch (error) {
-            console.error('Error updating burger:', error);
-            alert('Failed to update burger');
+            console.error(error);
+            alert('Update failed');
         }
     };
 
-    // Cancel edit
     const cancelEdit = () => {
         setEditingBurger(null);
-        setEditForm({ name: '', price: '', category: 'Beef', description: '', image: null });
+
+        setEditForm({
+            name: '',
+            price: '',
+            category: 'Beef',
+            description: '',
+            image: null
+        });
     };
 
-    // DELETE BURGER
     const deleteBurger = async (id) => {
-        if (!window.confirm('Delete this burger?')) return;
+
+        if (!window.confirm('Delete burger?')) return;
 
         try {
-            await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
-                headers: { 'admin-secret': 'admin123' }
-            });
-            fetchBurgers();
-            alert('Burger deleted! 🗑️');
-        } catch (error) {
-            console.error('Error deleting burger:', error);
-            alert('Failed to delete burger');
-        }
-    };
 
-    // UPDATE ORDER STATUS
-    const updateOrderStatus = async (id, status) => {
-        try {
-            await axios.put(
-                `https://beebboo-backend.onrender.com/api/orders/${id}`,
-                { status },
-                { headers: { 'admin-secret': 'admin123' } }
+            await axios.delete(
+                `https://beebboo-backend.onrender.com/api/menu/${id}`,
+                {
+                    headers: {
+                        'admin-secret': 'admin123'
+                    }
+                }
             );
-            fetchOrders();
-            alert('Order status updated!');
+
+            fetchBurgers();
+
         } catch (error) {
-            console.error('Error updating order:', error);
-            alert('Failed to update order');
+            console.error(error);
         }
     };
 
-    if (loading) return <div className="admin-loading">Loading...</div>;
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-    // DASHBOARD
     return (
         <div className="admin-container">
 
-            {/* HEADER */}
             <div className="admin-header">
                 <h2>🍔 Beebboo Admin Panel</h2>
-                <button onClick={handleLogout}>Logout</button>
+
+                <button onClick={handleLogout}>
+                    Logout
+                </button>
             </div>
 
-            {/* ADD/EDIT BURGER FORM */}
-            <form className="form-card" onSubmit={editingBurger ? handleUpdateBurger : handleAddBurger}>
-                <h3>{editingBurger ? '✏️ Edit Burger' : '➕ Add New Burger'}</h3>
+            <form
+                className="form-card"
+                onSubmit={editingBurger ? handleUpdateBurger : handleAddBurger}
+            >
+
+                <h3>
+                    {editingBurger ? 'Edit Burger' : 'Add Burger'}
+                </h3>
 
                 <input
                     type="text"
                     placeholder="Burger Name"
                     value={editingBurger ? editForm.name : newBurger.name}
-                    onChange={(e) => editingBurger
-                        ? setEditForm({ ...editForm, name: e.target.value })
-                        : setNewBurger({ ...newBurger, name: e.target.value })
+                    onChange={(e) =>
+                        editingBurger
+                            ? setEditForm({
+                                ...editForm,
+                                name: e.target.value
+                            })
+                            : setNewBurger({
+                                ...newBurger,
+                                name: e.target.value
+                            })
                     }
-                    required
                 />
 
                 <input
                     type="number"
-                    placeholder="Price (ETB)"
+                    placeholder="Price"
                     value={editingBurger ? editForm.price : newBurger.price}
-                    onChange={(e) => editingBurger
-                        ? setEditForm({ ...editForm, price: e.target.value })
-                        : setNewBurger({ ...newBurger, price: e.target.value })
+                    onChange={(e) =>
+                        editingBurger
+                            ? setEditForm({
+                                ...editForm,
+                                price: e.target.value
+                            })
+                            : setNewBurger({
+                                ...newBurger,
+                                price: e.target.value
+                            })
                     }
-                    required
                 />
 
-                <select
-                    value={editingBurger ? editForm.category : newBurger.category}
-                    onChange={(e) => editingBurger
-                        ? setEditForm({ ...editForm, category: e.target.value })
-                        : setNewBurger({ ...newBurger, category: e.target.value })
-                    }
-                >
-                    <option>Beef</option>
-                    <option>Chicken</option>
-                    <option>Vegan</option>
-                    <option>Special</option>
-                </select>
-
                 <textarea
-                    placeholder="Burger description..."
-                    rows="3"
+                    placeholder="Description"
                     value={editingBurger ? editForm.description : newBurger.description}
-                    onChange={(e) => editingBurger
-                        ? setEditForm({ ...editForm, description: e.target.value })
-                        : setNewBurger({ ...newBurger, description: e.target.value })
+                    onChange={(e) =>
+                        editingBurger
+                            ? setEditForm({
+                                ...editForm,
+                                description: e.target.value
+                            })
+                            : setNewBurger({
+                                ...newBurger,
+                                description: e.target.value
+                            })
                     }
                 />
 
                 <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => editingBurger
-                        ? setEditForm({ ...editForm, image: e.target.files[0] })
-                        : setNewBurger({ ...newBurger, image: e.target.files[0] })
+                    onChange={(e) =>
+                        editingBurger
+                            ? setEditForm({
+                                ...editForm,
+                                image: e.target.files[0]
+                            })
+                            : setNewBurger({
+                                ...newBurger,
+                                image: e.target.files[0]
+                            })
                     }
                 />
 
-                <div className="form-buttons">
-                    <button type="submit">{editingBurger ? 'Update Burger' : 'Add Burger'}</button>
-                    {editingBurger && (
-                        <button type="button" onClick={cancelEdit} className="cancel-btn">Cancel</button>
-                    )}
-                </div>
+                <button type="submit">
+                    {editingBurger ? 'Update Burger' : 'Add Burger'}
+                </button>
+
             </form>
 
-            {/* BURGERS LIST */}
-            <div>
-                <h3>Burgers ({burgers.length})</h3>
-                <div className="burger-list">
-                    {burgers.length === 0 ? (
-                        <p>No burgers yet. Add your first burger above!</p>
-                    ) : (
-                        burgers.map((b) => (
-                            <div key={b._id} className="burger-card">
-                                {b.image && <img src={b.image} alt={b.name} />}
-                                <h4>{b.name}</h4>
-                                <p className="price">{b.price} ETB</p>
-                                <p className="desc">{b.description}</p>
-                                <div className="burger-card-actions">
-                                    <button onClick={() => handleEditBurger(b)} className="edit-btn">✏️ Edit</button>
-                                    <button onClick={() => deleteBurger(b._id)} className="delete-btn">🗑️ Delete</button>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            </div>
+            <div className="burger-list">
 
-            {/* ORDERS LIST */}
-            <div>
-                <h3>Orders ({orders.length})</h3>
-                <div className="orders">
-                    {orders.length === 0 ? (
-                        <p>No orders yet.</p>
-                    ) : (
-                        orders.map((o) => (
-                            <div key={o._id} className="order-card">
-                                <div>
-                                    <strong>{o.fullName}</strong>
-                                    <p>Status: {o.status}</p>
-                                    <p>Total: {o.totalPrice} ETB</p>
-                                    <p>Phone: {o.phone}</p>
-                                    <p>Address: {o.address}</p>
-                                </div>
-                                {o.screenshot && (
-                                    <a href={o.screenshot} target="_blank" rel="noopener noreferrer">
-                                        View Screenshot
-                                    </a>
-                                )}
-                                <select
-                                    value={o.status}
-                                    onChange={(e) => updateOrderStatus(o._id, e.target.value)}
-                                >
-                                    <option>Pending</option>
-                                    <option>Processing</option>
-                                    <option>Delivered</option>
-                                    <option>Cancelled</option>
-                                </select>
-                            </div>
-                        ))
-                    )}
-                </div>
+                {burgers.map((b) => (
+
+                    <div className="burger-card" key={b._id}>
+
+                        {b.image && (
+                            <img
+                                src={b.image}
+                                alt={b.name}
+                                style={{
+                                    width: '100%',
+                                    height: '220px',
+                                    objectFit: 'cover'
+                                }}
+                            />
+                        )}
+
+                        <h3>{b.name}</h3>
+
+                        <p>{b.price} ETB</p>
+
+                        <p>{b.description}</p>
+
+                        <button onClick={() => handleEditBurger(b)}>
+                            Edit
+                        </button>
+
+                        <button onClick={() => deleteBurger(b._id)}>
+                            Delete
+                        </button>
+
+                    </div>
+                ))}
+
             </div>
         </div>
     );
