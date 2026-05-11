@@ -31,7 +31,6 @@ const Payment = () => {
                 return;
             }
             setScreenshot(file);
-            console.log('📎 File selected:', file.name, (file.size / 1024).toFixed(0), 'KB');
         }
     };
 
@@ -41,17 +40,8 @@ const Payment = () => {
     };
 
     const handlePaymentConfirm = async () => {
-        // Validate customer information
-        if (!customerInfo.fullName) {
-            alert('Please enter your full name!');
-            return;
-        }
-        if (!customerInfo.phone) {
-            alert('Please enter your phone number!');
-            return;
-        }
-        if (!customerInfo.address) {
-            alert('Please enter your delivery address!');
+        if (!customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
+            alert('Please fill in all delivery information!');
             return;
         }
 
@@ -66,15 +56,13 @@ const Payment = () => {
             return;
         }
 
-        setProcessing(true);
+        setProcessing(true); // ✅ Start loading
 
         try {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
 
-            console.log('📤 Step 1: Uploading to Cloudinary...');
-
-            // Upload to Cloudinary
+            // 1. Upload to Cloudinary
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
@@ -88,16 +76,12 @@ const Payment = () => {
             const cloudinaryData = await cloudinaryResponse.json();
 
             if (!cloudinaryResponse.ok || !cloudinaryData.secure_url) {
-                console.error('Cloudinary error:', cloudinaryData);
                 throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
             }
 
             const screenshotUrl = cloudinaryData.secure_url;
-            console.log('✅ Cloudinary upload success:', screenshotUrl);
 
-            // Save order to backend
-            console.log('📤 Step 2: Saving order to backend...');
-
+            // 2. Save order to backend
             const orderData = {
                 fullName: customerInfo.fullName,
                 phone: customerInfo.phone,
@@ -120,27 +104,24 @@ const Payment = () => {
                 { headers: { 'Content-Type': 'application/json' } }
             );
 
-            console.log('✅ Order saved:', response.data);
-
-            // ✅ SUCCESS - Clear cart, show alert, redirect to my orders
+            // ✅ SUCCESS PATH
+            setProcessing(false); // Stop loading before alert/navigate
             clearCart();
             alert('Order placed successfully! 🍔');
             navigate('/my-orders');
 
         } catch (error) {
             console.error('❌ Payment error:', error);
+            setProcessing(false); // ✅ STOP LOADING ON ERROR
 
             let errorMessage = 'Payment failed. ';
-            if (error.message.includes('Cloudinary')) {
-                errorMessage = 'Image upload failed. Please try again with a different image.';
-            } else if (error.response?.data?.message) {
+            if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else {
                 errorMessage = error.message || 'Please try again.';
             }
 
             alert(`Order failed: ${errorMessage}`);
-            setProcessing(false);
         }
     };
 
@@ -153,7 +134,6 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
-            {/* Customer Information Form */}
             <div className="customer-info-section">
                 <h3>📋 Delivery Information</h3>
                 <div className="customer-form">
@@ -163,7 +143,6 @@ const Payment = () => {
                         placeholder="Full Name"
                         value={customerInfo.fullName}
                         onChange={handleInputChange}
-                        required
                         className="customer-input"
                     />
                     <input
@@ -172,7 +151,6 @@ const Payment = () => {
                         placeholder="Phone Number"
                         value={customerInfo.phone}
                         onChange={handleInputChange}
-                        required
                         className="customer-input"
                     />
                     <textarea
@@ -180,14 +158,12 @@ const Payment = () => {
                         placeholder="Delivery Address"
                         value={customerInfo.address}
                         onChange={handleInputChange}
-                        required
                         rows="3"
                         className="customer-textarea"
                     />
                 </div>
             </div>
 
-            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -217,23 +193,17 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Screenshot Upload */}
             <div className="onyx-upload">
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
                     type="file"
-                    accept="image/jpeg,image/png,image/jpg"
+                    accept="image/*"
                     onChange={handleFileChange}
                     className="screenshot-input"
                 />
-                {screenshot && (
-                    <p className="file-name">
-                        ✓ Selected: {screenshot.name} ({(screenshot.size / 1024).toFixed(0)} KB)
-                    </p>
-                )}
+                {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
             </div>
 
-            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -244,7 +214,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
