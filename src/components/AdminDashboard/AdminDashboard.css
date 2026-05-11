@@ -373,4 +373,76 @@ form button[type="button"]:hover {
 .customer-textarea {
     resize: vertical;
     font-family: inherit;
+}/* Orders Section */
+.orders-section {
+    margin-top: 2rem;
+}
+
+.orders-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.order-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-info {
+    margin-bottom: 1rem;
+}
+
+.order-info p {
+    margin: 0.25rem 0;
+    color: #555;
+}
+
+.screenshot-link {
+    display: inline-block;
+    margin: 0.5rem 0;
+    color: #00897b;
+    text-decoration: none;
+}
+
+.screenshot-link:hover {
+    text-decoration: underline;
+}
+
+.order-items {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.order-items div {
+    margin: 0.25rem 0;
+}
+
+.status-select {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.status-pending {
+    color: #ff9800;
+}
+
+.status-processing {
+    color: #2196f3;
+}
+
+.status-delivered {
+    color: #4caf50;
+}
+
+.status-cancelled {
+    color: #f44336;
 }

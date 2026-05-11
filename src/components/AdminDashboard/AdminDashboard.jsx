@@ -4,6 +4,7 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
     const [burgers, setBurgers] = useState([]);
+    const [orders, setOrders] = useState([]);  // ✅ ADD THIS
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ name: '', price: '', category: 'Beef', description: '', image: null });
@@ -14,7 +15,23 @@ const AdminDashboard = () => {
         setLoading(false);
     };
 
-    useEffect(() => { fetchBurgers(); }, []);
+    // ✅ ADD THIS FUNCTION to fetch orders
+    const fetchOrders = async () => {
+        try {
+            const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
+                headers: { 'admin-secret': 'admin123' }
+            });
+            setOrders(res.data);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+    };
+
+    // ✅ UPDATE useEffect to fetch orders
+    useEffect(() => {
+        fetchBurgers();
+        fetchOrders();
+    }, []);
 
     const uploadToCloudinary = async (file) => {
         const fd = new FormData();
@@ -46,6 +63,31 @@ const AdminDashboard = () => {
         if (!confirm('Delete?')) return;
         await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, { headers: { 'admin-secret': 'admin123' } });
         fetchBurgers();
+    };
+
+    // ✅ ADD THIS FUNCTION to update order status
+    const updateOrderStatus = async (id, status) => {
+        try {
+            await axios.put(`https://beebboo-backend.onrender.com/api/orders/${id}`, { status }, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+            alert('Order status updated!');
+            fetchOrders();
+        } catch (error) {
+            console.error('Error updating order:', error);
+            alert('Failed to update order');
+        }
+    };
+
+    // ✅ ADD THIS FUNCTION for status badge
+    const getStatusBadge = (status) => {
+        switch (status) {
+            case 'Pending': return '⏳ Pending';
+            case 'Processing': return '🔄 Processing';
+            case 'Delivered': return '✅ Delivered';
+            case 'Cancelled': return '❌ Cancelled';
+            default: return status;
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -80,6 +122,49 @@ const AdminDashboard = () => {
                         <button onClick={() => deleteBurger(b._id)}>Delete</button>
                     </div>
                 ))}
+            </div>
+
+            {/* ✅ ADD ORDERS SECTION */}
+            <div className="orders-section">
+                <h3>📦 Orders ({orders.length})</h3>
+                {orders.length === 0 ? (
+                    <p>No orders yet.</p>
+                ) : (
+                    orders.map(order => (
+                        <div key={order._id} className="order-card">
+                            <div className="order-info">
+                                <strong>{order.fullName}</strong>
+                                <p>📞 {order.phone}</p>
+                                <p>📍 {order.address}</p>
+                                <p>📧 {order.email || 'No email'}</p>
+                                <p>💰 Total: {order.totalPrice} ETB</p>
+                                <p>💳 Payment: {order.paymentMethod}</p>
+                                <p>Status: <span className={`status-${order.status.toLowerCase()}`}>{getStatusBadge(order.status)}</span></p>
+                            </div>
+                            {order.screenshot && (
+                                <a href={order.screenshot} target="_blank" rel="noopener noreferrer" className="screenshot-link">
+                                    📸 View Screenshot
+                                </a>
+                            )}
+                            <div className="order-items">
+                                <strong>Items:</strong>
+                                {order.items?.map((item, idx) => (
+                                    <div key={idx}>🍔 {item.name} x{item.quantity} = {item.price * item.quantity} ETB</div>
+                                ))}
+                            </div>
+                            <select
+                                value={order.status}
+                                onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                                className="status-select"
+                            >
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Delivered</option>
+                                <option>Cancelled</option>
+                            </select>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
