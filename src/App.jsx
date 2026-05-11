@@ -14,7 +14,8 @@ import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
 
-const ProtectedRoute = ({ children }) => {
+// ✅ For Admin only - checks isAdmin
+const AdminRoute = ({ children }) => {
     let userInfo = null;
     try {
         const stored = localStorage.getItem("userInfo");
@@ -25,8 +26,25 @@ const ProtectedRoute = ({ children }) => {
         console.error("Invalid userInfo in localStorage");
     }
 
-    // ✅ FIXED: Check userInfo.user.isAdmin (not userInfo.isAdmin)
     if (!userInfo || !userInfo.user?.isAdmin) {
+        return <Navigate to="/login" replace />;
+    }
+    return children;
+};
+
+// ✅ For any logged-in user (regular or admin)
+const UserRoute = ({ children }) => {
+    let userInfo = null;
+    try {
+        const stored = localStorage.getItem("userInfo");
+        if (stored) {
+            userInfo = JSON.parse(stored);
+        }
+    } catch (error) {
+        console.error("Invalid userInfo in localStorage");
+    }
+
+    if (!userInfo) {
         return <Navigate to="/login" replace />;
     }
     return children;
@@ -43,19 +61,27 @@ function App() {
                     <Route path="register" element={<Register />} />
                     <Route path="menu" element={<Menu />} />
                     <Route path="about" element={<About />} />
-                    <Route path="cart" element={<Cart />} />
-                    <Route path="payment" element={<Payment />} />
                     <Route path="contact" element={<Contact />} />
+
+                    {/* ✅ Protected routes - require login */}
+                    <Route path="cart" element={
+                        <UserRoute>
+                            <Cart />
+                        </UserRoute>
+                    } />
+                    <Route path="payment" element={
+                        <UserRoute>
+                            <Payment />
+                        </UserRoute>
+                    } />
                 </Route>
 
-                <Route
-                    path="/admin"
-                    element={
-                        <ProtectedRoute>
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    }
-                />
+                {/* ✅ Admin only route */}
+                <Route path="/admin" element={
+                    <AdminRoute>
+                        <AdminDashboard />
+                    </AdminRoute>
+                } />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
