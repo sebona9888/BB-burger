@@ -12,7 +12,7 @@ import Menu from './Pages/Menu/Menu';
 import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
-import Payment from './Pages/Payment/Payment';  // ✅ UPPERCASE P
+import Payment from './Pages/Payment/Payment';
 
 const ProtectedRoute = ({ children }) => {
     let userInfo = null;
@@ -25,6 +25,7 @@ const ProtectedRoute = ({ children }) => {
         console.error("Invalid userInfo in localStorage");
     }
 
+    // ✅ FIXED: Check userInfo.user.isAdmin (not userInfo.isAdmin)
     if (!userInfo || !userInfo.user?.isAdmin) {
         return <Navigate to="/login" replace />;
     }
@@ -43,7 +44,7 @@ function App() {
                     <Route path="menu" element={<Menu />} />
                     <Route path="about" element={<About />} />
                     <Route path="cart" element={<Cart />} />
-                    <Route path="payment" element={<Payment />} />  {/* ✅ UPPERCASE P */}
+                    <Route path="payment" element={<Payment />} />
                     <Route path="contact" element={<Contact />} />
                 </Route>
 
