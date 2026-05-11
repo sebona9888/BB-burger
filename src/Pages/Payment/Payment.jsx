@@ -11,7 +11,6 @@ const Payment = () => {
     const [screenshot, setScreenshot] = useState(null);
     const navigate = useNavigate();
 
-    // ✅ Customer Information State
     const [customerInfo, setCustomerInfo] = useState({
         fullName: '',
         phone: '',
@@ -27,8 +26,9 @@ const Payment = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert('File too large! Please upload image less than 5MB.');
+            // Limit to 2MB for faster upload
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Please upload image smaller than 2MB for faster processing');
                 return;
             }
             setScreenshot(file);
@@ -41,7 +41,6 @@ const Payment = () => {
     };
 
     const handlePaymentConfirm = async () => {
-        // ✅ Validate customer information
         if (!customerInfo.fullName) {
             alert('Please enter your full name!');
             return;
@@ -69,32 +68,29 @@ const Payment = () => {
         setProcessing(true);
 
         try {
-            // Get logged-in user's email for order history
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
 
-            // Step 1: Upload screenshot to Cloudinary
+            // Step 1: Compress image before upload for faster processing
+            let compressedFile = screenshot;
+            if (screenshot.size > 500 * 1024) { // If larger than 500KB
+                compressedFile = await compressImage(screenshot);
+            }
+
+            // Upload to Cloudinary with shorter timeout
             const cloudinaryFormData = new FormData();
-            cloudinaryFormData.append('file', screenshot);
+            cloudinaryFormData.append('file', compressedFile);
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-orders');
-
-            console.log('📤 Uploading to Cloudinary...');
-
-            // ✅ Create AbortController for timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 60000);
 
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
                 {
                     method: 'POST',
                     body: cloudinaryFormData,
-                    signal: controller.signal
+                    signal: AbortSignal.timeout(30000) // 30 second timeout for upload
                 }
             );
-
-            clearTimeout(timeoutId);
 
             const cloudinaryData = await cloudinaryResponse.json();
 
@@ -102,14 +98,9 @@ const Payment = () => {
                 throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
             }
 
-            if (!cloudinaryData.secure_url) {
-                throw new Error('No secure_url returned from Cloudinary');
-            }
-
             const screenshotUrl = cloudinaryData.secure_url;
-            console.log('✅ Uploaded to Cloudinary:', screenshotUrl);
 
-            // Step 2: Save order to backend with customer info
+            // Step 2: Save order - send minimal data
             const orderData = {
                 fullName: customerInfo.fullName,
                 phone: customerInfo.phone,
@@ -126,18 +117,14 @@ const Payment = () => {
                 screenshot: screenshotUrl
             };
 
-            console.log('📤 Saving order to backend...', orderData);
-
             const response = await axios.post(
                 'https://beebboo-backend.onrender.com/api/orders',
                 orderData,
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    timeout: 60000
+                    timeout: 20000 // 20 second timeout for order
                 }
             );
-
-            console.log('✅ Order response:', response.data);
 
             if (response.data) {
                 clearCart();
@@ -147,21 +134,40 @@ const Payment = () => {
         } catch (error) {
             console.error('Payment error:', error);
 
-            let errorMessage = 'Payment failed. ';
-            if (error.name === 'AbortError') {
-                errorMessage = 'Upload took too long. Please try again with a smaller image.';
-            } else if (error.message.includes('Cloudinary')) {
-                errorMessage = 'Screenshot upload failed. Please check your Cloudinary preset configuration.';
-            } else if (error.response?.data?.message) {
-                errorMessage = error.response.data.message;
+            if (error.name === 'AbortError' || error.message?.includes('timeout')) {
+                alert('Network slow. Please try again with smaller image.');
             } else {
-                errorMessage = error.message || 'Please try again.';
+                alert('Payment failed. Please try again.');
             }
-
-            alert(`Order failed: ${errorMessage}`);
         } finally {
             setProcessing(false);
         }
+    };
+
+    // Image compression helper function
+    const compressImage = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 800;
+                    const scale = maxWidth / img.width;
+                    canvas.width = maxWidth;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob((blob) => {
+                        resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+                    }, 'image/jpeg', 0.7);
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
     };
 
     return (
@@ -173,7 +179,6 @@ const Payment = () => {
                 <p>SECURE YOUR ORDER BY SETTLING THROUGH OUR CHANNELS</p>
             </div>
 
-            {/* ✅ CUSTOMER INFORMATION FORM */}
             <div className="customer-info-section">
                 <h3>📋 Delivery Information</h3>
                 <div className="customer-form">
@@ -207,7 +212,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Payment Cards */}
             <div className="onyx-grid">
                 <div className="onyx-card" onClick={() => handleCopy("1000421244808", "CBE")}>
                     <div className="onyx-inner">
@@ -237,7 +241,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Screenshot Upload */}
             <div className="onyx-upload">
                 <h3>UPLOAD PAYMENT SCREENSHOT</h3>
                 <input
@@ -246,10 +249,9 @@ const Payment = () => {
                     onChange={handleFileChange}
                     className="screenshot-input"
                 />
-                {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
+                {screenshot && <p className="file-name">✓ Selected: {screenshot.name} ({Math.round(screenshot.size / 1024)} KB)</p>}
             </div>
 
-            {/* Contact Section */}
             <div className="onyx-verification">
                 <div className="onyx-verify-inner">
                     <h3>ACTION: SEND DIRECT SCREENSHOT</h3>
@@ -260,7 +262,6 @@ const Payment = () => {
                 </div>
             </div>
 
-            {/* Confirm Button */}
             <div className="onyx-confirm">
                 <button
                     className="confirm-payment-btn"
