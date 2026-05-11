@@ -56,7 +56,7 @@ const Payment = () => {
             return;
         }
 
-        setProcessing(true); // ✅ Start loading
+        setProcessing(true);
 
         try {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -98,24 +98,27 @@ const Payment = () => {
                 screenshot: screenshotUrl
             };
 
+            // ✅ URL SIRREEFFAME: 'beebboo-burger-backend' fayyadami
             const response = await axios.post(
-                'https://beebboo-backend.onrender.com/api/orders',
+                'https://beebboo-burger-backend.onrender.com/api/orders',
                 orderData,
                 { headers: { 'Content-Type': 'application/json' } }
             );
 
-            // ✅ SUCCESS PATH
-            setProcessing(false); // Stop loading before alert/navigate
+            // ✅ SUCCESS PATH: Stop loading before everything
+            setProcessing(false);
             clearCart();
             alert('Order placed successfully! 🍔');
             navigate('/my-orders');
 
         } catch (error) {
             console.error('❌ Payment error:', error);
-            setProcessing(false); // ✅ STOP LOADING ON ERROR
+            setProcessing(false);
 
             let errorMessage = 'Payment failed. ';
-            if (error.response?.data?.message) {
+            if (error.response?.status === 404) {
+                errorMessage = "Backend path not found (404). Check your URL!";
+            } else if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else {
                 errorMessage = error.message || 'Please try again.';
@@ -144,6 +147,7 @@ const Payment = () => {
                         value={customerInfo.fullName}
                         onChange={handleInputChange}
                         className="customer-input"
+                        required
                     />
                     <input
                         type="tel"
@@ -152,6 +156,7 @@ const Payment = () => {
                         value={customerInfo.phone}
                         onChange={handleInputChange}
                         className="customer-input"
+                        required
                     />
                     <textarea
                         name="address"
@@ -160,6 +165,7 @@ const Payment = () => {
                         onChange={handleInputChange}
                         rows="3"
                         className="customer-textarea"
+                        required
                     />
                 </div>
             </div>
