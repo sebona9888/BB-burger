@@ -77,7 +77,7 @@ const AdminDashboard = () => {
         if (newBurger.image) {
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', newBurger.image);
-            cloudinaryFormData.append('upload_preset', 'beebboo_unsigned');
+            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-burgers');
 
             try {
@@ -145,12 +145,12 @@ const AdminDashboard = () => {
     const handleUpdateBurger = async (e) => {
         e.preventDefault();
 
-        let imageUrl = editForm.image ? null : editingBurger?.image;
+        let imageUrl = editingBurger?.image;
 
         if (editForm.image) {
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', editForm.image);
-            cloudinaryFormData.append('upload_preset', 'beebboo_unsigned');
+            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
             cloudinaryFormData.append('folder', 'beebboo-burgers');
 
             try {
@@ -160,6 +160,7 @@ const AdminDashboard = () => {
                 });
                 const data = await response.json();
                 imageUrl = data.secure_url;
+                console.log('✅ Updated image uploaded to Cloudinary:', imageUrl);
             } catch (error) {
                 alert('Image upload failed');
                 return;
@@ -171,7 +172,8 @@ const AdminDashboard = () => {
             price: parseFloat(editForm.price),
             category: editForm.category,
             description: editForm.description,
-            image: imageUrl || editingBurger?.image
+            image: imageUrl,
+            countInStock: 20
         };
 
         try {
