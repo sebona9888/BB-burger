@@ -88,8 +88,8 @@ const AdminDashboard = () => {
             fetchBurgers();
             alert('Burger added successfully! 🍔');
         } catch (error) {
-            console.error('Error adding burger:', error.response?.data || error.message);
-            alert(`Failed to add burger: ${error.response?.data?.message || error.message}`);
+            console.error('Error adding burger:', error);
+            alert('Failed to add burger. Make sure you are connected to the internet.');
         }
     };
 
