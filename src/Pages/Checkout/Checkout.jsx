@@ -34,31 +34,30 @@ const Checkout = () => {
             return;
         }
 
-        // ✅ Screenshot dirqama gochuu (Cash yoo hin taane)
         if (formData.paymentMethod !== 'Cash' && !screenshot) {
             toast.error("Maaloo, screenshot kaffaltii fe'aa!");
             return;
         }
 
         try {
-            // ✅ FormData uumuu (File-idhaaf murteessaa dha)
+            // Get logged-in user's email for order history
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const userEmail = userInfo?.user?.email || userInfo?.email || '';
+
             const data = new FormData();
 
             data.append('fullName', formData.fullName);
             data.append('phone', formData.phone);
             data.append('address', formData.address);
+            data.append('email', userEmail);  // ✅ Added for order history
             data.append('paymentMethod', formData.paymentMethod);
             data.append('totalPrice', totalPrice);
-
-            // ✅ Items array gara String-itti jijjiiri (Backend kee JSON.parse waan godhuuf)
             data.append('items', JSON.stringify(cartItems));
 
-            // ✅ Screenshot yoo jiraate qofa dabaladhu
             if (screenshot) {
                 data.append('screenshot', screenshot);
             }
 
-            // ✅ createOrder-tti FormData ('data') sana ergi
             createOrder(data, {
                 onSuccess: () => {
                     setPreview(null);
@@ -115,7 +114,6 @@ const Checkout = () => {
                         <option value="Cash">Cash (Kaffaltii harkaatti)</option>
                         <option value="Telebirr">Telebirr</option>
                         <option value="CBE">CBE</option>
-                        
                         <option value="AbyssinaBE">Abyssina</option>
                     </select>
                 </div>

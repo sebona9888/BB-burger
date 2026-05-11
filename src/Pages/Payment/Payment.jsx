@@ -43,6 +43,10 @@ const Payment = () => {
         setProcessing(true);
 
         try {
+            // Get logged-in user's email for order history
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
+
             // Step 1: Upload screenshot to Cloudinary using unsigned preset
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
@@ -76,11 +80,12 @@ const Payment = () => {
             const screenshotUrl = cloudinaryData.secure_url;
             console.log('✅ Uploaded to Cloudinary:', screenshotUrl);
 
-            // Step 2: Save order to backend
+            // Step 2: Save order to backend with user email
             const orderData = {
                 fullName: 'Beebboo Customer',
                 phone: '0902989488',
                 address: 'Addis Ababa, Ethiopia',
+                email: userEmail,  // ✅ Added for order history
                 paymentMethod: 'Bank Transfer',
                 totalPrice: totalPrice,
                 items: cartItems.map(item => ({
