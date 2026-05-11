@@ -26,11 +26,12 @@ const Payment = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Please upload image smaller than 2MB');
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large! Please upload image less than 5MB.');
                 return;
             }
             setScreenshot(file);
+            console.log('📎 File selected:', file.name, file.size, 'bytes');
         }
     };
 
@@ -40,6 +41,7 @@ const Payment = () => {
     };
 
     const handlePaymentConfirm = async () => {
+        // Validate customer information
         if (!customerInfo.fullName) {
             alert('Please enter your full name!');
             return;
@@ -70,6 +72,8 @@ const Payment = () => {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const userEmail = userInfo?.user?.email || userInfo?.email || 'guest@example.com';
 
+            console.log('📤 Step 1: Uploading to Cloudinary...');
+
             // Upload to Cloudinary
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
@@ -83,13 +87,21 @@ const Payment = () => {
 
             const cloudinaryData = await cloudinaryResponse.json();
 
+            if (!cloudinaryResponse.ok) {
+                console.error('Cloudinary error:', cloudinaryData);
+                throw new Error(cloudinaryData.error?.message || 'Cloudinary upload failed');
+            }
+
             if (!cloudinaryData.secure_url) {
-                throw new Error('Cloudinary upload failed');
+                throw new Error('No URL returned from Cloudinary');
             }
 
             const screenshotUrl = cloudinaryData.secure_url;
+            console.log('✅ Cloudinary upload success:', screenshotUrl);
 
-            // Save order
+            // Save order to backend
+            console.log('📤 Step 2: Saving order to backend...');
+
             const orderData = {
                 fullName: customerInfo.fullName,
                 phone: customerInfo.phone,
@@ -112,25 +124,28 @@ const Payment = () => {
                 { headers: { 'Content-Type': 'application/json' } }
             );
 
-            // ✅ IMPORTANT: Check response and redirect immediately
-            if (response.status === 200 || response.status === 201) {
-                clearCart();
-                alert('Order placed successfully! 🍔');
-                navigate('/my-orders'); // Redirect to order history
-                return; // Stop execution
-            }
-        } catch (error) {
-            console.error('Payment error:', error);
+            console.log('✅ Order saved:', response.data);
 
-            // Check if order was actually saved despite error
-            if (error.response?.status === 201 || error.response?.status === 200) {
+            if (response.data) {
                 clearCart();
                 alert('Order placed successfully! 🍔');
                 navigate('/my-orders');
-                return;
+            }
+        } catch (error) {
+            console.error('❌ Error:', error);
+
+            // Show specific error message
+            let errorMsg = 'Payment failed. ';
+            if (error.message.includes('Cloudinary')) {
+                errorMsg = 'Image upload failed. Please check your Cloudinary preset.';
+            } else if (error.response?.data?.message) {
+                errorMsg = error.response.data.message;
+            } else {
+                errorMsg = error.message || 'Please try again.';
             }
 
-            alert('Payment failed. Please try again.');
+            alert(`Order failed: ${errorMsg}`);
+            setProcessing(false);
         } finally {
             setProcessing(false);
         }
@@ -215,7 +230,7 @@ const Payment = () => {
                     onChange={handleFileChange}
                     className="screenshot-input"
                 />
-                {screenshot && <p className="file-name">✓ Selected: {screenshot.name}</p>}
+                {screenshot && <p className="file-name">✓ Selected: {screenshot.name} ({(screenshot.size / 1024).toFixed(0)} KB)</p>}
             </div>
 
             <div className="onyx-verification">
