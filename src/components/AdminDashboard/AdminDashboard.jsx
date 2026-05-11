@@ -18,6 +18,16 @@ const AdminDashboard = () => {
         description: ''
     });
 
+    // EDIT STATE
+    const [editingBurger, setEditingBurger] = useState(null);
+    const [editForm, setEditForm] = useState({
+        name: '',
+        price: '',
+        category: 'Beef',
+        description: '',
+        image: null
+    });
+
     // FETCH BURGERS
     const fetchBurgers = useCallback(async () => {
         try {
@@ -53,7 +63,7 @@ const AdminDashboard = () => {
         window.location.href = '/login';
     };
 
-    // ✅ FIXED: ADD BURGER - Direct Cloudinary Upload (No Backend Image Processing)
+    // ADD BURGER - Direct Cloudinary Upload
     const handleAddBurger = async (e) => {
         e.preventDefault();
 
@@ -64,7 +74,6 @@ const AdminDashboard = () => {
 
         let imageUrl = null;
 
-        // Step 1: Upload image directly to Cloudinary (unsigned)
         if (newBurger.image) {
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', newBurger.image);
@@ -86,7 +95,6 @@ const AdminDashboard = () => {
             }
         }
 
-        // Step 2: Send burger data as JSON to backend
         const burgerData = {
             name: newBurger.name,
             price: parseFloat(newBurger.price),
@@ -118,6 +126,76 @@ const AdminDashboard = () => {
             console.error('Error adding burger:', error.response?.data || error.message);
             alert('Failed to add burger. Please try again.');
         }
+    };
+
+    // EDIT BURGER - Open edit form
+    const handleEditBurger = (burger) => {
+        setEditingBurger(burger);
+        setEditForm({
+            name: burger.name,
+            price: burger.price,
+            category: burger.category || 'Beef',
+            description: burger.description || '',
+            image: null
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // UPDATE BURGER - Save edited burger
+    const handleUpdateBurger = async (e) => {
+        e.preventDefault();
+
+        let imageUrl = editForm.image ? null : editingBurger?.image;
+
+        if (editForm.image) {
+            const cloudinaryFormData = new FormData();
+            cloudinaryFormData.append('file', editForm.image);
+            cloudinaryFormData.append('upload_preset', 'beebboo_unsigned');
+            cloudinaryFormData.append('folder', 'beebboo-burgers');
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
+                    method: 'POST',
+                    body: cloudinaryFormData
+                });
+                const data = await response.json();
+                imageUrl = data.secure_url;
+            } catch (error) {
+                alert('Image upload failed');
+                return;
+            }
+        }
+
+        const burgerData = {
+            name: editForm.name,
+            price: parseFloat(editForm.price),
+            category: editForm.category,
+            description: editForm.description,
+            image: imageUrl || editingBurger?.image
+        };
+
+        try {
+            await axios.put(`https://beebboo-backend.onrender.com/api/menu/${editingBurger._id}`, burgerData, {
+                headers: {
+                    'admin-secret': 'admin123',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            setEditingBurger(null);
+            setEditForm({ name: '', price: '', category: 'Beef', description: '', image: null });
+            fetchBurgers();
+            alert('Burger updated successfully! 🍔');
+        } catch (error) {
+            console.error('Error updating burger:', error);
+            alert('Failed to update burger');
+        }
+    };
+
+    // Cancel edit
+    const cancelEdit = () => {
+        setEditingBurger(null);
+        setEditForm({ name: '', price: '', category: 'Beef', description: '', image: null });
     };
 
     // DELETE BURGER
@@ -164,29 +242,38 @@ const AdminDashboard = () => {
                 <button onClick={handleLogout}>Logout</button>
             </div>
 
-            {/* ADD BURGER FORM */}
-            <form className="form-card" onSubmit={handleAddBurger}>
-                <h3>Add New Burger</h3>
+            {/* ADD/EDIT BURGER FORM */}
+            <form className="form-card" onSubmit={editingBurger ? handleUpdateBurger : handleAddBurger}>
+                <h3>{editingBurger ? '✏️ Edit Burger' : '➕ Add New Burger'}</h3>
 
                 <input
                     type="text"
                     placeholder="Burger Name"
-                    value={newBurger.name}
-                    onChange={(e) => setNewBurger({ ...newBurger, name: e.target.value })}
+                    value={editingBurger ? editForm.name : newBurger.name}
+                    onChange={(e) => editingBurger
+                        ? setEditForm({ ...editForm, name: e.target.value })
+                        : setNewBurger({ ...newBurger, name: e.target.value })
+                    }
                     required
                 />
 
                 <input
                     type="number"
                     placeholder="Price (ETB)"
-                    value={newBurger.price}
-                    onChange={(e) => setNewBurger({ ...newBurger, price: e.target.value })}
+                    value={editingBurger ? editForm.price : newBurger.price}
+                    onChange={(e) => editingBurger
+                        ? setEditForm({ ...editForm, price: e.target.value })
+                        : setNewBurger({ ...newBurger, price: e.target.value })
+                    }
                     required
                 />
 
                 <select
-                    value={newBurger.category}
-                    onChange={(e) => setNewBurger({ ...newBurger, category: e.target.value })}
+                    value={editingBurger ? editForm.category : newBurger.category}
+                    onChange={(e) => editingBurger
+                        ? setEditForm({ ...editForm, category: e.target.value })
+                        : setNewBurger({ ...newBurger, category: e.target.value })
+                    }
                 >
                     <option>Beef</option>
                     <option>Chicken</option>
@@ -197,17 +284,28 @@ const AdminDashboard = () => {
                 <textarea
                     placeholder="Burger description..."
                     rows="3"
-                    value={newBurger.description}
-                    onChange={(e) => setNewBurger({ ...newBurger, description: e.target.value })}
+                    value={editingBurger ? editForm.description : newBurger.description}
+                    onChange={(e) => editingBurger
+                        ? setEditForm({ ...editForm, description: e.target.value })
+                        : setNewBurger({ ...newBurger, description: e.target.value })
+                    }
                 />
 
                 <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setNewBurger({ ...newBurger, image: e.target.files[0] })}
+                    onChange={(e) => editingBurger
+                        ? setEditForm({ ...editForm, image: e.target.files[0] })
+                        : setNewBurger({ ...newBurger, image: e.target.files[0] })
+                    }
                 />
 
-                <button type="submit">Add Burger</button>
+                <div className="form-buttons">
+                    <button type="submit">{editingBurger ? 'Update Burger' : 'Add Burger'}</button>
+                    {editingBurger && (
+                        <button type="button" onClick={cancelEdit} className="cancel-btn">Cancel</button>
+                    )}
+                </div>
             </form>
 
             {/* BURGERS LIST */}
@@ -223,7 +321,10 @@ const AdminDashboard = () => {
                                 <h4>{b.name}</h4>
                                 <p className="price">{b.price} ETB</p>
                                 <p className="desc">{b.description}</p>
-                                <button onClick={() => deleteBurger(b._id)}>Delete</button>
+                                <div className="burger-card-actions">
+                                    <button onClick={() => handleEditBurger(b)} className="edit-btn">✏️ Edit</button>
+                                    <button onClick={() => deleteBurger(b._id)} className="delete-btn">🗑️ Delete</button>
+                                </div>
                             </div>
                         ))
                     )}
