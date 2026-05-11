@@ -5,10 +5,7 @@ import './AdminDashboard.css';
 const AdminDashboard = () => {
 
     // AUTH
-    const [password, setPassword] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     // DATA
@@ -19,10 +16,24 @@ const AdminDashboard = () => {
     const [newBurger, setNewBurger] = useState({
         name: '',
         price: '',
-        image: '',
+        image: null,
         category: 'Beef',
         description: ''
     });
+
+    // Get token from localStorage
+    const getToken = () => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        return userInfo?.token;
+    };
+
+    // Check if user is admin on page load
+    useEffect(() => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfo?.user?.isAdmin || userInfo?.isAdmin) {
+            setIsAuthenticated(true);
+        }
+    }, []);
 
     // FETCH
     const fetchBurgers = useCallback(async () => {
@@ -31,9 +42,11 @@ const AdminDashboard = () => {
     }, []);
 
     const fetchOrders = useCallback(async () => {
+        const token = getToken();
+        if (!token) return;
         const res = await axios.get(
             'https://beebboo-backend.onrender.com/api/orders',
-            { headers: { 'admin-secret': 'admin123' } }
+            { headers: { 'Authorization': `Bearer ${token}` } }
         );
         setOrders(res.data);
     }, []);
@@ -45,90 +58,81 @@ const AdminDashboard = () => {
         }
     }, [isAuthenticated, fetchBurgers, fetchOrders]);
 
-    // LOGIN
-    const handleLogin = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
-
-        setTimeout(() => {
-            if (password === "admin123") {
-                setIsAuthenticated(true);
-            } else {
-                setError("Wrong password");
-            }
-            setLoading(false);
-        }, 800);
-    };
-
+    // LOGOUT
     const handleLogout = () => {
+        localStorage.removeItem('userInfo');
         setIsAuthenticated(false);
-        setPassword("");
+        window.location.href = '/login';
     };
 
     // CRUD
     const handleAddBurger = async (e) => {
         e.preventDefault();
+        const token = getToken();
 
-        await axios.post(
-            'https://beebboo-backend.onrender.com/api/menu',
-            { ...newBurger, countInStock: 20 },
-            { headers: { 'admin-secret': 'admin123' } }
-        );
+        if (!token) {
+            alert('Please login again');
+            return;
+        }
 
-        setNewBurger({
-            name: '',
-            price: '',
-            image: '',
-            category: 'Beef',
-            description: ''
-        });
+        const formData = new FormData();
+        formData.append('name', newBurger.name);
+        formData.append('price', newBurger.price);
+        formData.append('category', newBurger.category);
+        formData.append('description', newBurger.description);
+        if (newBurger.image) formData.append('image', newBurger.image);
 
-        fetchBurgers();
+        try {
+            await axios.post('https://beebboo-backend.onrender.com/api/menu', formData, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            setNewBurger({
+                name: '',
+                price: '',
+                image: null,
+                category: 'Beef',
+                description: ''
+            });
+
+            fetchBurgers();
+            alert('Burger added successfully! 🍔');
+        } catch (error) {
+            console.error('Error adding burger:', error);
+            alert('Failed to add burger');
+        }
     };
 
     const deleteBurger = async (id) => {
-        await axios.delete(
-            `https://beebboo-backend.onrender.com/api/menu/${id}`,
-            { headers: { 'admin-secret': 'admin123' } }
-        );
-        fetchBurgers();
+        if (!window.confirm('Delete this burger?')) return;
+
+        const token = getToken();
+        try {
+            await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            fetchBurgers();
+            alert('Burger deleted! 🗑️');
+        } catch (error) {
+            console.error('Error deleting burger:', error);
+            alert('Failed to delete burger');
+        }
     };
 
     const updateOrderStatus = async (id, status) => {
+        const token = getToken();
         await axios.put(
             `https://beebboo-backend.onrender.com/api/orders/${id}`,
             { status },
-            { headers: { 'admin-secret': 'admin123' } }
+            { headers: { 'Authorization': `Bearer ${token}` } }
         );
         fetchOrders();
     };
 
-    // LOGIN UI
+    // NOT AUTHENTICATED - Redirect to login
     if (!isAuthenticated) {
-        return (
-            <div className="login-overlay">
-                <form className="login-card" onSubmit={handleLogin}>
-                    <h2>Beebboo Admin Panel</h2>
-
-                    <div className="password-wrapper">
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password..."
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <span onClick={() => setShowPassword(!showPassword)}>👁</span>
-                    </div>
-
-                    {error && <p className="error-text">{error}</p>}
-
-                    <button type="submit">
-                        {loading ? <span className="loader"></span> : "Login"}
-                    </button>
-                </form>
-            </div>
-        );
+        window.location.href = '/login';
+        return null;
     }
 
     // DASHBOARD
@@ -137,92 +141,100 @@ const AdminDashboard = () => {
 
             {/* HEADER */}
             <div className="admin-header">
-                <h2>Beebboo Admin Panel</h2>
+                <h2>🍔 Beebboo Admin Panel</h2>
                 <button onClick={handleLogout}>Logout</button>
             </div>
 
-            {/* FORM */}
+            {/* ADD BURGER FORM */}
             <form className="form-card" onSubmit={handleAddBurger}>
-                <h3>Add Burger</h3>
+                <h3>Add New Burger</h3>
 
                 <input
-                    placeholder="Name"
+                    placeholder="Burger Name"
                     value={newBurger.name}
-                    onChange={(e) =>
-                        setNewBurger({ ...newBurger, name: e.target.value })
-                    }
+                    onChange={(e) => setNewBurger({ ...newBurger, name: e.target.value })}
+                    required
                 />
 
                 <input
-                    placeholder="Price"
+                    type="number"
+                    placeholder="Price (ETB)"
                     value={newBurger.price}
-                    onChange={(e) =>
-                        setNewBurger({ ...newBurger, price: e.target.value })
-                    }
+                    onChange={(e) => setNewBurger({ ...newBurger, price: e.target.value })}
+                    required
                 />
 
-                <input
-                    placeholder="Image URL"
-                    value={newBurger.image}
-                    onChange={(e) =>
-                        setNewBurger({ ...newBurger, image: e.target.value })
-                    }
-                />
+                <select
+                    value={newBurger.category}
+                    onChange={(e) => setNewBurger({ ...newBurger, category: e.target.value })}
+                >
+                    <option>Beef</option>
+                    <option>Chicken</option>
+                    <option>Vegan</option>
+                    <option>Special</option>
+                </select>
 
-                {/* DESCRIPTION FIELD */}
                 <textarea
                     placeholder="Burger description..."
+                    rows="3"
                     value={newBurger.description}
-                    onChange={(e) =>
-                        setNewBurger({ ...newBurger, description: e.target.value })
-                    }
+                    onChange={(e) => setNewBurger({ ...newBurger, description: e.target.value })}
                 />
 
-                <button>Add Burger</button>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewBurger({ ...newBurger, image: e.target.files[0] })}
+                />
+
+                <button type="submit">Add Burger</button>
             </form>
 
-            {/* BURGERS */}
+            {/* BURGERS LIST */}
             <div>
-                <h3>Burgers</h3>
+                <h3>Burgers ({burgers.length})</h3>
                 <div className="burger-list">
                     {burgers.map((b) => (
                         <div key={b._id} className="burger-card">
+                            {b.image && <img src={b.image} alt={b.name} />}
                             <h4>{b.name}</h4>
-                            <p className="price">${b.price}</p>
+                            <p className="price">{b.price} ETB</p>
                             <p className="desc">{b.description}</p>
-
-                            <button onClick={() => deleteBurger(b._id)}>
-                                Delete
-                            </button>
+                            <button onClick={() => deleteBurger(b._id)}>Delete</button>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* ORDERS */}
+            {/* ORDERS LIST */}
             <div>
-                <h3>Orders</h3>
+                <h3>Orders ({orders.length})</h3>
                 <div className="orders">
                     {orders.map((o) => (
                         <div key={o._id} className="order-card">
                             <div>
                                 <strong>{o.fullName}</strong>
-                                <p>{o.status}</p>
+                                <p>Status: {o.status}</p>
+                                <p>Total: {o.totalPrice} ETB</p>
                             </div>
-
+                            {o.screenshot && (
+                                <a href={o.screenshot} target="_blank" rel="noopener noreferrer">
+                                    View Screenshot
+                                </a>
+                            )}
                             <select
-                                onChange={(e) =>
-                                    updateOrderStatus(o._id, e.target.value)
-                                }
+                                value={o.status}
+                                onChange={(e) => updateOrderStatus(o._id, e.target.value)}
                             >
                                 <option>Pending</option>
+                                <option>Processing</option>
                                 <option>Delivered</option>
+                                <option>Cancelled</option>
                             </select>
                         </div>
                     ))}
                 </div>
             </div>
-
         </div>
     );
 };
