@@ -25,7 +25,10 @@ const Profile = () => {
             phone: user.user?.phone || user.phone || '',
             address: user.user?.address || user.address || ''
         });
-        setImagePreview(user.user?.profileImage || user.profileImage || '');
+
+        // Get profile image from localStorage or use default
+        const profileImg = user.user?.profileImage || user.profileImage || '';
+        setImagePreview(profileImg);
     }, [navigate]);
 
     const uploadToCloudinary = async (file) => {
@@ -64,6 +67,7 @@ const Profile = () => {
                 toast.success('Image uploaded!', { id: loading, position: 'top-center' });
             } catch (error) {
                 toast.error('Image upload failed', { id: loading, position: 'top-center' });
+                return;
             }
         }
 
@@ -91,12 +95,18 @@ const Profile = () => {
                 {/* Profile Image */}
                 <div className="profile-image-section">
                     <img
-                        src={imagePreview || 'https://via.placeholder.com/100'}
+                        src={imagePreview || 'https://via.placeholder.com/100?text=No+Image'}
                         alt="Profile"
                         className="profile-avatar"
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=No+Image'; }}
                     />
                     {isEditing && (
-                        <input type="file" accept="image/*" onChange={handleImageChange} className="image-input" />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="image-input"
+                        />
                     )}
                 </div>
 
@@ -107,19 +117,39 @@ const Profile = () => {
                         <p><strong>Phone:</strong> {formData.phone || 'Not set'}</p>
                         <p><strong>Address:</strong> {formData.address || 'Not set'}</p>
                         <div className="profile-buttons">
-                            <button onClick={() => setIsEditing(true)}>✏️ Edit</button>
+                            <button onClick={() => setIsEditing(true)}>✏️ Edit Profile</button>
                             <button onClick={() => navigate('/my-orders')}>📋 My Orders</button>
                             <button onClick={() => { localStorage.removeItem('userInfo'); navigate('/login'); }}>🚪 Logout</button>
                         </div>
                     </>
                 ) : (
                     <>
-                        <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="Name" />
-                        <input value={formData.email} disabled placeholder="Email (cannot change)" />
-                        <input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} placeholder="Phone" />
-                        <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} placeholder="Address" rows="2" />
+                        <input
+                            type="text"
+                            value={formData.name}
+                            onChange={e => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Full Name"
+                        />
+                        <input
+                            type="email"
+                            value={formData.email}
+                            disabled
+                            placeholder="Email (cannot change)"
+                        />
+                        <input
+                            type="tel"
+                            value={formData.phone}
+                            onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                            placeholder="Phone Number"
+                        />
+                        <textarea
+                            value={formData.address}
+                            onChange={e => setFormData({ ...formData, address: e.target.value })}
+                            placeholder="Delivery Address"
+                            rows="2"
+                        />
                         <div className="profile-buttons">
-                            <button onClick={handleSave}>💾 Save</button>
+                            <button onClick={handleSave}>💾 Save Changes</button>
                             <button onClick={() => setIsEditing(false)}>Cancel</button>
                         </div>
                     </>
