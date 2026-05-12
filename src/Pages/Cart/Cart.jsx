@@ -34,7 +34,7 @@ const Cart = () => {
             });
             return;
         }
-        navigate('/checkout');
+        navigate('/payment');
     };
 
     return (
