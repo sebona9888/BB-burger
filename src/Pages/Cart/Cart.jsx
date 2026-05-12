@@ -9,10 +9,9 @@ const Cart = () => {
     const { cartItems, updateQty, removeItem, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    // Handlers with Toasts
     const handleUpdateQty = (id, newQty) => {
         updateQty(id, newQty);
-        toast.success('Cart updated successfully!', {
+        toast.success('Cart updated!', {
             position: 'top-center',
             duration: 2000,
         });
@@ -20,13 +19,13 @@ const Cart = () => {
 
     const handleRemoveItem = (id) => {
         removeItem(id);
-        toast.success('Item removed from cart!', {
+        toast.success('Item removed!', {
             position: 'top-center',
             duration: 2000,
         });
     };
 
-    const handleCheckout = () => {
+    const handlePayment = () => {
         if (cartItems.length === 0) {
             toast.error('Your cart is empty!', {
                 position: 'top-center',
@@ -34,7 +33,7 @@ const Cart = () => {
             });
             return;
         }
-        navigate('/payment');
+        navigate('/payment');  // ✅ Direct to payment page
     };
 
     return (
@@ -45,7 +44,7 @@ const Cart = () => {
                 <div className="empty-cart">
                     <p>Your cart is empty.</p>
                     <button onClick={() => navigate('/menu')} className="go-back-btn">
-                        Back to Menu
+                        Browse Menu
                     </button>
                 </div>
             ) : (
@@ -62,12 +61,21 @@ const Cart = () => {
                     </div>
 
                     <div className="cart-summary">
-                        <h3>Total: {totalPrice.toLocaleString()} ETB</h3>
-                        <button
-                            className="checkout-btn"
-                            onClick={handleCheckout}
-                        >
-                            Proceed to Checkout
+                        <h3>Order Summary</h3>
+                        <div className="summary-row">
+                            <span>Subtotal</span>
+                            <span>{totalPrice.toLocaleString()} ETB</span>
+                        </div>
+                        <div className="summary-row">
+                            <span>Delivery Fee</span>
+                            <span>Free</span>
+                        </div>
+                        <div className="summary-row total">
+                            <span>Total</span>
+                            <span>{totalPrice.toLocaleString()} ETB</span>
+                        </div>
+                        <button className="checkout-btn" onClick={handlePayment}>
+                            Proceed to Payment 💳
                         </button>
                     </div>
                 </div>
