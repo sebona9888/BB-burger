@@ -50,7 +50,7 @@ const Navbar = () => {
                     <li><Link to="/menu">Menu</Link></li>
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
-                    <li><Link to="/profile">👤 Profile</Link></li>
+                    <Link to="/profile">👤 Profile</Link>
 
                     {userInfo && (
                         <li><Link to="/my-orders">📋 My Orders</Link></li>
@@ -79,7 +79,7 @@ const Navbar = () => {
                     <li><Link to="/menu" onClick={() => setIsOpen(false)}>Menu</Link></li>
                     <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
-
+                    <li><Link to="/profile" onClick={() => setIsOpen(false)}>👤 Profile</Link></li>
                     {userInfo && (
                         <li><Link to="/my-orders" onClick={() => setIsOpen(false)}>📋 My Orders</Link></li>
                     )}
