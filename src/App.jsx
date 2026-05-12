@@ -58,7 +58,7 @@ function App() {
         <>
             {/* ✅ Toaster added for notifications */}
             <Toaster
-                position="top-center"
+                position="middle -center"
                 toastOptions={{
                     duration: 4000,
                     style: { background: '#333', color: '#fff', borderRadius: '10px' },
