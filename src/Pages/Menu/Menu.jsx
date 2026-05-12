@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { CartContext } from '../../context/CartContext';
 import { toast } from 'react-hot-toast';
+import ReviewModal from './ReviewModal';
+import Reviews from '../../components/Reviews/Reviews';
 import './Menu.css';
 
 const Menu = () => {
@@ -13,6 +15,11 @@ const Menu = () => {
     const [activeCategory, setActiveCategory] = useState("All");
     const [sortBy, setSortBy] = useState("default");
 
+    // ✅ Reviews state
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [selectedBurgerForReview, setSelectedBurgerForReview] = useState(null);
+    const [refreshReviews, setRefreshReviews] = useState(0);
+
     const cart = useContext(CartContext);
     const addToCartFunction = cart?.addToCart;
 
@@ -20,12 +27,12 @@ const Menu = () => {
         if (addToCartFunction) {
             addToCartFunction(burger);
             toast.success(`${burger.name} added to cart! 🍔`, {
-                position: "middle-center", 
+                position: "top-center",
                 duration: 2000,
             });
         } else {
             toast.error("Action failed", {
-                position: "middle-center",
+                position: "top-center",
             });
         }
     };
@@ -39,7 +46,7 @@ const Menu = () => {
             } catch (err) {
                 console.error(err);
                 toast.error("Failed to load menu", {
-                    position: "middle-center",
+                    position: "top-center",
                 });
             } finally {
                 setLoading(false);
@@ -119,8 +126,26 @@ const Menu = () => {
                                 <p className="menu-desc">{item.description || "Delicious burger"}</p>
                                 <div className="menu-footer">
                                     <span className="price">{item.price} ETB</span>
-                                    <button className="view-btn">View</button>
+                                    <div className="button-group">
+                                        <button className="view-btn">View</button>
+                                        <button
+                                            className="review-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedBurgerForReview(item);
+                                                setShowReviewModal(true);
+                                            }}
+                                        >
+                                            ⭐ Rate
+                                        </button>
+                                    </div>
                                 </div>
+                                {/* ✅ Reviews Component */}
+                                <Reviews
+                                    key={refreshReviews}
+                                    burgerId={item._id}
+                                    burgerName={item.name}
+                                />
                             </div>
                         </div>
                     ))}
@@ -145,6 +170,15 @@ const Menu = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* ✅ Review Modal */}
+            {showReviewModal && (
+                <ReviewModal
+                    burger={selectedBurgerForReview}
+                    onClose={() => setShowReviewModal(false)}
+                    onReviewSubmitted={() => setRefreshReviews(prev => prev + 1)}
+                />
             )}
         </section>
     );

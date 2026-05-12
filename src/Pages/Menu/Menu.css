@@ -412,4 +412,25 @@
     .sort-select {
         width: 100%;
     }
+}/* Add these styles to your Menu.css */
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.review-btn {
+    background: #ffc107;
+    color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.review-btn:hover {
+    background: #ffb300;
+    transform: scale(1.02);
 }
