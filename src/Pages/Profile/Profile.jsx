@@ -26,18 +26,21 @@ const Profile = () => {
             phone: user.user?.phone || user.phone || '',
             address: user.user?.address || user.address || ''
         });
-        setImagePreview(user.user?.profileImage || user.profileImage || '');
+
+        // Get profile image from user data
+        const img = user.user?.profileImage || user.profileImage || '';
+        setImagePreview(img);
     }, [navigate]);
 
+    // ✅ FIXED: Upload to Cloudinary
     const uploadToCloudinary = async (file) => {
-        const fd = new FormData();
-        fd.append('file', file);
-        fd.append('upload_preset', 'beebboo_uploads');
-        fd.append('folder', 'profile-pictures');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'beebboo_uploads');
 
         const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
             method: 'POST',
-            body: fd
+            body: formData
         });
 
         const data = await response.json();
@@ -49,7 +52,7 @@ const Profile = () => {
         return data.secure_url;
     };
 
-    const handleImageChange = async (e) => {
+    const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -58,8 +61,13 @@ const Profile = () => {
             return;
         }
 
-        // Preview immediately
-        setImagePreview(URL.createObjectURL(file));
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+
         setProfileImage(file);
     };
 
@@ -68,13 +76,13 @@ const Profile = () => {
 
         if (profileImage) {
             setUploading(true);
-            const loading = toast.loading('Uploading image...', { position: 'top-center' });
+            const loadingToast = toast.loading('Uploading image...', { position: 'top-center' });
 
             try {
                 imageUrl = await uploadToCloudinary(profileImage);
-                toast.success('Image uploaded!', { id: loading, position: 'top-center' });
+                toast.success('Image uploaded!', { id: loadingToast, position: 'top-center' });
             } catch (error) {
-                toast.error(error.message, { id: loading, position: 'top-center' });
+                toast.error(error.message, { id: loadingToast, position: 'top-center' });
                 setUploading(false);
                 return;
             }
@@ -104,10 +112,10 @@ const Profile = () => {
 
                 <div className="profile-image-section">
                     <img
-                        src={imagePreview || 'https://via.placeholder.com/100?text=Photo'}
+                        src={imagePreview || 'https://via.placeholder.com/100?text=No+Photo'}
                         alt="Profile"
                         className="profile-avatar"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Photo'; }}
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=No+Photo'; }}
                     />
                     {isEditing && (
                         <input
