@@ -16,6 +16,7 @@ import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
+import Profile from './Pages/Profile/Profile';
 
 // ✅ For Admin only - checks isAdmin
 const AdminRoute = ({ children }) => {
@@ -103,6 +104,12 @@ function App() {
                             </UserRoute>
                         } />
                     </Route>
+
+                    <Route path="profile" element={
+                        <UserRoute>
+                            <Profile />
+                        </UserRoute>
+                    } />
 
                     {/* ✅ Admin only route */}
                     <Route path="/admin" element={
