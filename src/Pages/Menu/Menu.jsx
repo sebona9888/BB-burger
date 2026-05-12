@@ -11,7 +11,7 @@ const Menu = () => {
     const [selectedBurger, setSelectedBurger] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
-    const [sortBy, setSortBy] = useState("default"); // ✅ ADDED: Sort by price
+    const [sortBy, setSortBy] = useState("default");
 
     const cart = useContext(CartContext);
     const addToCartFunction = cart?.addToCart;
@@ -19,12 +19,14 @@ const Menu = () => {
     const handleAddToCart = (burger) => {
         if (addToCartFunction) {
             addToCartFunction(burger);
-            toast.success(`${burger.name} korbootti dabalameera! 🍔`, {
-                position: "bottom-center", // ✅ Changed from top to bottom-center
+            toast.success(`${burger.name} added to cart! 🍔`, {
+                position: "top-center", // ✅ Center top
                 duration: 2000,
             });
         } else {
-            toast.error("Hojiin kun hin milkoofne");
+            toast.error("Action failed", {
+                position: "top-center",
+            });
         }
     };
 
@@ -36,8 +38,8 @@ const Menu = () => {
                 setFilteredBurgers(res.data);
             } catch (err) {
                 console.error(err);
-                toast.error("Menu fiduu irratti dogoggorri uumame", {
-                    position: "bottom-center",
+                toast.error("Failed to load menu", {
+                    position: "top-center",
                 });
             } finally {
                 setLoading(false);
@@ -46,21 +48,17 @@ const Menu = () => {
         fetchBurgers();
     }, []);
 
-    // ✅ ADDED: Sort logic
     useEffect(() => {
         let result = [...burgers];
 
-        // Filter by category
         if (activeCategory !== "All") {
             result = result.filter(b => b.category === activeCategory);
         }
 
-        // Filter by search
         if (searchTerm) {
             result = result.filter(b => b.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
 
-        // Sort by price
         if (sortBy === "priceAsc") {
             result.sort((a, b) => a.price - b.price);
         } else if (sortBy === "priceDesc") {
@@ -86,7 +84,6 @@ const Menu = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
 
-                    {/* ✅ ADDED: Sort by price dropdown */}
                     <select
                         className="sort-select"
                         value={sortBy}
