@@ -156,6 +156,7 @@ const AdminDashboard = () => {
                         <div key={order._id} className="order-card">
                             <div className="order-info">
                                 <strong>{order.fullName}</strong>
+                                <p>📧 <strong>Email:</strong> {order.email || 'No email provided'}</p>
                                 <p>📞 {order.phone} | 📍 {order.address}</p>
                                 <p>💰 Total: {order.totalPrice} ETB | 💳 {order.paymentMethod}</p>
                                 <p>Status: <span className={`status-${order.status.toLowerCase()}`}>{getStatusBadge(order.status)}</span></p>
