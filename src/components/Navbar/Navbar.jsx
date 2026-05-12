@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/useCart';
-import { toast } from 'react-hot-toast'; // ✅ Dabalata
+import { toast } from 'react-hot-toast';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -12,37 +12,23 @@ const Navbar = () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const isAdmin = userInfo && (userInfo.isAdmin || userInfo.user?.isAdmin);
 
-    // ✅ Logout function with Toast
     const handleLogout = () => {
         localStorage.removeItem("userInfo");
         setIsOpen(false);
-        toast.success('Logged out successfully! 👋'); // ✅ Toast dabalata
+        toast.success('Logged out successfully! 👋');
         navigate('/login');
     };
 
     return (
         <>
-            {/* Overlay */}
-            <div
-                className={`overlay ${isOpen ? 'show' : ''}`}
-                onClick={() => setIsOpen(false)}
-            />
+            <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={() => setIsOpen(false)} />
 
             <nav className="navbar">
-                {/* Hamburger */}
-                <div
-                    className={`hamburger ${isOpen ? 'active' : ''}`}
-                    onClick={() => setIsOpen(prev => !prev)}
-                >
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div className={`hamburger ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(prev => !prev)}>
+                    <span></span><span></span><span></span>
                 </div>
 
-                {/* Logo */}
-                <Link to="/" className="logo">
-                    Beebboo <span>Burger</span>
-                </Link>
+                <Link to="/" className="logo">Beebboo <span>Burger</span></Link>
 
                 {/* Desktop menu */}
                 <ul className="nav-desktop">
@@ -50,8 +36,7 @@ const Navbar = () => {
                     <li><Link to="/menu">Menu</Link></li>
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
-                    <li><Link to="/profile">👤 Profile</Link></li>
-
+                    <li><Link to="/profile">👤 Profile</Link></li>  {/* ✅ FIXED: wrapped in <li> */}
 
                     {userInfo && (
                         <li><Link to="/my-orders">📋 My Orders</Link></li>
@@ -69,7 +54,6 @@ const Navbar = () => {
                     )}
                 </ul>
 
-                {/* Cart */}
                 <div className="cart">
                     <Link to="/cart">🛒 ({cartCount})</Link>
                 </div>
@@ -81,6 +65,7 @@ const Navbar = () => {
                     <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
                     <li><Link to="/profile" onClick={() => setIsOpen(false)}>👤 Profile</Link></li>
+
                     {userInfo && (
                         <li><Link to="/my-orders" onClick={() => setIsOpen(false)}>📋 My Orders</Link></li>
                     )}
