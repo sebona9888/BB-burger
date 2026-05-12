@@ -1,46 +1,21 @@
-import {
-    Toaster
+/* index.css keessatti */
+.react-hot-toast {
+    background: #1a1a1a !important;
+    /* Bifa duubaa */
+    color: white !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
 }
 
-from 'react-hot-toast';
-
-<Toaster position="top-center"
-
-toastOptions= {
-        {
-
-        duration: 3000,
-        style: {
-            background: '#333',
-                color: '#fff',
-                borderRadius: '50px',
-                padding: '12px 24px',
-                fontSize: '14px',
-                fontWeight: 'bold',
-        }
-
-        ,
-        success: {
-            style: {
-                background: '#00897b',
-            }
-
-            ,
-            icon: '🍔',
-        }
-
-        ,
-        error: {
-            style: {
-                background: '#f44336',
-            }
-
-            ,
-            icon: '❌',
-        }
-
-        ,
-    }
+/* Yeroo Success ta'u mallattoo isaa qofa jijjiiruuf */
+[data-type="success"] {
+    border-left: 6px solid #00897b !important;
 }
 
-/>
+/* Yeroo Error ta'u */
+[data-type="error"] {
+    border-left: 6px solid #ff5252 !important;
+}

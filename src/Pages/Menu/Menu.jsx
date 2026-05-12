@@ -20,12 +20,12 @@ const Menu = () => {
         if (addToCartFunction) {
             addToCartFunction(burger);
             toast.success(`${burger.name} added to cart! 🍔`, {
-                position: "top-center", // ✅ Center top
+                position: "middle-center", 
                 duration: 2000,
             });
         } else {
             toast.error("Action failed", {
-                position: "top-center",
+                position: "middle-center",
             });
         }
     };
@@ -39,7 +39,7 @@ const Menu = () => {
             } catch (err) {
                 console.error(err);
                 toast.error("Failed to load menu", {
-                    position: "top-center",
+                    position: "middle-center",
                 });
             } finally {
                 setLoading(false);
