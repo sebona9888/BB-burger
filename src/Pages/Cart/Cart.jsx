@@ -2,27 +2,36 @@ import React from 'react';
 import { useCart } from '../../context/useCart';
 import CartItem from '../../components/CartItem/CartItem';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast'; // ✅ Dabalata
+import { toast } from 'react-hot-toast';
 import './Cart.css';
 
 const Cart = () => {
     const { cartItems, updateQty, removeItem, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    // ✅ Handlers with Toasts
+    // Handlers with Toasts
     const handleUpdateQty = (id, newQty) => {
         updateQty(id, newQty);
-        toast.success('Korboon keessan haaromeera!');
+        toast.success('Cart updated successfully!', {
+            position: 'top-center',
+            duration: 2000,
+        });
     };
 
     const handleRemoveItem = (id) => {
         removeItem(id);
-        toast.error('Nyaanni korboo keessaa haqameera!');
+        toast.success('Item removed from cart!', {
+            position: 'top-center',
+            duration: 2000,
+        });
     };
 
     const handleCheckout = () => {
         if (cartItems.length === 0) {
-            toast.error('Korboon keessan duwwaa dha!');
+            toast.error('Your cart is empty!', {
+                position: 'top-center',
+                duration: 3000,
+            });
             return;
         }
         navigate('/checkout');
@@ -30,13 +39,13 @@ const Cart = () => {
 
     return (
         <div className="cart-page fade-in">
-            <h1>Korboo Keessan</h1>
+            <h1>Your Cart</h1>
 
             {cartItems.length === 0 ? (
                 <div className="empty-cart">
-                    <p>Korboon keessan duwwaa dha.</p>
+                    <p>Your cart is empty.</p>
                     <button onClick={() => navigate('/menu')} className="go-back-btn">
-                        Menu-tti Deebi'i
+                        Back to Menu
                     </button>
                 </div>
             ) : (
@@ -46,7 +55,6 @@ const Cart = () => {
                             <CartItem
                                 key={item._id}
                                 item={item}
-                                // ✅ Custom handlers pass gochuu
                                 updateQty={handleUpdateQty}
                                 removeItem={handleRemoveItem}
                             />
@@ -54,12 +62,12 @@ const Cart = () => {
                     </div>
 
                     <div className="cart-summary">
-                        <h3>Waliigala: {totalPrice.toLocaleString()} ETB</h3>
+                        <h3>Total: {totalPrice.toLocaleString()} ETB</h3>
                         <button
                             className="checkout-btn"
-                            onClick={handleCheckout} // ✅ Function haarawaa
+                            onClick={handleCheckout}
                         >
-                            Kaffaltii Raawwadhu
+                            Proceed to Checkout
                         </button>
                     </div>
                 </div>

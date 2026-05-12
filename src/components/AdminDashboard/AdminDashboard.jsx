@@ -93,6 +93,7 @@ const AdminDashboard = () => {
             });
             toast.success(`Order status: ${status} ✅`);
             fetchOrders();
+            position = "middle-center"; 
         } catch (error) {
             toast.error('Status jijjiiruun hin danda\'amne');
         }
