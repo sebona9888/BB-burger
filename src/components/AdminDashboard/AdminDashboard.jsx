@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-hot-toast'; // ✅ Dabalata
+import { toast } from 'react-hot-toast';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
     const [burgers, setBurgers] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]); // ✅ ADDED
+    const [searchName, setSearchName] = useState(''); // ✅ ADDED
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ name: '', price: '', category: 'Beef', description: '', image: null });
@@ -22,11 +24,24 @@ const AdminDashboard = () => {
                 headers: { 'admin-secret': 'admin123' }
             });
             setOrders(res.data);
+            setFilteredOrders(res.data); // ✅ ADDED
         } catch (error) {
             console.error('Error fetching orders:', error);
             toast.error('Orders fiduun hin danda\'amne');
         }
     };
+
+    // ✅ ADDED: Filter orders by customer name
+    useEffect(() => {
+        if (searchName === '') {
+            setFilteredOrders(orders);
+        } else {
+            const filtered = orders.filter(order =>
+                order.fullName?.toLowerCase().includes(searchName.toLowerCase())
+            );
+            setFilteredOrders(filtered);
+        }
+    }, [searchName, orders]);
 
     useEffect(() => {
         fetchBurgers();
@@ -93,7 +108,6 @@ const AdminDashboard = () => {
             });
             toast.success(`Order status: ${status} ✅`);
             fetchOrders();
-            position = "middle-center"; 
         } catch (error) {
             toast.error('Status jijjiiruun hin danda\'amne');
         }
@@ -147,12 +161,23 @@ const AdminDashboard = () => {
                 ))}
             </div>
 
+            {/* ✅ UPDATED ORDERS SECTION WITH FILTER */}
             <div className="orders-section">
-                <h3>📦 Orders ({orders.length})</h3>
-                {orders.length === 0 ? (
-                    <p>No orders yet.</p>
+                <div className="orders-header">
+                    <h3>📦 Orders ({filteredOrders.length})</h3>
+                    <input
+                        type="text"
+                        placeholder="🔍 Filter by customer name..."
+                        className="order-search-input"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                    />
+                </div>
+
+                {filteredOrders.length === 0 ? (
+                    <p className="no-orders">No orders found.</p>
                 ) : (
-                    orders.map(order => (
+                    filteredOrders.map(order => (
                         <div key={order._id} className="order-card">
                             <div className="order-info">
                                 <strong>{order.fullName}</strong>

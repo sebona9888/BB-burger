@@ -445,4 +445,47 @@ form button[type="button"]:hover {
 
 .status-cancelled {
     color: #f44336;
+}/* Orders Header with Filter */
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.order-search-input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 250px;
+    transition: all 0.3s;
+}
+
+.order-search-input:focus {
+    outline: none;
+    border-color: #00897b;
+    box-shadow: 0 0 0 2px rgba(0, 137, 123, 0.1);
+}
+
+.no-orders {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    background: white;
+    border-radius: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .orders-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .order-search-input {
+        width: 100%;
+    }
 }
