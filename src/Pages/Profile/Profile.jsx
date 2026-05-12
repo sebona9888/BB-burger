@@ -8,6 +8,7 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
+    const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '' });
     const navigate = useNavigate();
 
@@ -25,10 +26,7 @@ const Profile = () => {
             phone: user.user?.phone || user.phone || '',
             address: user.user?.address || user.address || ''
         });
-
-        // Get profile image from localStorage or use default
-        const profileImg = user.user?.profileImage || user.profileImage || '';
-        setImagePreview(profileImg);
+        setImagePreview(user.user?.profileImage || user.profileImage || '');
     }, [navigate]);
 
     const uploadToCloudinary = async (file) => {
@@ -37,38 +35,50 @@ const Profile = () => {
         fd.append('upload_preset', 'beebboo_uploads');
         fd.append('folder', 'profile-pictures');
 
-        const res = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
+        const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
             method: 'POST',
             body: fd
         });
-        const data = await res.json();
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error?.message || 'Upload failed');
+        }
+
         return data.secure_url;
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                toast.error('Image too large! Max 2MB', { position: 'top-center' });
-                return;
-            }
-            setProfileImage(file);
-            setImagePreview(URL.createObjectURL(file));
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error('Image too large! Max 2MB', { position: 'top-center' });
+            return;
         }
+
+        // Preview immediately
+        setImagePreview(URL.createObjectURL(file));
+        setProfileImage(file);
     };
 
     const handleSave = async () => {
         let imageUrl = userInfo?.user?.profileImage || userInfo?.profileImage || '';
 
         if (profileImage) {
+            setUploading(true);
             const loading = toast.loading('Uploading image...', { position: 'top-center' });
+
             try {
                 imageUrl = await uploadToCloudinary(profileImage);
                 toast.success('Image uploaded!', { id: loading, position: 'top-center' });
             } catch (error) {
-                toast.error('Image upload failed', { id: loading, position: 'top-center' });
+                toast.error(error.message, { id: loading, position: 'top-center' });
+                setUploading(false);
                 return;
             }
+            setUploading(false);
         }
 
         const updated = {
@@ -92,13 +102,12 @@ const Profile = () => {
             <div className="profile-card">
                 <h2>👤 My Profile</h2>
 
-                {/* Profile Image */}
                 <div className="profile-image-section">
                     <img
-                        src={imagePreview || 'https://via.placeholder.com/100?text=No+Image'}
+                        src={imagePreview || 'https://via.placeholder.com/100?text=Photo'}
                         alt="Profile"
                         className="profile-avatar"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=No+Image'; }}
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Photo'; }}
                     />
                     {isEditing && (
                         <input
@@ -106,8 +115,10 @@ const Profile = () => {
                             accept="image/*"
                             onChange={handleImageChange}
                             className="image-input"
+                            disabled={uploading}
                         />
                     )}
+                    {uploading && <p className="upload-text">Uploading...</p>}
                 </div>
 
                 {!isEditing ? (
@@ -149,7 +160,7 @@ const Profile = () => {
                             rows="2"
                         />
                         <div className="profile-buttons">
-                            <button onClick={handleSave}>💾 Save Changes</button>
+                            <button onClick={handleSave} disabled={uploading}>💾 Save Changes</button>
                             <button onClick={() => setIsEditing(false)}>Cancel</button>
                         </div>
                     </>
