@@ -98,9 +98,9 @@ const Payment = () => {
                 screenshot: screenshotUrl
             };
 
-            // ✅ URL SIRREEFFAME: 'beebboo-burger-backend' fayyadami
+            // ✅ CORRECT URL
             const response = await axios.post(
-                'https://beebboo-burger-backend.onrender.com/api/orders',
+                'https://beebboo-backend.onrender.com/api/orders',
                 orderData,
                 { headers: { 'Content-Type': 'application/json' } }
             );
