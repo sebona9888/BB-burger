@@ -30,6 +30,7 @@ const Login = () => {
                 navigate('/admin');
             } else {
                 navigate('/');
+                position = "middle-center"; // ✅ Center top
             }
         } catch (err) {
             // ✅ Error notification
