@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast'; // ✅ Dabalata
 import OrderHistory from './Pages/OrderHistory/OrderHistory';
-import Checkout from './Pages/Checkout/Checkout';  // ✅ ADD THIS
+import Checkout from './Pages/Checkout/Checkout';
+
 // Components & Pages
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './Layouts/MainLayout';
@@ -53,55 +55,66 @@ const UserRoute = ({ children }) => {
 
 function App() {
     return (
-        <Router>
-            <ScrollToTop />
-            <Routes>
-                <Route path="/" element={<MainLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="login" element={<Login />} />
-                    <Route path="register" element={<Register />} />
-                    <Route path="menu" element={<Menu />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="contact" element={<Contact />} />
+        <>
+            {/* ✅ Toaster added for notifications */}
+            <Toaster
+                position="top-center"
+                toastOptions={{
+                    duration: 4000,
+                    style: { background: '#333', color: '#fff', borderRadius: '10px' },
+                    success: { style: { background: '#00897b' }, icon: '🍔' },
+                    error: { style: { background: '#f44336' }, icon: '❌' },
+                }}
+            />
 
-                    {/* ✅ Protected routes - require login */}
-                    <Route path="cart" element={
-                        <UserRoute>
-                            <Cart />
-                        </UserRoute>
+            <Router>
+                <ScrollToTop />
+                <Routes>
+                    <Route path="/" element={<MainLayout />}>
+                        <Route index element={<Home />} />
+                        <Route path="login" element={<Login />} />
+                        <Route path="register" element={<Register />} />
+                        <Route path="menu" element={<Menu />} />
+                        <Route path="about" element={<About />} />
+                        <Route path="contact" element={<Contact />} />
+
+                        {/* ✅ Protected routes */}
+                        <Route path="cart" element={
+                            <UserRoute>
+                                <Cart />
+                            </UserRoute>
+                        } />
+
+                        <Route path="checkout" element={
+                            <UserRoute>
+                                <Checkout />
+                            </UserRoute>
+                        } />
+
+                        <Route path="payment" element={
+                            <UserRoute>
+                                <Payment />
+                            </UserRoute>
+                        } />
+
+                        <Route path="my-orders" element={
+                            <UserRoute>
+                                <OrderHistory />
+                            </UserRoute>
+                        } />
+                    </Route>
+
+                    {/* ✅ Admin only route */}
+                    <Route path="/admin" element={
+                        <AdminRoute>
+                            <AdminDashboard />
+                        </AdminRoute>
                     } />
 
-                    {/* ✅ Checkout - requires login */}
-                    <Route path="checkout" element={
-                        <UserRoute>
-                            <Checkout />
-                        </UserRoute>
-                    } />
-
-                    <Route path="payment" element={
-                        <UserRoute>
-                            <Payment />
-                        </UserRoute>
-                    } />
-
-                    {/* ✅ Order History - requires login */}
-                    <Route path="my-orders" element={
-                        <UserRoute>
-                            <OrderHistory />
-                        </UserRoute>
-                    } />
-                </Route>
-
-                {/* ✅ Admin only route */}
-                <Route path="/admin" element={
-                    <AdminRoute>
-                        <AdminDashboard />
-                    </AdminRoute>
-                } />
-
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </Router>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Router>
+        </>
     );
 }
 

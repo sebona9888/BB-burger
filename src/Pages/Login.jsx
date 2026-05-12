@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -17,8 +18,11 @@ const Login = () => {
                 email,
                 password
             });
+
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-            alert("Welcome back to Beebboo Burger! 🍔");
+
+            // ✅ Success notification
+            toast.success('Welcome back to Beebboo Burger! 🍔');
 
             // ✅ Redirect based on user role
             const isAdmin = res.data.user?.isAdmin || res.data.isAdmin;
@@ -28,7 +32,8 @@ const Login = () => {
                 navigate('/');
             }
         } catch (err) {
-            alert(err.response?.data?.message || "Invalid email or password!");
+            // ✅ Error notification
+            toast.error(err.response?.data?.message || 'Invalid email or password!');
         } finally {
             setLoading(false);
         }

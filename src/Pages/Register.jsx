@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
-// import './Register.css';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
+
 const Register = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -18,14 +19,14 @@ const Register = () => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            alert("Passwords don't match!");
+            toast.error("Passwords don't match!"); // ✅ Toast fayyadamne
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await api.post('/auth/register', {
+            await api.post('/auth/register', {
                 name,
                 username,
                 email,
@@ -33,10 +34,10 @@ const Register = () => {
                 password
             });
 
-            alert("Account created successfully! Please login.");
+            toast.success("Account created successfully! Please login."); // ✅ Toast fayyadamne
             navigate('/login');
         } catch (err) {
-            alert(err.response?.data?.message || "Registration failed!");
+            toast.error(err.response?.data?.message || "Registration failed!"); // ✅ Toast fayyadamne
         } finally {
             setLoading(false);
         }

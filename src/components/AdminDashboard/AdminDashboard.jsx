@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
     const [burgers, setBurgers] = useState([]);
-    const [orders, setOrders] = useState([]);  // ✅ ADD THIS
+    const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ name: '', price: '', category: 'Beef', description: '', image: null });
@@ -15,7 +16,6 @@ const AdminDashboard = () => {
         setLoading(false);
     };
 
-    // ✅ ADD THIS FUNCTION to fetch orders
     const fetchOrders = async () => {
         try {
             const res = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
@@ -24,10 +24,10 @@ const AdminDashboard = () => {
             setOrders(res.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
+            toast.error('Orders fiduun hin danda\'amne');
         }
     };
 
-    // ✅ UPDATE useEffect to fetch orders
     useEffect(() => {
         fetchBurgers();
         fetchOrders();
@@ -45,41 +45,59 @@ const AdminDashboard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let imageUrl = '';
-        if (form.image) imageUrl = await uploadToCloudinary(form.image);
-        const burgerData = { ...form, price: parseFloat(form.price), image: imageUrl };
-        if (editing) {
-            await axios.put(`https://beebboo-backend.onrender.com/api/menu/${editing._id}`, burgerData, { headers: { 'admin-secret': 'admin123' } });
-        } else {
-            await axios.post('https://beebboo-backend.onrender.com/api/menu', burgerData, { headers: { 'admin-secret': 'admin123' } });
+        const loadingToast = toast.loading(editing ? 'Updating burger...' : 'Adding burger...');
+
+        try {
+            let imageUrl = editing?.image || '';
+            if (form.image) imageUrl = await uploadToCloudinary(form.image);
+
+            const burgerData = { ...form, price: parseFloat(form.price), image: imageUrl };
+
+            if (editing) {
+                await axios.put(`https://beebboo-backend.onrender.com/api/menu/${editing._id}`, burgerData, {
+                    headers: { 'admin-secret': 'admin123' }
+                });
+                toast.success('Burger successfully updated! 🍔', { id: loadingToast });
+            } else {
+                await axios.post('https://beebboo-backend.onrender.com/api/menu', burgerData, {
+                    headers: { 'admin-secret': 'admin123' }
+                });
+                toast.success('New burger added! 🍔', { id: loadingToast });
+            }
+
+            setForm({ name: '', price: '', category: 'Beef', description: '', image: null });
+            setEditing(null);
+            fetchBurgers();
+        } catch (error) {
+            toast.error('Hojichi hin milkoofne', { id: loadingToast });
         }
-        setForm({ name: '', price: '', category: 'Beef', description: '', image: null });
-        setEditing(null);
-        fetchBurgers();
-        alert(editing ? 'Updated!' : 'Added!');
     };
 
     const deleteBurger = async (id) => {
-        if (!confirm('Delete?')) return;
-        await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, { headers: { 'admin-secret': 'admin123' } });
-        fetchBurgers();
+        if (!confirm('Delete this burger?')) return;
+        try {
+            await axios.delete(`https://beebboo-backend.onrender.com/api/menu/${id}`, {
+                headers: { 'admin-secret': 'admin123' }
+            });
+            toast.success('Burger deleted! 🗑️');
+            fetchBurgers();
+        } catch (error) {
+            toast.error('Haquun hin danda\'amne');
+        }
     };
 
-    // ✅ ADD THIS FUNCTION to update order status
     const updateOrderStatus = async (id, status) => {
         try {
             await axios.put(`https://beebboo-backend.onrender.com/api/orders/${id}`, { status }, {
                 headers: { 'admin-secret': 'admin123' }
             });
-            alert('Order status updated!');
+            toast.success(`Order status: ${status} ✅`);
             fetchOrders();
         } catch (error) {
-            console.error('Error updating order:', error);
-            alert('Failed to update order');
+            toast.error('Status jijjiiruun hin danda\'amne');
         }
     };
 
-    // ✅ ADD THIS FUNCTION for status badge
     const getStatusBadge = (status) => {
         switch (status) {
             case 'Pending': return '⏳ Pending';
@@ -90,16 +108,17 @@ const AdminDashboard = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className="loading-screen">Loading Beebboo Admin...</div>;
 
     return (
         <div className="admin-container">
             <div className="admin-header">
                 <h2>🍔 Beebboo Admin</h2>
-                <button onClick={() => { localStorage.removeItem('userInfo'); window.location.href = '/login'; }}>Logout</button>
+                <button className="logout-btn" onClick={() => { localStorage.removeItem('userInfo'); window.location.href = '/login'; }}>Logout</button>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form className="admin-form" onSubmit={handleSubmit}>
+                <h3>{editing ? 'Edit Burger' : 'Add New Burger'}</h3>
                 <input type="text" placeholder="Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
                 <input type="number" placeholder="Price" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
@@ -107,24 +126,26 @@ const AdminDashboard = () => {
                 </select>
                 <textarea placeholder="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
                 <input type="file" accept="image/*" onChange={e => setForm({ ...form, image: e.target.files[0] })} />
-                <button type="submit">{editing ? 'Update' : 'Add'} Burger</button>
-                {editing && <button type="button" onClick={() => { setEditing(null); setForm({ name: '', price: '', category: 'Beef', description: '', image: null }); }}>Cancel</button>}
+                <button type="submit" className="submit-btn">{editing ? 'Update' : 'Add'} Burger</button>
+                {editing && <button type="button" className="cancel-btn" onClick={() => { setEditing(null); setForm({ name: '', price: '', category: 'Beef', description: '', image: null }); }}>Cancel</button>}
             </form>
 
             <div className="burger-list">
                 {burgers.map(b => (
                     <div key={b._id} className="burger-card">
-                        {b.image && <img src={b.image} alt={b.name} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />}
-                        <h3>{b.name}</h3>
-                        <p>{b.price} ETB</p>
-                        <p>{b.description}</p>
-                        <button onClick={() => { setEditing(b); setForm({ name: b.name, price: b.price, category: b.category || 'Beef', description: b.description || '', image: null }); window.scrollTo({ top: 0 }); }}>Edit</button>
-                        <button onClick={() => deleteBurger(b._id)}>Delete</button>
+                        {b.image && <img src={b.image} alt={b.name} />}
+                        <div className="card-content">
+                            <h3>{b.name}</h3>
+                            <p className="price">{b.price} ETB</p>
+                            <div className="card-actions">
+                                <button className="edit-btn" onClick={() => { setEditing(b); setForm({ name: b.name, price: b.price, category: b.category || 'Beef', description: b.description || '', image: null }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Edit</button>
+                                <button className="delete-btn" onClick={() => deleteBurger(b._id)}>Delete</button>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            {/* ✅ ADD ORDERS SECTION */}
             <div className="orders-section">
                 <h3>📦 Orders ({orders.length})</h3>
                 {orders.length === 0 ? (
@@ -134,22 +155,16 @@ const AdminDashboard = () => {
                         <div key={order._id} className="order-card">
                             <div className="order-info">
                                 <strong>{order.fullName}</strong>
-                                <p>📞 {order.phone}</p>
-                                <p>📍 {order.address}</p>
-                                <p>📧 {order.email || 'No email'}</p>
-                                <p>💰 Total: {order.totalPrice} ETB</p>
-                                <p>💳 Payment: {order.paymentMethod}</p>
+                                <p>📞 {order.phone} | 📍 {order.address}</p>
+                                <p>💰 Total: {order.totalPrice} ETB | 💳 {order.paymentMethod}</p>
                                 <p>Status: <span className={`status-${order.status.toLowerCase()}`}>{getStatusBadge(order.status)}</span></p>
                             </div>
                             {order.screenshot && (
-                                <a href={order.screenshot} target="_blank" rel="noopener noreferrer" className="screenshot-link">
-                                    📸 View Screenshot
-                                </a>
+                                <a href={order.screenshot} target="_blank" rel="noopener noreferrer" className="screenshot-link">📸 View Payment</a>
                             )}
                             <div className="order-items">
-                                <strong>Items:</strong>
                                 {order.items?.map((item, idx) => (
-                                    <div key={idx}>🍔 {item.name} x{item.quantity} = {item.price * item.quantity} ETB</div>
+                                    <div key={idx} className="item-row">🍔 {item.name} (x{item.quantity})</div>
                                 ))}
                             </div>
                             <select

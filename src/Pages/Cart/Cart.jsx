@@ -2,11 +2,31 @@ import React from 'react';
 import { useCart } from '../../context/useCart';
 import CartItem from '../../components/CartItem/CartItem';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
 import './Cart.css';
 
 const Cart = () => {
     const { cartItems, updateQty, removeItem, totalPrice } = useCart();
     const navigate = useNavigate();
+
+    // ✅ Handlers with Toasts
+    const handleUpdateQty = (id, newQty) => {
+        updateQty(id, newQty);
+        toast.success('Korboon keessan haaromeera!');
+    };
+
+    const handleRemoveItem = (id) => {
+        removeItem(id);
+        toast.error('Nyaanni korboo keessaa haqameera!');
+    };
+
+    const handleCheckout = () => {
+        if (cartItems.length === 0) {
+            toast.error('Korboon keessan duwwaa dha!');
+            return;
+        }
+        navigate('/checkout');
+    };
 
     return (
         <div className="cart-page fade-in">
@@ -26,8 +46,9 @@ const Cart = () => {
                             <CartItem
                                 key={item._id}
                                 item={item}
-                                updateQty={updateQty}
-                                removeItem={removeItem}
+                                // ✅ Custom handlers pass gochuu
+                                updateQty={handleUpdateQty}
+                                removeItem={handleRemoveItem}
                             />
                         ))}
                     </div>
@@ -36,7 +57,7 @@ const Cart = () => {
                         <h3>Waliigala: {totalPrice.toLocaleString()} ETB</h3>
                         <button
                             className="checkout-btn"
-                            onClick={() => navigate('/payment')}  // ✅ Changed to /payment
+                            onClick={handleCheckout} // ✅ Function haarawaa
                         >
                             Kaffaltii Raawwadhu
                         </button>

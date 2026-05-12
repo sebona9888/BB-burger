@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/useCart';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
 import './Navbar.css';
 
 const Navbar = () => {
@@ -8,14 +9,14 @@ const Navbar = () => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
 
-    // ✅ User login gochuu isaa check gochuuf
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const isAdmin = userInfo && (userInfo.isAdmin || userInfo.user?.isAdmin);
 
-    // Logout gochuuf
+    // ✅ Logout function with Toast
     const handleLogout = () => {
         localStorage.removeItem("userInfo");
         setIsOpen(false);
+        toast.success('Logged out successfully! 👋'); // ✅ Toast dabalata
         navigate('/login');
     };
 
@@ -28,7 +29,6 @@ const Navbar = () => {
             />
 
             <nav className="navbar">
-
                 {/* Hamburger */}
                 <div
                     className={`hamburger ${isOpen ? 'active' : ''}`}
@@ -51,12 +51,10 @@ const Navbar = () => {
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
 
-                    {/* ✅ My Orders - visible to logged-in users */}
                     {userInfo && (
                         <li><Link to="/my-orders">📋 My Orders</Link></li>
                     )}
 
-                    {/* ✅ Admin Dashboard - visible only to admin */}
                     {isAdmin && <li><Link to="/admin">Admin</Link></li>}
 
                     {!userInfo ? (
@@ -81,14 +79,12 @@ const Navbar = () => {
                     <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
 
-                    {/* ✅ My Orders - mobile */}
                     {userInfo && (
                         <li><Link to="/my-orders" onClick={() => setIsOpen(false)}>📋 My Orders</Link></li>
                     )}
 
                     {isAdmin && <li><Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link></li>}
 
-                    {/* ✅ Mobile Login/Register */}
                     {!userInfo ? (
                         <>
                             <li><Link to="/login" onClick={() => setIsOpen(false)}>Login</Link></li>
@@ -98,7 +94,6 @@ const Navbar = () => {
                         <li><button onClick={handleLogout}>Logout</button></li>
                     )}
                 </ul>
-
             </nav>
         </>
     );

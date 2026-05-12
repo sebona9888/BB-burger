@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { CartContext } from '../../context/CartContext';
+import { toast } from 'react-hot-toast'; // ✅ Dabalata
 import './Menu.css';
 
 const Menu = () => {
@@ -12,7 +13,17 @@ const Menu = () => {
     const [activeCategory, setActiveCategory] = useState("All");
 
     const cart = useContext(CartContext);
-    const addToCart = cart?.addToCart;
+    const addToCartFunction = cart?.addToCart;
+
+    // ✅ Toast dabalanii addToCart handle gochuuf
+    const handleAddToCart = (burger) => {
+        if (addToCartFunction) {
+            addToCartFunction(burger);
+            toast.success(`${burger.name} korbootti dabalameera! 🍔`);
+        } else {
+            toast.error("Hojiin kun hin milkoofne");
+        }
+    };
 
     useEffect(() => {
         const fetchBurgers = async () => {
@@ -22,6 +33,7 @@ const Menu = () => {
                 setFilteredBurgers(res.data);
             } catch (err) {
                 console.error(err);
+                toast.error("Menu fiduu irratti dogoggorri uumame");
             } finally {
                 setLoading(false);
             }
@@ -36,7 +48,7 @@ const Menu = () => {
         setFilteredBurgers(result);
     }, [searchTerm, activeCategory, burgers]);
 
-    if (loading) return <div className="loader">Loading...</div>;
+    if (loading) return <div className="loader-container"><div className="loader"></div></div>;
 
     return (
         <section className="menu-section">
@@ -76,7 +88,7 @@ const Menu = () => {
 
             {selectedBurger && (
                 <div className="modal-overlay" onClick={() => setSelectedBurger(null)}>
-                    <div className="modal-content">
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <button className="close-modal" onClick={() => setSelectedBurger(null)}>&times;</button>
                         <div className="modal-body">
                             <img src={selectedBurger.image || '/placeholder.jpg'} alt={selectedBurger.name} />
@@ -85,9 +97,8 @@ const Menu = () => {
                                 <p>{selectedBurger.description}</p>
                                 <span className="modal-price">{selectedBurger.price} ETB</span>
                                 <button className="add-btn-large" onClick={() => {
-                                    addToCart?.(selectedBurger);
+                                    handleAddToCart(selectedBurger); // ✅ Toast dabalateera
                                     setSelectedBurger(null);
-                                    alert(`${selectedBurger.name} added to cart! 🍔`);
                                 }}>Add to Cart</button>
                             </div>
                         </div>
