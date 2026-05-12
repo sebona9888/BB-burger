@@ -36,6 +36,7 @@ const Register = () => {
 
             toast.success("Account created successfully! Please login."); // ✅ Toast fayyadamne
             navigate('/login');
+            postion = "middle-center"; // ✅ Center top
         } catch (err) {
             toast.error(err.response?.data?.message || "Registration failed!"); // ✅ Toast fayyadamne
         } finally {
