@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { CartContext } from '../../context/CartContext';
-import { toast } from 'react-hot-toast'; // ✅ Dabalata
+import { toast } from 'react-hot-toast';
 import './Menu.css';
 
 const Menu = () => {
@@ -11,15 +11,18 @@ const Menu = () => {
     const [selectedBurger, setSelectedBurger] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
+    const [sortBy, setSortBy] = useState("default"); // ✅ ADDED: Sort by price
 
     const cart = useContext(CartContext);
     const addToCartFunction = cart?.addToCart;
 
-    // ✅ Toast dabalanii addToCart handle gochuuf
     const handleAddToCart = (burger) => {
         if (addToCartFunction) {
             addToCartFunction(burger);
-            toast.success(`${burger.name} korbootti dabalameera! 🍔`);
+            toast.success(`${burger.name} korbootti dabalameera! 🍔`, {
+                position: "bottom-center", // ✅ Changed from top to bottom-center
+                duration: 2000,
+            });
         } else {
             toast.error("Hojiin kun hin milkoofne");
         }
@@ -33,7 +36,9 @@ const Menu = () => {
                 setFilteredBurgers(res.data);
             } catch (err) {
                 console.error(err);
-                toast.error("Menu fiduu irratti dogoggorri uumame");
+                toast.error("Menu fiduu irratti dogoggorri uumame", {
+                    position: "bottom-center",
+                });
             } finally {
                 setLoading(false);
             }
@@ -41,12 +46,29 @@ const Menu = () => {
         fetchBurgers();
     }, []);
 
+    // ✅ ADDED: Sort logic
     useEffect(() => {
-        let result = burgers;
-        if (activeCategory !== "All") result = result.filter(b => b.category === activeCategory);
-        if (searchTerm) result = result.filter(b => b.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        let result = [...burgers];
+
+        // Filter by category
+        if (activeCategory !== "All") {
+            result = result.filter(b => b.category === activeCategory);
+        }
+
+        // Filter by search
+        if (searchTerm) {
+            result = result.filter(b => b.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        }
+
+        // Sort by price
+        if (sortBy === "priceAsc") {
+            result.sort((a, b) => a.price - b.price);
+        } else if (sortBy === "priceDesc") {
+            result.sort((a, b) => b.price - a.price);
+        }
+
         setFilteredBurgers(result);
-    }, [searchTerm, activeCategory, burgers]);
+    }, [searchTerm, activeCategory, burgers, sortBy]);
 
     if (loading) return <div className="loader-container"><div className="loader"></div></div>;
 
@@ -56,12 +78,34 @@ const Menu = () => {
                 <h1 className="menu-title">Menu <span>Beebboo</span></h1>
 
                 <div className="filter-controls">
-                    <input type="text" placeholder="Search burger..." className="search-input"
-                        value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <input
+                        type="text"
+                        placeholder="Search burger..."
+                        className="search-input"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+
+                    {/* ✅ ADDED: Sort by price dropdown */}
+                    <select
+                        className="sort-select"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <option value="default">Default</option>
+                        <option value="priceAsc">Price: Low to High ↑</option>
+                        <option value="priceDesc">Price: High to Low ↓</option>
+                    </select>
+
                     <div className="category-tabs">
                         {["All", "Beef", "Chicken", "Vegan", "Special"].map(cat => (
-                            <button key={cat} className={`tab-btn ${activeCategory === cat ? "active" : ""}`}
-                                onClick={() => setActiveCategory(cat)}>{cat}</button>
+                            <button
+                                key={cat}
+                                className={`tab-btn ${activeCategory === cat ? "active" : ""}`}
+                                onClick={() => setActiveCategory(cat)}
+                            >
+                                {cat}
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -97,7 +141,7 @@ const Menu = () => {
                                 <p>{selectedBurger.description}</p>
                                 <span className="modal-price">{selectedBurger.price} ETB</span>
                                 <button className="add-btn-large" onClick={() => {
-                                    handleAddToCart(selectedBurger); // ✅ Toast dabalateera
+                                    handleAddToCart(selectedBurger);
                                     setSelectedBurger(null);
                                 }}>Add to Cart</button>
                             </div>
