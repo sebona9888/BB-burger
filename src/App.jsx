@@ -18,6 +18,8 @@ import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
 import Profile from './Pages/Profile/Profile';
 import Analytics from './Pages/Analytics/Analytics';
+import ForgotPassword from './Pages/ForgotPassword';
+import ResetPassword from './Pages/ResetPassword';
 
 const AdminRoute = ({ children }) => {
     let userInfo = null;
@@ -73,6 +75,8 @@ function App() {
                         <Route path="checkout" element={<UserRoute><Checkout /></UserRoute>} />
                         <Route path="payment" element={<UserRoute><Payment /></UserRoute>} />
                         <Route path="my-orders" element={<UserRoute><OrderHistory /></UserRoute>} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
                         {/* ✅ Profile moved inside MainLayout */}
                         <Route path="profile" element={<UserRoute><Profile /></UserRoute>} />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast'; // ✅ Dabalata
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -20,20 +20,15 @@ const Login = () => {
             });
 
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-
-            // ✅ Success notification
             toast.success('Welcome back to Beebboo Burger! 🍔');
 
-            // ✅ Redirect based on user role
             const isAdmin = res.data.user?.isAdmin || res.data.isAdmin;
             if (isAdmin) {
                 navigate('/admin');
             } else {
                 navigate('/');
-                position = "middle-center"; // ✅ Center top
             }
         } catch (err) {
-            // ✅ Error notification
             toast.error(err.response?.data?.message || 'Invalid email or password!');
         } finally {
             setLoading(false);
@@ -82,7 +77,9 @@ const Login = () => {
                         </div>
 
                         <div className="text-right">
-                            <p className="text-[#00897b] text-sm cursor-pointer hover:underline">Forgot Password?</p>
+                            <Link to="/forgot-password" className="text-[#00897b] text-sm hover:underline">
+                                Forgot Password?
+                            </Link>
                         </div>
 
                         <button
