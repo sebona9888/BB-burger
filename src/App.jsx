@@ -17,6 +17,7 @@ import Contact from './Pages/Contact/Contact';
 import Cart from './Pages/Cart/Cart';
 import Payment from './Pages/Payment/Payment';
 import Profile from './Pages/Profile/Profile';
+import Analytics from './Pages/Analytics/Analytics';
 
 // ✅ For Admin only - checks isAdmin
 const AdminRoute = ({ children }) => {
@@ -104,6 +105,11 @@ function App() {
                             </UserRoute>
                         } />
                     </Route>
+                    <Route path="/analytics" element={
+                        <AdminRoute>
+                            <Analytics />
+                        </AdminRoute>
+                    } />
 
                     <Route path="profile" element={
                         <UserRoute>

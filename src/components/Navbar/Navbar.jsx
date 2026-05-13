@@ -36,12 +36,12 @@ const Navbar = () => {
                     <li><Link to="/menu">Menu</Link></li>
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
-                    <li><Link to="/profile">👤 Profile</Link></li>  {/* ✅ FIXED: wrapped in <li> */}
+                    <li><Link to="/profile">👤 Profile</Link></li>
 
                     {userInfo && (
                         <li><Link to="/my-orders">📋 My Orders</Link></li>
                     )}
-
+                    {isAdmin && <li><Link to="/analytics">📊 Analytics</Link></li>}
                     {isAdmin && <li><Link to="/admin">Admin</Link></li>}
 
                     {!userInfo ? (
@@ -58,7 +58,7 @@ const Navbar = () => {
                     <Link to="/cart">🛒 ({cartCount})</Link>
                 </div>
 
-                {/* MOBILE SIDEBAR */}
+                {/* MOBILE SIDEBAR (FIXED) */}
                 <ul className={`sidebar ${isOpen ? 'open' : ''}`}>
                     <li><Link to="/" onClick={() => setIsOpen(false)}>Home</Link></li>
                     <li><Link to="/menu" onClick={() => setIsOpen(false)}>Menu</Link></li>
@@ -70,6 +70,7 @@ const Navbar = () => {
                         <li><Link to="/my-orders" onClick={() => setIsOpen(false)}>📋 My Orders</Link></li>
                     )}
 
+                    {isAdmin && <li><Link to="/analytics" onClick={() => setIsOpen(false)}>📊 Analytics</Link></li>}
                     {isAdmin && <li><Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link></li>}
 
                     {!userInfo ? (
