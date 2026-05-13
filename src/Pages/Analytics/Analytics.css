@@ -1,5 +1,7 @@
 .analytics-page {
     padding: 2rem;
+    background: #f9fafb;
+    min-height: 100vh;
 }
 
 .stats-grid {
@@ -10,7 +12,41 @@
 }
 
 .stat {
-    background: #f0f0f0;
+    background: white;
     padding: 1rem 2rem;
     border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.stat strong {
+    color: #00897b;
+    font-size: 1.3rem;
+    margin-left: 0.5rem;
+}
+
+.chart-container {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #1f2937;
+}
+
+ul {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    list-style: none;
+}
+
+li {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
 }
