@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast'; // ✅ Dabalata
+import { Toaster } from 'react-hot-toast';
 import OrderHistory from './Pages/OrderHistory/OrderHistory';
 import Checkout from './Pages/Checkout/Checkout';
 
@@ -19,48 +19,37 @@ import Payment from './Pages/Payment/Payment';
 import Profile from './Pages/Profile/Profile';
 import Analytics from './Pages/Analytics/Analytics';
 
-// ✅ For Admin only - checks isAdmin
 const AdminRoute = ({ children }) => {
     let userInfo = null;
     try {
         const stored = localStorage.getItem("userInfo");
-        if (stored) {
-            userInfo = JSON.parse(stored);
-        }
+        if (stored) userInfo = JSON.parse(stored);
     } catch (error) {
         console.error("Invalid userInfo in localStorage");
     }
-
     if (!userInfo || !userInfo.user?.isAdmin) {
         return <Navigate to="/login" replace />;
     }
     return children;
 };
 
-// ✅ For any logged-in user (regular or admin)
 const UserRoute = ({ children }) => {
     let userInfo = null;
     try {
         const stored = localStorage.getItem("userInfo");
-        if (stored) {
-            userInfo = JSON.parse(stored);
-        }
+        if (stored) userInfo = JSON.parse(stored);
     } catch (error) {
         console.error("Invalid userInfo in localStorage");
     }
-
-    if (!userInfo) {
-        return <Navigate to="/login" replace />;
-    }
+    if (!userInfo) return <Navigate to="/login" replace />;
     return children;
 };
 
 function App() {
     return (
         <>
-            {/* ✅ Toaster added for notifications */}
             <Toaster
-                position="middle -center"
+                position="top-center"                    // ✅ fixed
                 toastOptions={{
                     duration: 4000,
                     style: { background: '#333', color: '#fff', borderRadius: '10px' },
@@ -68,7 +57,6 @@ function App() {
                     error: { style: { background: '#f44336' }, icon: '❌' },
                 }}
             />
-
             <Router>
                 <ScrollToTop />
                 <Routes>
@@ -80,49 +68,21 @@ function App() {
                         <Route path="about" element={<About />} />
                         <Route path="contact" element={<Contact />} />
 
-                        {/* ✅ Protected routes */}
-                        <Route path="cart" element={
-                            <UserRoute>
-                                <Cart />
-                            </UserRoute>
-                        } />
+                        {/* Protected routes inside MainLayout */}
+                        <Route path="cart" element={<UserRoute><Cart /></UserRoute>} />
+                        <Route path="checkout" element={<UserRoute><Checkout /></UserRoute>} />
+                        <Route path="payment" element={<UserRoute><Payment /></UserRoute>} />
+                        <Route path="my-orders" element={<UserRoute><OrderHistory /></UserRoute>} />
 
-                        <Route path="checkout" element={
-                            <UserRoute>
-                                <Checkout />
-                            </UserRoute>
-                        } />
-
-                        <Route path="payment" element={
-                            <UserRoute>
-                                <Payment />
-                            </UserRoute>
-                        } />
-
-                        <Route path="my-orders" element={
-                            <UserRoute>
-                                <OrderHistory />
-                            </UserRoute>
-                        } />
+                        {/* ✅ Profile moved inside MainLayout */}
+                        <Route path="profile" element={<UserRoute><Profile /></UserRoute>} />
                     </Route>
-                    <Route path="/analytics" element={
-                        <AdminRoute>
-                            <Analytics />
-                        </AdminRoute>
-                    } />
 
-                    <Route path="profile" element={
-                        <UserRoute>
-                            <Profile />
-                        </UserRoute>
-                    } />
+                    {/* Analytics – admin only, outside MainLayout (or could be inside if you want navbar) */}
+                    <Route path="/analytics" element={<AdminRoute><Analytics /></AdminRoute>} />
 
-                    {/* ✅ Admin only route */}
-                    <Route path="/admin" element={
-                        <AdminRoute>
-                            <AdminDashboard />
-                        </AdminRoute>
-                    } />
+                    {/* Admin dashboard – admin only */}
+                    <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
 
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
