@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import './Auth.css'; // optional, reuse login/register styles
+import './Auth.css';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -12,12 +12,16 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        // Show a loading toast
+        const loadingToast = toast.loading('Sending reset link...', { position: 'top-center' });
+
         try {
             await axios.post('https://beebboo-backend.onrender.com/api/v1/auth/forgot-password', { email });
             setSubmitted(true);
-            toast.success('Reset link sent to your email!', { position: 'top-center' });
+            toast.success('Reset link sent to your email!', { id: loadingToast, position: 'top-center' });
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Something went wrong', { position: 'top-center' });
+            toast.error(err.response?.data?.message || 'Something went wrong', { id: loadingToast, position: 'top-center' });
         } finally {
             setLoading(false);
         }
