@@ -1,82 +1,130 @@
-/* Analytics.css */
+/* Analytics.css – Modern, responsive styles for the analytics dashboard */
 
 .analytics-page {
     padding: 2rem;
     background: #f9fafb;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Header */
 .analytics-page h1 {
     font-size: 2rem;
+    font-weight: 700;
     color: #1f2937;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Range selector (day/week/month) */
+.range-selector {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.range-selector button {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #4b5563;
+}
+
+.range-selector button:hover {
+    background: #f3f4f6;
+    border-color: #00897b;
+}
+
+.range-selector button.active {
+    background: #00897b;
+    color: white;
+    border-color: #00897b;
+    box-shadow: 0 2px 6px rgba(0, 137, 123, 0.2);
 }
 
 /* KPI Cards Grid */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
     margin-bottom: 2rem;
 }
 
 .stat-card {
     background: white;
-    padding: 1rem 1.5rem;
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
     text-align: center;
-    font-size: 0.95rem;
-    color: #4b5563;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card strong {
+    display: block;
     color: #00897b;
     font-size: 1.8rem;
-    display: block;
-    margin-top: 0.5rem;
     font-weight: 700;
+    margin-top: 0.5rem;
+    letter-spacing: -0.01em;
 }
 
 /* Chart Containers */
 .chart-container {
     background: white;
     padding: 1.5rem;
-    border-radius: 20px;
+    border-radius: 24px;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s;
 }
 
 .chart-container h3 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: #1f2937;
     font-size: 1.25rem;
     font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .chart-note {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #6b7280;
-    margin-top: 0.75rem;
     text-align: center;
+    margin-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 0.75rem;
 }
 
 /* Recent Orders Section */
 .recent-orders {
     background: white;
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 1rem 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .recent-orders h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #1f2937;
     font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem 0;
 }
 
 .recent-orders ul {
@@ -91,55 +139,82 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    font-size: 0.95rem;
 }
 
 .recent-orders li strong {
     background: #00897b;
     color: white;
+    width: 26px;
+    height: 26px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
     border-radius: 50%;
-    font-size: 0.8rem;
-    margin-right: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
-/* Status Colors */
+/* Order status colors */
 .status-pending {
     color: #ff9800;
     font-weight: 500;
+    background: #fff3e0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
 }
 
 .status-processing {
     color: #2196f3;
     font-weight: 500;
+    background: #e3f2fd;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
 }
 
 .status-delivered {
     color: #4caf50;
     font-weight: 500;
+    background: #e8f5e9;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
 }
 
 .status-cancelled {
     color: #f44336;
     font-weight: 500;
+    background: #ffebee;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
 }
 
-/* Loading State */
+/* Loading state */
 .analytics-loading {
     text-align: center;
     padding: 3rem;
     font-size: 1.2rem;
     color: #00897b;
+    font-weight: 500;
 }
 
-/* Responsive */
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .analytics-page {
         padding: 1rem;
+    }
+
+    .range-selector {
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-grid {
+        gap: 0.75rem;
     }
 
     .stat-card strong {
@@ -153,5 +228,9 @@
     .recent-orders li {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .recent-orders li strong {
+        margin-right: 0;
     }
 }
