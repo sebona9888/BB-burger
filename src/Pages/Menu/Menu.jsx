@@ -40,7 +40,7 @@ const Menu = () => {
     useEffect(() => {
         const fetchBurgers = async () => {
             try {
-                const res = await axios.get('https://prime-backend.onrender.com/api/menu');
+                const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
                 setBurgers(res.data);
                 setFilteredBurgers(res.data);
             } catch (err) {
@@ -80,7 +80,7 @@ const Menu = () => {
     return (
         <section className="menu-section">
             <div className="menu-container">
-                <h1 className="menu-title">Menu <span>prime</span></h1>
+                <h1 className="menu-title">Menu <span>Beebboo</span></h1>
 
                 <div className="filter-controls">
                     <input

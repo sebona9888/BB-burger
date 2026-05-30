@@ -8,7 +8,7 @@ const About = () => {
             <section className="about-hero">
                 <div className="hero-grid">
                     <div className="hero-left">
-                        <span className="top-tag">// prime BURGER'N  BARA 2024 IRRAA KAASEETI UUMMATA ISAA TAJAAJILAA TURE</span>
+                        <span className="top-tag">// BEEBBOO BURGER'N  BARA 2024 IRRAA KAASEETI UUMMATA ISAA TAJAAJILAA TURE</span>
                         <h1 className="bold-title">
                             BURGER.<br />
                             <span className="red-text">DHANDHAMA ADDAA KAN QABU.</span><br />
@@ -36,7 +36,7 @@ const About = () => {
                         <div className="red-splash"></div>
                         <img
                             src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800"
-                            alt="prime Burger"
+                            alt="Beebboo Burger"
                             className="pop-image"
                         />
                         <div className="floating-delivery">
@@ -51,9 +51,9 @@ const About = () => {
                 <div className="story-grid">
                     <div className="story-content">
                         <span className="top-tag">Seenaa Keenya</span>
-                        <h2>Maaliif prime Burger?</h2>
+                        <h2>Maaliif Beebboo Burger?</h2>
                         <p className="story-p">
-                            prime Burger kan eegalame dhandhama burger dhugaa Addis Ababa keessatti dhabame deebisuuf.
+                            Beebboo Burger kan eegalame dhandhama burger dhugaa Addis Ababa keessatti dhabame deebisuuf.
                             Guyyaa jalqabaa irraa kaasee, mul'anni keenya qulqullina foonii fi dhandhama aadaa walitti fiduudha.
                         </p>
 
@@ -110,10 +110,10 @@ const About = () => {
                 <div className="team-grid">
                     <div className="team-card">
                         <div className="chef-img-wrapper">
-                            <img src="https://fkiqubgtnczwpemqvjuf.supabase.co/storage/v1/object/public/prime/prime.jpg
+                            <img src="https://fkiqubgtnczwpemqvjuf.supabase.co/storage/v1/object/public/beebboo/beebboo.jpg
                         " />
                         </div>
-                        <h4><CEO>beti</CEO></h4>
+                        <h4>beebboo beyana</h4>
                         <p>Founder & Head Chef</p>
                     </div>
                     <div className="team-card">
@@ -130,7 +130,7 @@ const About = () => {
                 <div className="test-container">
                     <div className="quote-icon">"</div>
                     <p className="test-text">
-                        "prime  Burger ergan dhandhamee booda burger biraa nyaachuu dhaabeera. Saffisni isaanii fi qulqullinni foonii adduma!"
+                        "Beebboo Burger ergan dhandhamee booda burger biraa nyaachuu dhaabeera. Saffisni isaanii fi qulqullinni foonii adduma!"
                     </p>
                     <div className="test-author">
                         <strong>– Ayansa Abdisa</strong>
