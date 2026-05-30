@@ -54,7 +54,7 @@ const AdminDashboard = () => {
     const uploadToCloudinary = async (file) => {
         const fd = new FormData();
         fd.append('file', file);
-        fd.append('upload_preset', 'beebboo_uploads');
+        fd.append('upload_preset', 'prime_uploads');
         fd.append('folder', 'prime-burgers');
         const res = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', { method: 'POST', body: fd });
         const data = await res.json();
@@ -112,12 +112,12 @@ const AdminDashboard = () => {
         }
     };
 
-    if (loading) return <div className="loading-screen">Loading Beebboo Admin...</div>;
+    if (loading) return <div className="loading-screen">Loading prime Admin...</div>;
 
     return (
         <div className="admin-container">
             <div className="admin-header">
-                <h2>🍔 Beebboo Admin</h2>
+                <h2>🍔 prime Admin</h2>
                 <button className="logout-btn" onClick={() => { localStorage.removeItem('userInfo'); window.location.href = '/login'; }}>Logout</button>
             </div>
 

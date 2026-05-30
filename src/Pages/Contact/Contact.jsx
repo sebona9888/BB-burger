@@ -29,7 +29,7 @@ const Contact = () => {
                         <div className="image-slap-frame">
                             <img
                                 src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074&auto=format&fit=crop"
-                                alt="Beebboo Gourmet Kitchen"
+                                alt="prime Gourmet Kitchen"
                             />
                             <div className="live-status">● KITCHEN ACTIVE</div>
                         </div>

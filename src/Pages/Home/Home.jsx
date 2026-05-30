@@ -8,11 +8,11 @@ const Home = () => {
             <section className="hero">
                 <div className="hero-content">
                     {/* Barreeffama simannaa image_b2f7a1.png fakkaatu */}
-                    <h1 className="moving-welcome">WELCOME TO BEEBBOO BURGER</h1>
+                    <h1 className="moving-welcome">WELCOME TO prime BURGER</h1>
 
                     <h1 className="animate-up">
                         Nyaata Qulqulluu, <br />
-                        <span>BEEBBOO BURGER!</span>
+                        <span>prime BURGER!</span>
                     </h1>
 
                     <p className="animate-up">

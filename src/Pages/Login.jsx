@@ -20,7 +20,7 @@ const Login = () => {
             });
 
             localStorage.setItem('userInfo', JSON.stringify(res.data));
-            toast.success('Welcome back to Beebboo Burger! 🍔');
+            toast.success('Welcome back to primeurger! 🍔');
 
             const isAdmin = res.data.user?.isAdmin || res.data.isAdmin;
             if (isAdmin) {

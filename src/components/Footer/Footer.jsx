@@ -6,7 +6,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-content">
                 <div className="footer-section about">
-                    <h2 className="logo-text">Beebboo <span>Burger</span></h2>
+                    <h2 className="logo-text">prime <span>Burger</span></h2>
                     <p>
                         Burger mi'aawaa fi qulqulluu Finfineef  nannoo ishee keessatti aragchuu dandeessu .
                         Dhandhama addaa fi tajaajila ariifataa!
@@ -27,12 +27,12 @@ const Footer = () => {
                     <h3>Contact Us</h3>
                     <p>📍 Addis Ababa, Ethiopia</p>
                     <p>📞 +251 92386748</p>
-                    <p>📧 beebbooburger@gmail.com</p>
+                    <p>📧 primeburger@gmail.com</p>
                 </div>
             </div>
 
             <div className="footer-bottom">
-                &copy; 2026 Beebboo Burger | Designed by  SEBONA HAILE 
+                &copy; 2026 prime Burger | Designed by  SEBONA HAILE 
             </div>
         </footer>
     );

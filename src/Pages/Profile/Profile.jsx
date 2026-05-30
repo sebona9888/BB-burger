@@ -36,7 +36,7 @@ const Profile = () => {
     const uploadToCloudinary = async (file) => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'beebboo_uploads');
+        formData.append('upload_preset', 'prime_uploads');
 
         const response = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', {
             method: 'POST',

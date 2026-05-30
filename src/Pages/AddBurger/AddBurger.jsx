@@ -48,7 +48,7 @@ const AddBurger = () => {
         <div className="admin-container">
             <div className="admin-card">
                 <h2>Admin Dashboard</h2>
-                <p>Beebboo Burger Galchi</p>
+                <p>prime Burger Galchi</p>
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="input-group">
                         <label>Maqaa Burger</label>

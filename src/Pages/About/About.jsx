@@ -8,7 +8,7 @@ const About = () => {
             <section className="about-hero">
                 <div className="hero-grid">
                     <div className="hero-left">
-                        <span className="top-tag">// BEEBBOO BURGER'N  BARA 2024 IRRAA KAASEETI UUMMATA ISAA TAJAAJILAA TURE</span>
+                        <span className="top-tag">// prime BURGER'N  BARA 2024 IRRAA KAASEETI UUMMATA ISAA TAJAAJILAA TURE</span>
                         <h1 className="bold-title">
                             BURGER.<br />
                             <span className="red-text">DHANDHAMA ADDAA KAN QABU.</span><br />
@@ -36,7 +36,7 @@ const About = () => {
                         <div className="red-splash"></div>
                         <img
                             src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800"
-                            alt="Beebboo Burger"
+                            alt="prime Burger"
                             className="pop-image"
                         />
                         <div className="floating-delivery">
@@ -51,9 +51,9 @@ const About = () => {
                 <div className="story-grid">
                     <div className="story-content">
                         <span className="top-tag">Seenaa Keenya</span>
-                        <h2>Maaliif Beebboo Burger?</h2>
+                        <h2>Maaliif prime Burger?</h2>
                         <p className="story-p">
-                            Beebboo Burger kan eegalame dhandhama burger dhugaa Addis Ababa keessatti dhabame deebisuuf.
+                            prime Burger kan eegalame dhandhama burger dhugaa Addis Ababa keessatti dhabame deebisuuf.
                             Guyyaa jalqabaa irraa kaasee, mul'anni keenya qulqullina foonii fi dhandhama aadaa walitti fiduudha.
                         </p>
 

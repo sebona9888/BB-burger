@@ -7,7 +7,7 @@ export const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState(() => {
         try {
-            const savedCart = localStorage.getItem('beebboo_cart');
+            const savedCart = localStorage.getItem('primeart');
             return savedCart ? JSON.parse(savedCart) : [];
         } catch (error) {
             console.error("Error parsing cart:", error);
@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         try {
-            localStorage.setItem('beebboo_cart', JSON.stringify(cartItems));
+            localStorage.setItem('prime, JSON.stringify(cartItems));
         } catch (error) {
             console.error("Error saving cart:", error);
         }

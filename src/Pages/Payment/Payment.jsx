@@ -65,7 +65,7 @@ const Payment = () => {
             // 1. Upload to Cloudinary
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
-            cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
+            cloudinaryFormData.append('upload_preset', 'prime_uploads');
             cloudinaryFormData.append('folder', 'prime-orders');
 
             const cloudinaryResponse = await fetch(
@@ -175,7 +175,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">COMMERCIAL BANK</span>
                         <h2 className="onyx-number">1000421244808</h2>
-                        <p className="onyx-holder">Beebboo Beyana</p>
+                        <p className="onyx-holder">prime Beyana</p>
                         <div className="onyx-badge">VERIFIED</div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">TELEBIRR DIGITAL</span>
                         <h2 className="onyx-number">0902989488</h2>
-                        <p className="onyx-holder">Beebboo Beyana</p>
+                        <p className="onyx-holder">prime Beyana</p>
                         <div className="onyx-badge">INSTANT</div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">AWASH BANK</span>
                         <h2 className="onyx-number">01320506080500</h2>
-                        <p className="onyx-holder">Beebboo Beyana</p>
+                        <p className="onyx-holder">prime Beyana</p>
                         <div className="onyx-badge">ACTIVE</div>
                     </div>
                 </div>

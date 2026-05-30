@@ -80,7 +80,7 @@ const Menu = () => {
     return (
         <section className="menu-section">
             <div className="menu-container">
-                <h1 className="menu-title">Menu <span>Beebboo</span></h1>
+                <h1 className="menu-title">Menu <span>prime</span></h1>
 
                 <div className="filter-controls">
                     <input
