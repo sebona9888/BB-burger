@@ -24,7 +24,7 @@ const OrderHistory = () => {
             const token = userInfo?.token;
 
             // Fetch all orders (admin endpoint - needs token)
-            const response = await axios.get('https://prime-backend.onrender.com/api/orders', {
+            const response = await axios.get('https://beebboo-backend.onrender.com/api/orders', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'admin-secret': 'admin123'

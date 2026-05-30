@@ -20,7 +20,7 @@ const AddBurger = () => {
         e.preventDefault();
         try {
             // URL Backend (5000) fi Headers 'admin_secret' dabalameera
-            await axios.post('https://prime-backend.onrender.com/menu/menu', burger, {
+            await axios.post('https://beebboo-backend.onrender.com/menu/menu', burger, {
                 headers: {
                     'admin_secret': 'admin123' // Kun eeyyama Admin mirkaneessa
                 }
@@ -48,7 +48,7 @@ const AddBurger = () => {
         <div className="admin-container">
             <div className="admin-card">
                 <h2>Admin Dashboard</h2>
-                <p>prime Burger Galchi</p>
+                <p>beebboo Burger Galchi</p>
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="input-group">
                         <label>Maqaa Burger</label>

@@ -100,7 +100,7 @@ const Payment = () => {
 
             // ✅ CORRECT URL
             const response = await axios.post(
-                'https://prime-backend.onrender.com/api/orders',
+                'https://beebboo-backend.onrender.com/api/orders',
                 orderData,
                 { headers: { 'Content-Type': 'application/json' } }
             );
@@ -175,7 +175,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">COMMERCIAL BANK</span>
                         <h2 className="onyx-number">1000421244808</h2>
-                        <p className="onyx-holder">prime Beyana</p>
+                        <p className="onyx-holder">beebboo Beyana</p>
                         <div className="onyx-badge">VERIFIED</div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">TELEBIRR DIGITAL</span>
                         <h2 className="onyx-number">0902989488</h2>
-                        <p className="onyx-holder">prime Beyana</p>
+                        <p className="onyx-holder">beebboo Beyana</p>
                         <div className="onyx-badge">INSTANT</div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ const Payment = () => {
                     <div className="onyx-inner">
                         <span className="onyx-label">AWASH BANK</span>
                         <h2 className="onyx-number">01320506080500</h2>
-                        <p className="onyx-holder">prime Beyana</p>
+                        <p className="onyx-holder">beebboo Beyana</p>
                         <div className="onyx-badge">ACTIVE</div>
                     </div>
                 </div>
