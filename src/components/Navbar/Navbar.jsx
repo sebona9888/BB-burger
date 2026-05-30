@@ -28,7 +28,7 @@ const Navbar = () => {
                     <span></span><span></span><span></span>
                 </div>
 
-                <Link to="/" className="logo">prime <span>Burger</span></Link>
+                <Link to="/" className="logo">beebboo <span>Burger</span></Link>
 
                 {/* Desktop menu */}
                 <ul className="nav-desktop">
