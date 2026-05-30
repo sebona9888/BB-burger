@@ -30,7 +30,7 @@ const ResetPassword = () => {
 
         setLoading(true);
         try {
-            await axios.post(`https://prime-backend.onrender.com/api/v1/auth/reset-password/${token}`, { password });
+            await axios.post(`https://beebboo-backend.onrender.com/api/v1/auth/reset-password/${token}`, { password });
             toast.success('Password reset successful! Please login.', { position: 'top-center' });
             navigate('/login');
         } catch (err) {

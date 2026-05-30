@@ -14,7 +14,7 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await axios.post('https://prime-backend.onrender.com/api/v1/auth/login', {
+            const res = await axios.post('https://beebboo-backend.onrender.com/api/v1/auth/login', {
                 email,
                 password
             });

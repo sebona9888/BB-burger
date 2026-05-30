@@ -17,7 +17,7 @@ const ForgotPassword = () => {
         const loadingToast = toast.loading('Sending reset link...', { position: 'top-center' });
 
         try {
-            await axios.post('https://prime-backend.onrender.com/api/v1/auth/forgot-password', { email });
+            await axios.post('https://beebboo-backend.onrender.com/api/v1/auth/forgot-password', { email });
             setSubmitted(true);
             toast.success('Reset link sent to your email!', { id: loadingToast, position: 'top-center' });
         } catch (err) {
