@@ -40,7 +40,7 @@ const Menu = () => {
     useEffect(() => {
         const fetchBurgers = async () => {
             try {
-                const res = await axios.get('https://beebboo-backend.onrender.com/api/menu');
+                const res = await axios.get('https://prime-backend.onrender.com/api/menu');
                 setBurgers(res.data);
                 setFilteredBurgers(res.data);
             } catch (err) {

@@ -66,7 +66,7 @@ const Payment = () => {
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
             cloudinaryFormData.append('upload_preset', 'beebboo_uploads');
-            cloudinaryFormData.append('folder', 'beebboo-orders');
+            cloudinaryFormData.append('folder', 'prime-orders');
 
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',
@@ -100,7 +100,7 @@ const Payment = () => {
 
             // ✅ CORRECT URL
             const response = await axios.post(
-                'https://beebboo-backend.onrender.com/api/orders',
+                'https://prime-backend.onrender.com/api/orders',
                 orderData,
                 { headers: { 'Content-Type': 'application/json' } }
             );

@@ -110,15 +110,14 @@ const About = () => {
                 <div className="team-grid">
                     <div className="team-card">
                         <div className="chef-img-wrapper">
-                            <img src="https://fkiqubgtnczwpemqvjuf.supabase.co/storage/v1/object/public/beebboo/beebboo.jpg
+                            <img src="https://fkiqubgtnczwpemqvjuf.supabase.co/storage/v1/object/public/prime/prime.jpg
                         " />
                         </div>
-                        <h4>beebboo beyana</h4>
+                        <h4><CEO>beti</CEO></h4>
                         <p>Founder & Head Chef</p>
                     </div>
                     <div className="team-card">
                         <div className="chef-img-wrapper">
-                            <img src="https://fkiqubgtnczwpemqvjuf.supabase.co/storage/v1/object/public/beebboo/bur%20workers.jpg     " alt="Chef Team" />
                         </div>
                         <h4>Expert Team</h4>
                         <p>Burger Specialist</p>
@@ -131,7 +130,7 @@ const About = () => {
                 <div className="test-container">
                     <div className="quote-icon">"</div>
                     <p className="test-text">
-                        "Beebboo Burger ergan dhandhamee booda burger biraa nyaachuu dhaabeera. Saffisni isaanii fi qulqullinni foonii adduma!"
+                        "prime  Burger ergan dhandhamee booda burger biraa nyaachuu dhaabeera. Saffisni isaanii fi qulqullinni foonii adduma!"
                     </p>
                     <div className="test-author">
                         <strong>– Ayansa Abdisa</strong>

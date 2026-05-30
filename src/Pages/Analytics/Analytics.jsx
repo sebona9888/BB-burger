@@ -19,7 +19,7 @@ const Analytics = () => {
     const fetchAnalytics = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`https://beebboo-backend.onrender.com/api/analytics?range=${range}`, {
+            const res = await axios.get(`https://prime-backend.onrender.com/api/analytics?range=${range}`, {
                 headers: { 'admin-secret': 'admin123' }
             });
             setData(res.data);

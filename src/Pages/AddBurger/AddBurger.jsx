@@ -20,7 +20,7 @@ const AddBurger = () => {
         e.preventDefault();
         try {
             // URL Backend (5000) fi Headers 'admin_secret' dabalameera
-            await axios.post('https://beebboo-backend.onrender.com/menu/menu', burger, {
+            await axios.post('https://prime-backend.onrender.com/menu/menu', burger, {
                 headers: {
                     'admin_secret': 'admin123' // Kun eeyyama Admin mirkaneessa
                 }
