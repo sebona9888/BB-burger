@@ -1,4 +1,4 @@
-/* --- HOME.CSS: prime BURGER PREMIUM EDITION --- */
+/* --- HOME.CSS: beebbooBURGER PREMIUM EDITION --- */
 
 .home-container {
     min-height: 100vh;
@@ -28,7 +28,7 @@
 }
 /* --- BRAND WATERMARK --- */
 .home-container::after {
-    content: "prime BURGER";
+    content: "beebbooBURGER";
     position: absolute;
     font-size: 15rem;
     font-weight: 900;
@@ -273,7 +273,7 @@
     }
 }
 
-/* Halluu prime BURGER! isa gadii (image_b4645d.png waliin akka deemuuf) */
+/* Halluu beebbooBURGER! isa gadii (image_b4645d.png waliin akka deemuuf) */
 .hero-content h1 span {
     color: #f97316;
 }
@@ -319,7 +319,7 @@
     }
 }
 
-/* Halluu "prime Burger!" isa jalatti jiruuf */
+/* Halluu "beebbooBurger!" isa jalatti jiruuf */
 .animate-up span {
     color: #ff781f;
     font-weight: 900;

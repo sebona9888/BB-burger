@@ -66,7 +66,7 @@ const Payment = () => {
             const cloudinaryFormData = new FormData();
             cloudinaryFormData.append('file', screenshot);
             cloudinaryFormData.append('upload_preset', 'prime_uploads');
-            cloudinaryFormData.append('folder', 'prime-orders');
+            cloudinaryFormData.append('folder', 'beebboo-orders');
 
             const cloudinaryResponse = await fetch(
                 'https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload',

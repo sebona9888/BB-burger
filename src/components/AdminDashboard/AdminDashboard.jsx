@@ -54,7 +54,7 @@ const AdminDashboard = () => {
     const uploadToCloudinary = async (file) => {
         const fd = new FormData();
         fd.append('file', file);
-        fd.append('upload_preset', 'prime_uploads');
+        fd.append('upload_preset', 'beebboo_uploads');
         fd.append('folder', 'beebboo-burgers');
         const res = await fetch('https://api.cloudinary.com/v1_1/dc1cr58z9/image/upload', { method: 'POST', body: fd });
         const data = await res.json();

@@ -50,7 +50,7 @@ const Register = () => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800">Hello!</h1>
-                    <p className="text-gray-500 mt-2">Welcome to prime
+                    <p className="text-gray-500 mt-2">Welcome to Beebboo Burger</p>
                 </div>
 
                 {/* Sign Up Form */}

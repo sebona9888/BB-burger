@@ -98,7 +98,7 @@ const Login = () => {
                     <p className="text-center text-gray-600 mt-6">
                         Don't have account?{' '}
                         <span
-                            className="text-[#00897b] font-semibold cursor-pointer hover:underline"
+                            className="text-[#00897b] font-semibold cursor-pointer hozver:underline"
                             onClick={() => navigate('/register')}
                         >
                             Sign Up
