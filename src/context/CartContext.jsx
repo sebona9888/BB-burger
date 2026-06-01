@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         try {
-            localStorage.setItem('prime, JSON.stringify(cartItems));
+            localStorage.setItem('primeart', JSON.stringify(cartItems));
         } catch (error) {
             console.error("Error saving cart:", error);
         }
